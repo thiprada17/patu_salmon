@@ -3,9 +3,9 @@ using System.Collections;
 
 public class CoffeeGrinder : MonoBehaviour
 {
-    public Transform imageToBounce; // ลาก Image (ใน Canvas) มาใส่ตรงนี้
-    public float bounceScale = 1.3f;   // เด้งใหญ่แค่ไหน
-    public float bounceSpeed = 8f;     // เด้งเร็วแค่ไหน
+    public Transform imageToBounce;
+    public float bounceScale = 1.3f;   
+    public float bounceSpeed = 8f; 
 
     private Vector3 originalScale;
     private Coroutine bounceRoutine;
@@ -17,7 +17,7 @@ public class CoffeeGrinder : MonoBehaviour
 
     private void OnMouseDown()
     {
-        Debug.Log("จิ้มโดนแล้ว!"); // เพิ่มบรรทัดนี้
+        Debug.Log("จิ้มโดนแล้ว!"); 
 
         if (bounceRoutine != null)
             StopCoroutine(bounceRoutine);

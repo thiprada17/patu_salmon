@@ -12,10 +12,10 @@ public class PortfilterSlot : MonoBehaviour
         if (portfilter == null)
             return;
 
-        // ย้ายไปตำแหน่งที่กำหนด
+        // ย้าย Portfilter ไปที่ AttachPoint
         portfilter.transform.position = attachPoint.position;
 
-        // บอก DraggableItem ว่าตอนนี้ติด Slot แล้ว
+        // บอกว่า Portfilter ติดอยู่กับ Slot
         DraggableItem draggable =
             portfilter.GetComponent<DraggableItem>();
 
@@ -24,6 +24,14 @@ public class PortfilterSlot : MonoBehaviour
             draggable.SetAttached(true);
         }
 
-        Debug.Log("Portfilter attached to Slot!");
+        // ส่ง Portfilter ให้ Grinder
+        Grinder grinder = GetComponentInParent<Grinder>();
+
+        if (grinder != null)
+        {
+            grinder.AttachPortfilter(portfilter);
+        }
+
+        Debug.Log("Portfilter attached to Grinder!");
     }
 }

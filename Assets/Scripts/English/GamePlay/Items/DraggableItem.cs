@@ -7,7 +7,6 @@ public class DraggableItem : MonoBehaviour,
     IPointerUpHandler
 {
     private Camera mainCamera;
-
     private bool isAttached = false;
 
     private void Awake()
@@ -17,20 +16,17 @@ public class DraggableItem : MonoBehaviour,
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        // ถ้าตอนนี้ติด Slot อยู่
-        // การคลิกครั้งนี้ = ปลดออก
         if (isAttached)
         {
             isAttached = false;
-            Debug.Log("Portfilter detached!");
+            Debug.Log(gameObject.name + " detached!");
         }
 
-        Debug.Log("Start Drag");
+        Debug.Log(gameObject.name + " Start Drag");
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        // ถ้ายังติด Slot อยู่ ห้ามขยับตามเมาส์
         if (isAttached)
             return;
 
@@ -44,7 +40,7 @@ public class DraggableItem : MonoBehaviour,
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        Debug.Log("Drop");
+        Debug.Log(gameObject.name + " Drop");
     }
 
     public void SetAttached(bool value)
