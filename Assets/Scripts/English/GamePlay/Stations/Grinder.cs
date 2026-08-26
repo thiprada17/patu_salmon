@@ -7,10 +7,14 @@ public class Grinder : MonoBehaviour
 
     private Vector3 originalPosition;
 
+    private bool isGrinding = false;
+
+
     private void Start()
     {
         originalPosition = transform.localPosition;
     }
+
 
     public void AttachPortfilter(Portfilter portfilter)
     {
@@ -18,6 +22,7 @@ public class Grinder : MonoBehaviour
 
         Debug.Log("Portfilter attached to Grinder");
     }
+
 
     private void OnMouseDown()
     {
@@ -27,12 +32,25 @@ public class Grinder : MonoBehaviour
             return;
         }
 
-        Debug.Log("เครื่องทำงานอยู่");
-        
+        if (isGrinding)
+        {
+            Debug.Log("เครื่องกำลังทำงานอยู่");
+            return;
+        }
 
-        Grind(currentPortfilter);
+        if (currentPortfilter.hasCoffeeGround)
+        {
+            Debug.Log("Portfilter มี Coffee Ground อยู่แล้ว!");
+            return;
+        }
+
+        Debug.Log("เครื่องทำงานอยู่");
+
+        StartCoroutine(Grind(currentPortfilter));
     }
 
+
+ 
     private IEnumerator Shake()
     {
         float duration = 3f;
@@ -42,29 +60,44 @@ public class Grinder : MonoBehaviour
 
         while (elapsed < duration)
         {
-            float x = Random.Range(-magnitude, magnitude);
-            float y = Random.Range(-magnitude, magnitude);
+            float x = Random.Range(
+                -magnitude,
+                magnitude
+            );
+
+            float y = Random.Range(
+                -magnitude,
+                magnitude
+            );
 
             transform.localPosition =
-                originalPosition + new Vector3(x, y, 0);
+                originalPosition +
+                new Vector3(x, y, 0);
 
             elapsed += Time.deltaTime;
 
             yield return null;
         }
 
-        // กลับตำแหน่งเดิม
-        transform.localPosition = originalPosition;
+        transform.localPosition =
+            originalPosition;
     }
 
-    public void Grind(Portfilter portfilter)
+
+    private IEnumerator Grind(Portfilter portfilter)
     {
-        if (portfilter.hasCoffeeGround)
-        {
-            Debug.Log("Portfilter มี Coffee Ground อยู่แล้ว!");
-            return;
-        }
+        isGrinding = true;
 
         Debug.Log("Grinding coffee...");
+
+        // เครื่องสั่น 3 วินาที
+        yield return StartCoroutine(Shake());
+
+
+        portfilter.AddCoffeeGround();
+
+        Debug.Log("Coffee Ground added!");
+
+        isGrinding = false;
     }
 }
