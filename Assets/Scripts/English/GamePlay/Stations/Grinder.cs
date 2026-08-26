@@ -65,9 +65,6 @@ public class Grinder : MonoBehaviour
             return;
         }
 
-        StartCoroutine(Shake());
-        portfilter.AddCoffeeGround();
-
         Debug.Log("Grinding coffee...");
     }
 }
