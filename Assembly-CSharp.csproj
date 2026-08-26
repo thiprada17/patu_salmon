@@ -69,6 +69,7 @@
     <Compile Include="Assets\Scripts\English\GamePlay\Stations\Milk.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark02.cs" />
     <Compile Include="Assets\Scripts\English\GamePlay\Items\Cup.cs" />
+    <Compile Include="Assets\Scripts\English\GamePlay\NewEmptyCSharpScript.cs" />
     <Compile Include="Assets\Scripts\English\GamePlay\Core\ItemType.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_ExampleScript_01.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMPro_InstructionOverlay.cs" />
