@@ -1,16 +1,21 @@
+# Unity generated folders
 [Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
-[Ll]ogs/
-[Uu]ser[Ss]ettings/
 [Bb]uild/
 [Bb]uilds/
 [Mm]emoryCaptures/
+
+# Visual Studio
 .vs/
 *.csproj
 *.sln
 *.user
 *.userprefs
+
+# JetBrains Rider
 .idea/
+
+# OS
 .DS_Store
 Thumbs.db
