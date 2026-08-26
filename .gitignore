@@ -7,3 +7,10 @@
 [Bb]uilds/
 [Mm]emoryCaptures/
 .vs/
+*.csproj
+*.sln
+*.user
+*.userprefs
+.idea/
+.DS_Store
+Thumbs.db
