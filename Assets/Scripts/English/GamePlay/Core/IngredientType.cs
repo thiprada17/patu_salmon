@@ -5,5 +5,7 @@ public enum IngredientType
     CoffeeGround,
     Coffee,
     Milk,
-    Cocoa
+    Cocoa,
+    Water,
+    None
 }
