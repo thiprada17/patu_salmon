@@ -2,29 +2,85 @@ using UnityEngine;
 
 public class RecipeManager : MonoBehaviour
 {
-    public bool IsLatte(Cup cup)
+    [SerializeField]
+    private RecipeData[] recipes;
+
+
+    public RecipeData GetRecipe(Cup cup)
     {
         if (cup == null)
         {
             Debug.LogError("Cup is null!");
-            return false;
+            return null;
         }
 
-        int coffee = 0;
-        int milk = 0;
-
-        foreach (IngredientType ingredient in cup.GetIngredients())
+        foreach (RecipeData recipe in recipes)
         {
-            if (ingredient == IngredientType.Coffee)
+            if (IsCorrectRecipe(cup, recipe))
             {
-                coffee++;
-            }
-            else if (ingredient == IngredientType.Milk)
-            {
-                milk++;
+                Debug.Log(
+                    "Recipe Found: " +
+                    recipe.recipeType
+                );
+
+                return recipe;
             }
         }
 
-        return coffee == 1 && milk == 3;
+        Debug.Log("No matching recipe");
+
+        return null;
+    }
+
+
+    private bool IsCorrectRecipe(
+        Cup cup,
+        RecipeData recipe)
+    {
+        if (recipe == null)
+            return false;
+
+        int coffeeCount = Count(cup, IngredientType.Coffee);
+        int milkCount = Count(cup, IngredientType.Milk);
+        int waterCount = Count(cup, IngredientType.Water);
+        int cocoaCount = Count(cup, IngredientType.Cocoa);
+
+        Debug.Log(
+            "Checking Recipe: " + recipe.recipeType +
+            "\nCup = " +
+            "Coffee:" + coffeeCount +
+            " Milk:" + milkCount +
+            " Water:" + waterCount +
+            " Cocoa:" + cocoaCount +
+            "\nRecipe = " +
+            "Coffee:" + recipe.coffee +
+            " Milk:" + recipe.milk +
+            " Water:" + recipe.water +
+            " Cocoa:" + recipe.cocoa
+        );
+
+        return coffeeCount == recipe.coffee
+            && milkCount == recipe.milk
+            && waterCount == recipe.water
+            && cocoaCount == recipe.cocoa;
+    }
+
+
+    private int Count(
+        Cup cup,
+        IngredientType type)
+    {
+        int count = 0;
+
+        foreach (IngredientType ingredient
+                 in cup.GetIngredients())
+        {
+            if (ingredient == type)
+            {
+                count++;
+            }
+        }
+
+        return count;
     }
 }
