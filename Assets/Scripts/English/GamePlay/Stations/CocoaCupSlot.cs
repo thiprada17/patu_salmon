@@ -1,28 +1,36 @@
-
-
 using UnityEngine;
-
 
 public class CocoaCupSlot : MonoBehaviour
 {
     [SerializeField]
     private Transform attachPoint;
 
+    [SerializeField]
+    private Cocoa cocoa;
+
+
     private void OnTriggerEnter2D(Collider2D other)
     {
-
-        Cup cup = other.GetComponentInParent<Cup>();
+        Cup cup = other.GetComponent<Cup>();
 
         if (cup == null)
+            return;
+
+        if (cup.IsFinished())
+            return;
+
+        // เช็ก Attach Point
+        if (attachPoint == null)
         {
-            Debug.Log("Object is not a Cup!");
+            Debug.LogError("ยังไม่ได้ใส่ Attach Point");
             return;
         }
 
-        Debug.Log("Cup detected!");
+        // ย้าย Cup ไปตำแหน่ง Attach Point
+        cup.transform.position =
+            attachPoint.position;
 
-        cup.transform.position = attachPoint.position;
-
+        // บอก DraggableItem ว่าตอนนี้ติด Slot แล้ว
         DraggableItem draggable =
             cup.GetComponent<DraggableItem>();
 
@@ -31,7 +39,38 @@ public class CocoaCupSlot : MonoBehaviour
             draggable.SetAttached(true);
         }
 
+        // บอก Cocoa ว่ามี Cup อยู่
+        cocoa.AttachCup(cup);
+
         Debug.Log("Cup attached to Cocoa");
     }
-}
 
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        Cup cup = other.GetComponent<Cup>();
+
+        if (cup == null)
+            return;
+
+        if (cup.IsFinished())
+            return;
+
+        // บอก DraggableItem ว่าหลุดจาก Slot แล้ว
+        DraggableItem draggable =
+            cup.GetComponent<DraggableItem>();
+
+        if (draggable != null)
+        {
+            draggable.SetAttached(false);
+        }
+
+        // บอก Cocoa ว่าเอา Cup ออกแล้ว
+        if (cocoa != null)
+        {
+            cocoa.RemoveCup(cup);
+        }
+
+        Debug.Log("Cup removed from Cocoa");
+    }
+}

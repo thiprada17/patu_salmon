@@ -15,6 +15,10 @@ public class CoffeeCupSlot : MonoBehaviour
         if (cup == null)
             return;
 
+        if (cup.IsFinished())
+            return;
+
+
         // ย้าย Portfilter ไปตำแหน่ง Attach Point
         cup.transform.position = attachPoint.position;
 
@@ -38,6 +42,9 @@ public class CoffeeCupSlot : MonoBehaviour
         Cup cup = other.GetComponent<Cup>();
 
         if (cup == null)
+            return;
+
+        if (cup.IsFinished())
             return;
 
         // บอก DraggableItem ว่าหลุดจาก Slot แล้ว
