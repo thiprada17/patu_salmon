@@ -1136,7 +1136,7 @@ MonoBehaviour:
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
-  m_ApplyToSortingLayers: 00000000c38b68fe8dddae89b19f6e5a692117b5
+  m_ApplyToSortingLayers: 00000000c38b68fe8dddae89b19f6e5a692117b5056f89c2a5958ed5858fe897
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -3278,6 +3278,10 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -8244691016477402259, guid: f3c294e6ef5759a42986583366d89444, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 17.3
+      objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: f3c294e6ef5759a42986583366d89444, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.064
@@ -3292,7 +3296,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: f3c294e6ef5759a42986583366d89444, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.97
+      value: -0.001
       objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: f3c294e6ef5759a42986583366d89444, type: 3}
       propertyPath: m_LocalPosition.y
