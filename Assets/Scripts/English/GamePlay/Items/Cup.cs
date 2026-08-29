@@ -2,42 +2,99 @@ using UnityEngine;
 
 public class Cup : MonoBehaviour
 {
-
     private const int MaxIngredients = 4;
+
 
     [SerializeField]
     private IngredientType[] ingredients =
         new IngredientType[MaxIngredients];
 
-    // เช็กว่าแต่ละช่องมีของหรือยัง
     private bool[] hasIngredient =
         new bool[MaxIngredients];
 
+    [Header("Empty Cup")]
     [SerializeField]
-    private Transform ingredientStack;
+    private SpriteRenderer emptyCupRenderer;
 
+
+    [Header("Finished Cup")]
     [SerializeField]
-    private Sprite coffeeSprite;
+    private SpriteRenderer finishedCupRenderer;
 
+    [Header("Cap")]
     [SerializeField]
-    private Sprite milkSprite;
+    private GameObject capObject;
 
+
+    [Header("Coffee")]
     [SerializeField]
-    private Sprite waterSprite;
+    private GameObject[] coffeeObjects =
+        new GameObject[MaxIngredients];
 
+
+    [Header("Milk")]
     [SerializeField]
-    private Sprite cocoaSprite;
+    private GameObject[] milkObjects =
+        new GameObject[MaxIngredients];
 
 
-    public bool AddIngredient(IngredientType ingredient)
+    [Header("Water")]
+    [SerializeField]
+    private GameObject[] waterObjects =
+        new GameObject[MaxIngredients];
+
+
+    [Header("Cocoa")]
+    [SerializeField]
+    private GameObject[] cocoaObjects =
+        new GameObject[MaxIngredients];
+
+
+    private void Awake()
     {
-        // ป้องกัน Array ผิดขนาด
+        DisableAllIngredientObjects();
+
+        if (finishedCupRenderer != null)
+        {
+            finishedCupRenderer.gameObject.SetActive(false);
+        }
+    }
+
+
+    private void DisableAllIngredientObjects()
+    {
+        DisableObjects(coffeeObjects);
+        DisableObjects(milkObjects);
+        DisableObjects(waterObjects);
+        DisableObjects(cocoaObjects);
+    }
+
+
+    private void DisableObjects(GameObject[] objects)
+    {
+        if (objects == null)
+            return;
+
+        for (int i = 0; i < objects.Length; i++)
+        {
+            if (objects[i] != null)
+            {
+                objects[i].SetActive(false);
+            }
+        }
+    }
+
+
+    public bool AddIngredient(
+        IngredientType ingredient)
+    {
         if (ingredients == null ||
             ingredients.Length != MaxIngredients)
         {
             ingredients =
                 new IngredientType[MaxIngredients];
         }
+
 
         if (hasIngredient == null ||
             hasIngredient.Length != MaxIngredients)
@@ -46,17 +103,15 @@ public class Cup : MonoBehaviour
                 new bool[MaxIngredients];
         }
 
-        // หา Index แรกที่ว่าง
+
         for (int i = 0; i < MaxIngredients; i++)
         {
             if (!hasIngredient[i])
             {
-                // เก็บข้อมูล
                 ingredients[i] = ingredient;
                 hasIngredient[i] = true;
 
-                // สร้าง Sprite
-                CreateIngredientSprite(
+                ShowIngredient(
                     ingredient,
                     i
                 );
@@ -72,13 +127,14 @@ public class Cup : MonoBehaviour
             }
         }
 
+
         Debug.Log("Cup is full!");
 
         return false;
     }
 
 
-    private void CreateIngredientSprite(
+    private void ShowIngredient(
         IngredientType ingredient,
         int index)
     {
@@ -86,80 +142,71 @@ public class Cup : MonoBehaviour
             index >= MaxIngredients)
         {
             Debug.LogError(
-                "Invalid Cup Index: " + index
+                "Invalid Cup Index: " +
+                index
             );
 
             return;
         }
 
-        if (ingredientStack == null)
+
+        GameObject[] objects =
+            GetIngredientObjects(ingredient);
+
+
+        if (objects == null)
         {
             Debug.LogError(
-                "Cup: Ingredient Stack ยังไม่ได้ใส่!"
-            );
-
-            return;
-        }
-
-        Sprite sprite =
-            GetIngredientSprite(ingredient);
-
-        if (sprite == null)
-        {
-            Debug.LogError(
-                "ไม่มี Sprite สำหรับ " +
+                "ไม่มี Object สำหรับ " +
                 ingredient
             );
 
             return;
         }
 
-        GameObject ingredientObject =
-            new GameObject(
+
+        if (index >= objects.Length ||
+            objects[index] == null)
+        {
+            Debug.LogError(
+                "ไม่มี " +
                 ingredient +
                 "_Index_" +
                 index
             );
 
-        ingredientObject.transform.SetParent(
-            ingredientStack
+            return;
+        }
+
+
+        objects[index].SetActive(true);
+
+
+        Debug.Log(
+            "เปิด " +
+            ingredient +
+            "_Index_" +
+            index
         );
-
-        SpriteRenderer spriteRenderer =
-            ingredientObject.AddComponent<
-                SpriteRenderer
-            >();
-
-        spriteRenderer.sprite = sprite;
-
-        ingredientObject.transform.localPosition =
-            new Vector3(
-                0f,
-                index * 0.05f,
-                0f
-            );
-
-
-        spriteRenderer.sortingOrder = index;
     }
 
 
-    private Sprite GetIngredientSprite(
+    private GameObject[] GetIngredientObjects(
         IngredientType ingredient)
     {
         switch (ingredient)
         {
             case IngredientType.Coffee:
-                return coffeeSprite;
+                return coffeeObjects;
 
             case IngredientType.Milk:
-                return milkSprite;
+                return milkObjects;
 
             case IngredientType.Water:
-                return waterSprite;
+                return waterObjects;
 
             case IngredientType.Cocoa:
-                return cocoaSprite;
+                return cocoaObjects;
 
             default:
                 return null;
@@ -169,6 +216,80 @@ public class Cup : MonoBehaviour
 
     public IngredientType[] GetIngredients()
     {
-        return ingredients;
+        int count = 0;
+
+        for (int i = 0; i < MaxIngredients; i++)
+        {
+            if (hasIngredient[i])
+            {
+                count++;
+            }
+        }
+
+
+        IngredientType[] result =
+            new IngredientType[count];
+
+
+        int index = 0;
+
+        for (int i = 0; i < MaxIngredients; i++)
+        {
+            if (hasIngredient[i])
+            {
+                result[index] =
+                    ingredients[i];
+
+                index++;
+            }
+        }
+
+
+        return result;
+    }
+
+    public void DestroyCup()
+    {
+        Destroy(gameObject);
+    }
+
+    public void SetFinishedRecipe(Sprite finishedSprite)
+    {
+        if (finishedSprite == null)
+        {
+            Debug.LogError("Finished Sprite is null!");
+            return;
+        }
+
+        isFinished = true;
+
+        // ปิดส่วนผสมทั้งหมด 
+        DisableAllIngredientObjects();
+
+        // ปิดรูปแก้วเปล่า ไม่ให้ซ้อนกับแก้วสำเร็จ
+        if (emptyCupRenderer != null)
+        {
+            emptyCupRenderer.gameObject.SetActive(false);
+        }
+
+        if (capObject != null)
+        {
+            capObject.SetActive(false);
+        }
+
+        // เปลี่ยนเป็นรูปเมนูสำเร็จ 
+        if (finishedCupRenderer != null)
+        {
+            finishedCupRenderer.sprite = finishedSprite;
+            finishedCupRenderer.gameObject.SetActive(true);
+        }
+    }
+
+
+    private bool isFinished = false;
+
+    public bool IsFinished()
+    {
+        return isFinished;
     }
 }
