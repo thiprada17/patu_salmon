@@ -3,8 +3,8 @@ guid: 511c0d944e7fe15439ca45ef21338359
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1670848811751494383
-    second: lanyard_0
+      213: -7890566552281106577
+    second: Lanyard_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 500
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -126,7 +126,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: lanyard_0
+      name: Lanyard_0
       rect:
         serializedVersion: 2
         x: 986
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 11d2b26bbd3ffc8e0800000000000000
-      internalID: -1670848811751494383
+      spriteID: f67b4b6d6831f7290800000000000000
+      internalID: -7890566552281106577
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      lanyard_0: -1670848811751494383
+      Lanyard_0: -7890566552281106577
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
