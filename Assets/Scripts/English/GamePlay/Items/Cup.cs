@@ -12,6 +12,9 @@ public class Cup : MonoBehaviour
     private bool[] hasIngredient =
         new bool[MaxIngredients];
 
+    [SerializeField] private GameObject finishVFX;
+    [SerializeField] private Transform vfxPoint;
+
     [Header("Empty Cup")]
     [SerializeField]
     private SpriteRenderer emptyCupRenderer;
@@ -28,26 +31,22 @@ public class Cup : MonoBehaviour
 
     [Header("Coffee")]
     [SerializeField]
-    private GameObject[] coffeeObjects =
-        new GameObject[MaxIngredients];
+    private GameObject[] coffeeObjects = new GameObject[MaxIngredients];
 
 
     [Header("Milk")]
     [SerializeField]
-    private GameObject[] milkObjects =
-        new GameObject[MaxIngredients];
+    private GameObject[] milkObjects = new GameObject[MaxIngredients];
 
 
     [Header("Water")]
     [SerializeField]
-    private GameObject[] waterObjects =
-        new GameObject[MaxIngredients];
+    private GameObject[] waterObjects = new GameObject[MaxIngredients];
 
 
     [Header("Cocoa")]
     [SerializeField]
-    private GameObject[] cocoaObjects =
-        new GameObject[MaxIngredients];
+    private GameObject[] cocoaObjects = new GameObject[MaxIngredients];
 
 
     private void Awake()
@@ -117,10 +116,7 @@ public class Cup : MonoBehaviour
                 );
 
                 Debug.Log(
-                    "Added " +
-                    ingredient +
-                    " to Cup Index " +
-                    i
+                    "Added " + ingredient + " to Cup Index " + i
                 );
 
                 return true;
@@ -142,8 +138,7 @@ public class Cup : MonoBehaviour
             index >= MaxIngredients)
         {
             Debug.LogError(
-                "Invalid Cup Index: " +
-                index
+                "Invalid Cup Index: " + index
             );
 
             return;
@@ -157,8 +152,7 @@ public class Cup : MonoBehaviour
         if (objects == null)
         {
             Debug.LogError(
-                "ไม่มี Object สำหรับ " +
-                ingredient
+                "ไม่มี Object สำหรับ " + ingredient
             );
 
             return;
@@ -169,10 +163,7 @@ public class Cup : MonoBehaviour
             objects[index] == null)
         {
             Debug.LogError(
-                "ไม่มี " +
-                ingredient +
-                "_Index_" +
-                index
+                "ไม่มี " + ingredient + "_Index_" + index
             );
 
             return;
@@ -183,10 +174,7 @@ public class Cup : MonoBehaviour
 
 
         Debug.Log(
-            "เปิด " +
-            ingredient +
-            "_Index_" +
-            index
+            "เปิด " + ingredient + "_Index_" + index
         );
     }
 
@@ -283,8 +271,26 @@ public class Cup : MonoBehaviour
             finishedCupRenderer.sprite = finishedSprite;
             finishedCupRenderer.gameObject.SetActive(true);
         }
+
+        PlayFinishVFX();
     }
 
+    private void PlayFinishVFX()
+    {
+        if (finishVFX == null || vfxPoint == null)
+        {
+            Debug.LogWarning("ยังไม่ได้ใส่ Finish VFX หรือ VFX Point");
+            return;
+        }
+
+        GameObject vfx = Instantiate(
+            finishVFX,
+            vfxPoint.position,
+            vfxPoint.rotation
+        );
+
+        Destroy(vfx, 0.4f);
+    }
 
     private bool isFinished = false;
 
