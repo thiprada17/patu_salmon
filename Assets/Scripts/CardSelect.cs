@@ -6,13 +6,36 @@ public class CardSelect : MonoBehaviour
 {
     [SerializeField] GameObject glow;
     [SerializeField] int characterId;
-    [SerializeField] string nextScene = "GameScene";
-    [SerializeField] float delay = 0.6f;
+    [SerializeField] string nextScene = "idcard";
+    [SerializeField] float delay = 0.2f;
 
     [Header("เด้ง")]
     [SerializeField] Transform card;
-    [SerializeField] float punchScale = 1.15f;
-    [SerializeField] float punchTime = 0.18f;
+    [SerializeField] float punchScale = 0.9f;
+    [SerializeField] float punchTime = 0.12f;
+
+    [Header("เลื่อนมากลางจอ")]
+    [SerializeField] Vector3 centerPos = Vector3.zero;
+    [SerializeField] bool useScreenCenter = true;
+    [SerializeField] Vector2 centerOffset = Vector2.zero;
+    [SerializeField] Transform cardVisual;
+    [SerializeField] float moveTime = 0.6f;
+    [SerializeField] float zoomScale = 1.25f;
+
+    [Header("จัดของในการ์ด")]
+    [SerializeField] Transform selectButton;
+    [SerializeField] float hideButtonTime = 0.2f;
+    [SerializeField] Transform contentRoot;
+    [SerializeField] Vector2 contentOffset = Vector2.zero;
+
+    [Header("จางหาย")]
+    [SerializeField] Transform[] otherStuff;
+    [SerializeField] float fadeOthers = 0.35f;
+    [SerializeField] float glowFadeTime = 0.25f;
+
+    [Header("รอผู้เล่นแตะ")]
+    [SerializeField] float tapDelay = 0.15f;
+    [SerializeField] Transform tapHint;
 
     static bool locked = false;
 
@@ -24,7 +47,6 @@ public class CardSelect : MonoBehaviour
 
     void OnMouseDown()
     {
-        Debug.Log("กดโดนแล้ว: " + gameObject.name);
         if (locked) return;
         locked = true;
 
@@ -33,16 +55,179 @@ public class CardSelect : MonoBehaviour
         PlayerPrefs.Save();
 
         StartCoroutine(Punch(transform));
-        if (card != null) StartCoroutine(Punch(card));
-
         StartCoroutine(GoNext());
+    }
+
+    IEnumerator GoNext()
+    {
+        yield return new WaitForSeconds(delay);
+
+        if (otherStuff != null)
+        {
+            foreach (var t in otherStuff)
+                if (t != null) StartCoroutine(FadeGroup(t, fadeOthers));
+        }
+
+        if (glow != null)
+            StartCoroutine(FadeGroup(glow.transform, glowFadeTime));
+
+        if (selectButton != null)
+            StartCoroutine(FadeGroup(selectButton, hideButtonTime));
+
+        StartCoroutine(ArrangeContent());
+
+        if (card == null)
+        {
+            SceneManager.LoadScene(nextScene);
+            yield break;
+        }
+
+        Vector3 fromPos = card.position;
+        Vector3 toPos;
+
+        if (useScreenCenter)
+        {
+            Vector3 c = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0f));
+            Vector3 wanted = new Vector3(c.x + centerOffset.x, c.y + centerOffset.y, fromPos.z);
+            Vector3 diff = (cardVisual != null) ? card.position - cardVisual.position : Vector3.zero;
+            toPos = wanted + diff;
+        }
+        else
+        {
+            toPos = new Vector3(centerPos.x, centerPos.y, fromPos.z);
+        }
+
+        Vector3 fromScale = card.localScale;
+        Vector3 toScale = fromScale * zoomScale;
+        Quaternion fromRot = card.rotation;
+
+        float e = 0f;
+        while (e < moveTime)
+        {
+            e += Time.deltaTime;
+            float raw = e / moveTime;
+            float p = 1f - Mathf.Pow(1f - raw, 3f);
+
+            card.position = Vector3.Lerp(fromPos, toPos, p);
+            card.localScale = Vector3.Lerp(fromScale, toScale, p);
+            card.rotation = Quaternion.Lerp(fromRot, Quaternion.identity, p);
+
+            yield return null;
+
+        }
+
+        card.position = toPos;
+        card.localScale = toScale;
+        card.rotation = Quaternion.identity;
+
+        yield return new WaitForSeconds(tapDelay);
+
+        if (tapHint != null) StartCoroutine(BlinkHint());
+        
+        yield return StartCoroutine(WaitForTap());
+
+        SceneManager.LoadScene(nextScene);
+    }
+
+    IEnumerator BlinkHint()
+    {
+        tapHint.gameObject.SetActive(true);
+
+        SpriteRenderer[] sprites = tapHint.GetComponentsInChildren<SpriteRenderer>(true);
+        TMPro.TMP_Text[] texts = tapHint.GetComponentsInChildren<TMPro.TMP_Text>(true);
+
+        while (true)
+        {
+            float a = 0.4f + Mathf.PingPong(Time.time * 0.8f, 0.6f);
+
+            foreach (var s in sprites) { Color c = s.color; c.a = a; s.color = c; }
+            foreach (var t in texts) { Color c = t.color; c.a = a; t.color = c; }
+
+            yield return null;
+        }
+    }
+
+    IEnumerator WaitForTap()
+    {
+        while (true)
+        {
+            if (Input.GetMouseButtonDown(0)) yield break;
+            if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began) yield break;
+            yield return null;
+        }
+    }
+
+    IEnumerator ArrangeContent()
+    {
+        if (cardVisual == null || contentRoot == null) yield break;
+
+        Bounds b = new Bounds();
+        bool first = true;
+        foreach (var r in contentRoot.GetComponentsInChildren<Renderer>())
+        {
+            if (selectButton != null && r.transform.IsChildOf(selectButton)) continue;
+            if (first) { b = r.bounds; first = false; }
+            else b.Encapsulate(r.bounds);
+        }
+        if (first) yield break;
+
+        Vector3 cardCenter = GetCenter(cardVisual);
+        Vector3 shift = cardCenter - b.center
+            + new Vector3(contentOffset.x, contentOffset.y, 0f);
+
+        Vector3 from = contentRoot.localPosition;
+        Vector3 to = from + shift;
+
+        float e = 0f;
+        while (e < moveTime)
+        {
+            e += Time.deltaTime;
+            float p = 1f - Mathf.Pow(1f - (e / moveTime), 3f);
+            contentRoot.localPosition = Vector3.Lerp(from, to, p);
+            yield return null;
+        }
+        contentRoot.localPosition = to;
+    }
+
+    Vector3 GetCenter(Transform t)
+    {
+        Renderer r = t.GetComponent<Renderer>();
+        return (r != null) ? r.bounds.center : t.position;
+    }
+
+    IEnumerator FadeGroup(Transform root, float time)
+    {
+        SpriteRenderer[] sprites = root.GetComponentsInChildren<SpriteRenderer>(true);
+        TMPro.TMP_Text[] texts = root.GetComponentsInChildren<TMPro.TMP_Text>(true);
+
+        Color[] sBase = new Color[sprites.Length];
+        for (int i = 0; i < sprites.Length; i++) sBase[i] = sprites[i].color;
+
+        Color[] tBase = new Color[texts.Length];
+        for (int i = 0; i < texts.Length; i++) tBase[i] = texts[i].color;
+
+        float e = 0f;
+        while (e < time)
+        {
+            e += Time.deltaTime;
+            float a = 1f - (e / time);
+
+            for (int i = 0; i < sprites.Length; i++)
+            {
+                Color c = sBase[i]; c.a = sBase[i].a * a; sprites[i].color = c;
+            }
+            for (int i = 0; i < texts.Length; i++)
+            {
+                Color c = tBase[i]; c.a = tBase[i].a * a; texts[i].color = c;
+            }
+            yield return null;
+        }
     }
 
     IEnumerator Punch(Transform t)
     {
         Vector3 baseScale = t.localScale;
         Vector3 bigScale = baseScale * punchScale;
-
         yield return Scale(t, baseScale, bigScale, punchTime * 0.4f);
         yield return Scale(t, bigScale, baseScale, punchTime * 0.6f);
         t.localScale = baseScale;
@@ -60,11 +245,5 @@ public class CardSelect : MonoBehaviour
             yield return null;
         }
         t.localScale = to;
-    }
-
-    IEnumerator GoNext()
-    {
-        yield return new WaitForSeconds(delay);
-        SceneManager.LoadScene(nextScene);
     }
 }
