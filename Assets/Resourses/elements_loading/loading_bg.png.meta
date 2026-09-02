@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 529feb8ba9dbe5d45a046d594ccd4f9f
+guid: 26ca73c1de407d342bd9ba2eae3dedbc
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1434534025741065275
-    second: pic_salmon_0
+      213: -7811567611096955511
+    second: loading_bg_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: pic_salmon_0
+      name: loading_bg_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 2048
-        height: 2048
+        width: 1608
+        height: 3496
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b3cd18e881d78e310800000000000000
-      internalID: 1434534025741065275
+      spriteID: 9858e9925acb79390800000000000000
+      internalID: -7811567611096955511
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      pic_salmon_0: 1434534025741065275
+      loading_bg_0: -7811567611096955511
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
