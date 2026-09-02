@@ -33,9 +33,8 @@ public class CardSelect : MonoBehaviour
     [SerializeField] float fadeOthers = 0.35f;
     [SerializeField] float glowFadeTime = 0.25f;
 
-    [Header("รอผู้เล่นแตะ")]
-    [SerializeField] float tapDelay = 0.15f;
-    [SerializeField] Transform tapHint;
+    [Header("ตัดหน้า")]
+    [SerializeField] float cutAtPercent = 0.85f;
 
     static bool locked = false;
 
@@ -112,49 +111,16 @@ public class CardSelect : MonoBehaviour
             card.localScale = Vector3.Lerp(fromScale, toScale, p);
             card.rotation = Quaternion.Lerp(fromRot, Quaternion.identity, p);
 
+            if (raw >= cutAtPercent)
+            {
+                SceneManager.LoadScene(nextScene);
+                yield break;
+            }
+
             yield return null;
-
         }
-
-        card.position = toPos;
-        card.localScale = toScale;
-        card.rotation = Quaternion.identity;
-
-        yield return new WaitForSeconds(tapDelay);
-
-        if (tapHint != null) StartCoroutine(BlinkHint());
-        
-        yield return StartCoroutine(WaitForTap());
 
         SceneManager.LoadScene(nextScene);
-    }
-
-    IEnumerator BlinkHint()
-    {
-        tapHint.gameObject.SetActive(true);
-
-        SpriteRenderer[] sprites = tapHint.GetComponentsInChildren<SpriteRenderer>(true);
-        TMPro.TMP_Text[] texts = tapHint.GetComponentsInChildren<TMPro.TMP_Text>(true);
-
-        while (true)
-        {
-            float a = 0.4f + Mathf.PingPong(Time.time * 0.8f, 0.6f);
-
-            foreach (var s in sprites) { Color c = s.color; c.a = a; s.color = c; }
-            foreach (var t in texts) { Color c = t.color; c.a = a; t.color = c; }
-
-            yield return null;
-        }
-    }
-
-    IEnumerator WaitForTap()
-    {
-        while (true)
-        {
-            if (Input.GetMouseButtonDown(0)) yield break;
-            if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began) yield break;
-            yield return null;
-        }
     }
 
     IEnumerator ArrangeContent()
