@@ -1005,8 +1005,10 @@ MonoBehaviour:
   - {fileID: 3507370531716047126, guid: 5ac3851b6fa8c064cb313d4c754601c2, type: 3}
   - {fileID: -3148569990996520393, guid: 38041544c4a005242a53b40635a9d404, type: 3}
   loadingText: {fileID: 1880377808}
-  waveSpeed: 4
-  waveHeight: 8
+  hopHeight: 0.8
+  hopTime: 0.5
+  hopGap: 0.1
+  restTime: 0.4
   loadTime: 3
   nextScene: map
 --- !u!114 &1626681736
