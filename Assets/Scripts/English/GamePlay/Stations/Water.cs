@@ -34,10 +34,7 @@ public class Water : MonoBehaviour
         }
 
         // เพิ่ม Cocoa เข้า Cup
-        bool success =
-            currentCup.AddIngredient(
-                IngredientType.Water
-            );
+        bool success = currentCup.AddIngredient( IngredientType.Water );
 
         if (success)
         {

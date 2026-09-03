@@ -34,10 +34,7 @@ public class Milk : MonoBehaviour
         }
 
         // เพิ่ม Cocoa เข้า Cup
-        bool success =
-            currentCup.AddIngredient(
-                IngredientType.Milk
-            );
+        bool success = currentCup.AddIngredient( IngredientType.Milk );
 
         if (success)
         {

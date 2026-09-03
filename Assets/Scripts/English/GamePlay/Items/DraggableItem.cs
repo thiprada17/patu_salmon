@@ -8,6 +8,9 @@ public class DraggableItem : MonoBehaviour,
 {
     private Camera mainCamera;
     private bool isAttached = false;
+    private bool isDragging = false;
+
+    private Vector3 dragOffset;
 
     private void Awake()
     {
@@ -16,6 +19,14 @@ public class DraggableItem : MonoBehaviour,
 
     public void OnPointerDown(PointerEventData eventData)
     {
+        isDragging = true;
+
+        Vector3 mouseWorldPosition = mainCamera.ScreenToWorldPoint( eventData.position );
+
+        mouseWorldPosition.z = transform.position.z;
+
+        dragOffset = transform.position - mouseWorldPosition;
+
         if (isAttached)
         {
             isAttached = false;
@@ -27,19 +38,20 @@ public class DraggableItem : MonoBehaviour,
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (isAttached)
+        if (!isDragging || isAttached)
             return;
 
-        Vector3 worldPosition =
-            mainCamera.ScreenToWorldPoint(eventData.position);
+        Vector3 mouseWorldPosition = mainCamera.ScreenToWorldPoint( eventData.position );
 
-        worldPosition.z = transform.position.z;
+        mouseWorldPosition.z = transform.position.z;
 
-        transform.position = worldPosition;
+        transform.position = mouseWorldPosition + dragOffset;
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
+        isDragging = false;
+
         Debug.Log(gameObject.name + " Drop");
     }
 

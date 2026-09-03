@@ -4,7 +4,6 @@ public class Cocoa : MonoBehaviour
 {
     private Cup currentCup;
 
-
     public void AttachCup(Cup cup)
     {
         currentCup = cup;
@@ -34,10 +33,7 @@ public class Cocoa : MonoBehaviour
         }
 
         // เพิ่ม Cocoa เข้า Cup
-        bool success =
-            currentCup.AddIngredient(
-                IngredientType.Cocoa
-            );
+        bool success = currentCup.AddIngredient( IngredientType.Cocoa );
 
         if (success)
         {
