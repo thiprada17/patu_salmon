@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8653719598885068355, guid: 3d35e59630dee724ba8ecf27b4aae4a9, type: 3}
       propertyPath: m_Name
-      value: Cats NEW
+      value: Cats
       objectReference: {fileID: 0}
     - target: {fileID: -7943648170584113951, guid: 3d35e59630dee724ba8ecf27b4aae4a9, type: 3}
       propertyPath: m_Sprite
@@ -151,6 +151,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8653719598885068355, guid: 3d35e59630dee724ba8ecf27b4aae4a9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8872470360528131557}
+    - targetCorrespondingSourceObject: {fileID: -8653719598885068355, guid: 3d35e59630dee724ba8ecf27b4aae4a9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -7549779599229244800}
     - targetCorrespondingSourceObject: {fileID: -2643444367684867239, guid: 3d35e59630dee724ba8ecf27b4aae4a9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2287538893031376297}
@@ -471,6 +474,27 @@ MonoBehaviour:
   animator: {fileID: 8586172253106008187}
   bobHeight: 0.03
   bobSpeed: 8
+--- !u!114 &-7549779599229244800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8672746145765505240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8bd897873c701ef46ac6435d3df8b148, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  body: {fileID: 7573841488971414627}
+  head: {fileID: 2460790084659887896}
+  eyesOpen: {fileID: 66558621499711294}
+  eyesClose: {fileID: 430592918102396057}
+  eyesAngry: {fileID: 4110877399139740083}
+  mouth: {fileID: 3134991819059479995}
+  armL: {fileID: 4120898498597604019}
+  armR: {fileID: 8191882525519664338}
+  variantCount: 4
 --- !u!1 &8920083251655234710 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 321592859523370483, guid: 3d35e59630dee724ba8ecf27b4aae4a9, type: 3}
