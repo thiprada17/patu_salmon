@@ -29,21 +29,16 @@ public class CustomerSpawner : MonoBehaviour
     {
         while (spawnedCount < customerCount)
         {
-            // ถ้าคิวเต็ม → รอ
             if (customerQueue.IsFull())
             {
                 yield return null;
                 continue;
             }
 
-
-            // Spawn customer
             SpawnCustomer();
 
             spawnedCount++;
 
-
-            // รอก่อน Spawn ตัวถัดไป
             yield return new WaitForSeconds(spawnInterval);
         }
     }

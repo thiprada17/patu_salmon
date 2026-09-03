@@ -69,16 +69,12 @@ public class CustomerMovement : MonoBehaviour
         if (!isMoving)
             return;
 
-
-        // Move X
         float newX = Mathf.MoveTowards(
             transform.position.x,
             targetX,
             moveSpeed * Time.deltaTime
         );
 
-
-        // Walking bob
         bobTimer += Time.deltaTime * bobSpeed;
 
         float bobY =
@@ -91,8 +87,6 @@ public class CustomerMovement : MonoBehaviour
             transform.position.z
         );
 
-
-        // Arrived
         if (Mathf.Abs(newX - targetX) < 0.01f)
         {
             transform.position = new Vector3(

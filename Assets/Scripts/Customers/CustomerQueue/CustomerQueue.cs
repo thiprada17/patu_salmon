@@ -16,12 +16,9 @@ public class CustomerQueue : MonoBehaviour
         if (customer == null)
             return false;
 
-        // Already in queue
         if (customers.Contains(customer))
             return false;
 
-
-        // Queue full
         if (customers.Count >= 2)
         {
             Debug.Log("Queue is full. " + customer.name + " must wait.");
@@ -29,8 +26,6 @@ public class CustomerQueue : MonoBehaviour
             return false;
         }
 
-
-        // Add customer
         customers.Add(customer);
 
         UpdateQueuePositions();
@@ -53,7 +48,6 @@ public class CustomerQueue : MonoBehaviour
         if (!customers.Contains(customer))
             return;
 
-
         customers.Remove(customer);
 
         Debug.Log(
@@ -61,8 +55,6 @@ public class CustomerQueue : MonoBehaviour
             " left queue."
         );
 
-
-        // Move remaining customers forward
         UpdateQueuePositions();
     }
 
