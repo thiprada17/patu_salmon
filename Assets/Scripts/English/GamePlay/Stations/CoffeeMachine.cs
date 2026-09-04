@@ -7,6 +7,8 @@ public class CoffeeMachine : MonoBehaviour
     private Cup currentCup;
 
     private Vector3 originalPosition;
+    private Vector3 portfilterOriginalPosition;
+    private Vector3 cupOriginalPosition;
 
     // เช็กว่าเครื่องกำลังทำงานอยู่หรือไม่
     private bool isMakingCoffee = false;
@@ -19,7 +21,7 @@ public class CoffeeMachine : MonoBehaviour
     public void AttachPortfilter(Portfilter portfilter)
     {
         currentPortfilter = portfilter;
-
+        portfilterOriginalPosition = portfilter.transform.localPosition;
         Debug.Log("Portfilter attached to Coffee Machine");
     }
 
@@ -36,7 +38,7 @@ public class CoffeeMachine : MonoBehaviour
     public void AttachCup(Cup cup)
     {
         currentCup = cup;
-
+        cupOriginalPosition = cup.transform.localPosition;
         Debug.Log("Cup attached to Coffee Machine");
     }
 
@@ -100,6 +102,9 @@ public class CoffeeMachine : MonoBehaviour
             transform.localPosition =
                 originalPosition + new Vector3(x, y, 0);
 
+            currentPortfilter.transform.localPosition = portfilterOriginalPosition + new Vector3(x, y, 0);
+
+            currentCup.transform.localPosition = cupOriginalPosition + new Vector3(x, y, 0);
             elapsed += Time.deltaTime;
 
             yield return null;
@@ -108,15 +113,18 @@ public class CoffeeMachine : MonoBehaviour
         // กลับตำแหน่งเดิม
         transform.localPosition = originalPosition;
 
+        if (currentPortfilter != null)
+        {
+            currentPortfilter.transform.localPosition =
+                portfilterOriginalPosition;
+        }
+
 
 
         Debug.Log("Coffee finished!");
 
         // เพิ่ม Coffee เข้า Cup
-        bool success =
-            currentCup.AddIngredient(
-                IngredientType.Coffee
-            );
+        bool success = currentCup.AddIngredient( IngredientType.Coffee );
 
         if (success)
         {
