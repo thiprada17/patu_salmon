@@ -93,7 +93,6 @@ public class CoffeeMachine : MonoBehaviour
 
         float duration = 3f;
         float elapsed = 0f;
-        float magnitude = 0.02f;
 
         while (elapsed < duration)
         {
@@ -103,12 +102,9 @@ public class CoffeeMachine : MonoBehaviour
             transform.localPosition =
                 originalPosition + new Vector3(x, y, 0);
 
-            float px = Random.Range(-magnitude, magnitude);
-            float py = Random.Range(-magnitude, magnitude);
-
             currentPortfilter.transform.localPosition = portfilterOriginalPosition + new Vector3(x, y, 0);
 
-            currentCup.transform.localPosition = cupOriginalPosition + new Vector3(px, py, 0);
+            currentCup.transform.localPosition = cupOriginalPosition + new Vector3(x, y, 0);
             elapsed += Time.deltaTime;
 
             yield return null;

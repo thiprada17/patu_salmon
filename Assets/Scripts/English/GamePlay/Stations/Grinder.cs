@@ -8,14 +8,35 @@ public class Grinder : MonoBehaviour
     private Vector3 originalPosition;
     private Vector3 portfilterOriginalPosition;
 
+    [Header("Coffee Animation")]
+    [SerializeField] private Animator coffeeAnimator;
+    [SerializeField] private SpriteRenderer coffeeRenderer;
+
     private bool isGrinding = false;
 
 
     private void Start()
     {
         originalPosition = transform.localPosition;
+
+        if (coffeeRenderer != null)
+        {
+            coffeeRenderer.enabled = false;
+        }
     }
 
+    private void PlayCoffeeAnimation()
+    {
+        if (coffeeRenderer != null)
+        {
+            coffeeRenderer.enabled = true;
+        }
+
+        if (coffeeAnimator != null)
+        {
+            coffeeAnimator.Play("grinderanimation", 0, 0f);
+        }
+    }
 
     public void AttachPortfilter(Portfilter portfilter)
     {
@@ -69,10 +90,8 @@ public class Grinder : MonoBehaviour
             transform.localPosition = originalPosition + new Vector3(x, y, 0);
 
 
-            float px = Random.Range(-magnitude, magnitude);
-            float py = Random.Range(-magnitude, magnitude);
+            currentPortfilter.transform.localPosition = portfilterOriginalPosition + new Vector3(x, y, 0);
 
-            currentPortfilter.transform.localPosition = portfilterOriginalPosition + new Vector3(px, py, 0);
 
             elapsed += Time.deltaTime;
 
@@ -104,11 +123,19 @@ public class Grinder : MonoBehaviour
 
         Debug.Log("Grinding coffee...");
 
+        // เล่น Animation กาแฟ
+        PlayCoffeeAnimation();
+        yield return new WaitForSeconds(0f);
         // Grinder + Portfilter สั่น 3 วิ
         yield return StartCoroutine(Shake());
 
         // เติม Coffee Ground
         portfilter.AddCoffeeGround();
+
+        if (coffeeRenderer != null)
+        {
+            coffeeRenderer.enabled = false;
+        }
 
         Debug.Log("Coffee Ground added!");
 

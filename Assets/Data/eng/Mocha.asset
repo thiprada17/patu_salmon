@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Mocha
   m_EditorClassIdentifier: 
   recipeType: 3
-  finishedCupSprite: {fileID: 21300000, guid: c6555b89316cd9d4bbe8348c286bf181, type: 2}
+  finishedCupSprite: {fileID: 21300000, guid: 7696a3513622f5348abe6b7cc45c6ca2, type: 2}
   coffee: 2
   milk: 0
   water: 0
