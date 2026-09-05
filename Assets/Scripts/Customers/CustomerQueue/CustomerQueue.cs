@@ -21,7 +21,11 @@ public class CustomerQueue : MonoBehaviour
 
         if (customers.Count >= 2)
         {
-            Debug.Log("Queue is full. " + customer.name + " must wait.");
+            Debug.Log(
+                "Queue is full. " +
+                customer.name +
+                " must wait."
+            );
 
             return false;
         }
@@ -65,7 +69,6 @@ public class CustomerQueue : MonoBehaviour
         {
             customers[0].MoveToQueueSlot(q1);
         }
-
 
         if (customers.Count >= 2)
         {
