@@ -2857,7 +2857,7 @@ MonoBehaviour:
   customerPrefab: {fileID: 8872470360528131557, guid: abc072d4e99bc474fa3f694521990322, type: 3}
   spawnPoint: {fileID: 584311909}
   customerQueue: {fileID: 1733462445}
-  customerCount: 5
+  customerCount: 10
   spawnInterval: 2
 --- !u!1 &1214243387
 GameObject:
@@ -4326,7 +4326,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8872470360528131557, guid: abc072d4e99bc474fa3f694521990322, type: 3}
       propertyPath: angryTime
-      value: 23
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 8872470360528131557, guid: abc072d4e99bc474fa3f694521990322, type: 3}
       propertyPath: exitPoint
