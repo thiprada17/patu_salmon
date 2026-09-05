@@ -53,5 +53,11 @@ TagManager:
   - name: Cup
     uniqueID: 1991044353
     locked: 0
+  - name: Cup_VFX1
+    uniqueID: 4267735585
+    locked: 0
+  - name: Cup_VFX2
+    uniqueID: 3890153557
+    locked: 0
   m_RenderingLayers:
   - Default

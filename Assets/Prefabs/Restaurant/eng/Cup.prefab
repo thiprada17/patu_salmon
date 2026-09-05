@@ -1982,6 +1982,7 @@ GameObject:
   - component: {fileID: 7912285026154135277}
   - component: {fileID: 5890842862938806406}
   - component: {fileID: 2844265842232496077}
+  - component: {fileID: -5846101260799064981}
   m_Layer: 0
   m_Name: Cup
   m_TagString: Untagged
@@ -2193,3 +2194,15 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.244261, y: 2.2481048}
   m_EdgeRadius: 0
+--- !u!210 &-5846101260799064981
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9197666827386634498}
+  m_Enabled: 1
+  m_SortingLayerID: 1991044353
+  m_SortingLayer: 4
+  m_SortingOrder: 0
+  m_SortAtRoot: 0
