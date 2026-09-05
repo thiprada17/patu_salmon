@@ -14,7 +14,7 @@ public class CustomerSpawner : MonoBehaviour
 
     [Header("Spawn Settings")]
     [SerializeField] private int customerCount = 5;
-    [SerializeField] private float spawnInterval = 2f;
+    [SerializeField] private float spawnInterval = 1.5f;
 
     private int spawnedCount = 0;
 
@@ -53,10 +53,8 @@ public class CustomerSpawner : MonoBehaviour
                 Quaternion.identity
             );
 
-
         bool joinedQueue =
             customerQueue.TryAddCustomer(customer);
-
 
         if (joinedQueue)
         {
