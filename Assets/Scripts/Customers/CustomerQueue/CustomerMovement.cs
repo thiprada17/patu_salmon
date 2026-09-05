@@ -33,6 +33,7 @@ public class CustomerMovement : MonoBehaviour
     private bool isLeaving;
 
     private CustomerQueue customerQueue;
+    private CustomerOrder customerOrder;
 
 
     private void Awake()
@@ -45,6 +46,7 @@ public class CustomerMovement : MonoBehaviour
         startY = transform.position.y;
 
         customerQueue = FindFirstObjectByType<CustomerQueue>();
+        customerOrder = GetComponent<CustomerOrder>();
     }
 
 
@@ -153,11 +155,13 @@ public class CustomerMovement : MonoBehaviour
             transform.position.z
         );
 
-        Debug.Log(
-            name +
-            " arrived at " +
-            currentQueueSlot.name
-        );
+        Debug.Log(name + " arrived at " + currentQueueSlot.name);
+
+        // Generate order เมื่อถึง Queue
+        if (customerOrder != null)
+        {
+            customerOrder.GenerateOrder();
+        }
     }
 
 
