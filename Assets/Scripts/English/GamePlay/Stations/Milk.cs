@@ -55,7 +55,7 @@ public class Milk : MonoBehaviour
   
         if (isPumping)
         {
-            Debug.Log("milk waiting");
+            Debug.Log("pls wait milk");
             return;
         }
 
@@ -90,7 +90,7 @@ public class Milk : MonoBehaviour
         }
 
         // รอ Animation
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1.5f);
 
         // เพิ่ม Milk เข้า Cup
         if (currentCup != null)
