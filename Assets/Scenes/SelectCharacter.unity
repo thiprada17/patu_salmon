@@ -1216,7 +1216,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2916936333599900342, guid: 3682bbd86924d4c4098ddd16c5f7ead9, type: 3}
       propertyPath: zoomScale
-      value: 1.5
+      value: 1.15
       objectReference: {fileID: 0}
     - target: {fileID: 2916936333599900342, guid: 3682bbd86924d4c4098ddd16c5f7ead9, type: 3}
       propertyPath: cardVisual
@@ -1240,7 +1240,7 @@ PrefabInstance:
       objectReference: {fileID: 1741003487}
     - target: {fileID: 2916936333599900342, guid: 3682bbd86924d4c4098ddd16c5f7ead9, type: 3}
       propertyPath: cutAtPercent
-      value: 1
+      value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 2916936333599900342, guid: 3682bbd86924d4c4098ddd16c5f7ead9, type: 3}
       propertyPath: exitOffset.x
@@ -1386,6 +1386,18 @@ PrefabInstance:
       propertyPath: m_SortingOrder
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 3507082226840388439, guid: 62149492fd8a1894396d22fad658543c, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3507082226840388439, guid: 62149492fd8a1894396d22fad658543c, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3507082226840388439, guid: 62149492fd8a1894396d22fad658543c, type: 3}
+      propertyPath: m_Color.r
+      value: 0.8349056
+      objectReference: {fileID: 0}
     - target: {fileID: 5470113065614662453, guid: 62149492fd8a1894396d22fad658543c, type: 3}
       propertyPath: tapHint
       value: 
@@ -1404,7 +1416,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5470113065614662453, guid: 62149492fd8a1894396d22fad658543c, type: 3}
       propertyPath: zoomScale
-      value: 1.5
+      value: 1.15
       objectReference: {fileID: 0}
     - target: {fileID: 5470113065614662453, guid: 62149492fd8a1894396d22fad658543c, type: 3}
       propertyPath: cardVisual
@@ -1418,6 +1430,10 @@ PrefabInstance:
       propertyPath: contentRoot
       value: 
       objectReference: {fileID: 1120057659}
+    - target: {fileID: 5470113065614662453, guid: 62149492fd8a1894396d22fad658543c, type: 3}
+      propertyPath: cutAtPercent
+      value: 150
+      objectReference: {fileID: 0}
     - target: {fileID: 5470113065614662453, guid: 62149492fd8a1894396d22fad658543c, type: 3}
       propertyPath: glowFadeTime
       value: 0.3

@@ -7,9 +7,9 @@ public class EnterName : MonoBehaviour
 {
     [SerializeField] TMP_InputField input;
     [SerializeField] string nextScene = "SetCharacter";
-    [SerializeField] TextMeshProUGUI warning;    // ข้อความเตือน ปิดไว้ก่อน
+    [SerializeField] TextMeshProUGUI warning;    
 
-    [Header("เด้ง")]
+    [Header("Deng")]
     [SerializeField] float punchScale = 1.12f;
     [SerializeField] float punchTime = 0.18f;
 
