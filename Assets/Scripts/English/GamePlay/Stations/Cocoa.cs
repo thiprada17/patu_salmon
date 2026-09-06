@@ -11,7 +11,7 @@ public class Cocoa : MonoBehaviour
     [SerializeField] private SpriteRenderer pumpNormal;
     [SerializeField] private SpriteRenderer pumpPressed;
 
-    [Header("Milk Animation")]
+    [Header("Cocoa Animation")]
     [SerializeField] private Animator cocoaAnimator;
     [SerializeField] private SpriteRenderer cocoaAnimation;
 
@@ -91,7 +91,7 @@ public class Cocoa : MonoBehaviour
         }
 
         // รอ Animation
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1.5f);
 
         // เพิ่ม Milk เข้า Cup
         if (currentCup != null)
