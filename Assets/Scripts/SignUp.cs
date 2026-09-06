@@ -26,11 +26,8 @@ public class SignupUI : MonoBehaviour
     [SerializeField] Button googleButton;
 
     [Header("popup")]
-<<<<<<< Updated upstream
-    [SerializeField] LangClicker languagePopup;
-=======
+
     [SerializeField] LanguagePopup languagePopup;
->>>>>>> Stashed changes
 
     [Header("next")]
     [SerializeField] string nextScene = "SetCharacter";
