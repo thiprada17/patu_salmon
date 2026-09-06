@@ -42,6 +42,22 @@ TagManager:
     uniqueID: 0
     locked: 0
   - name: Background
+    uniqueID: 1422213727
+    locked: 0
+  - name: Customer
+    uniqueID: 607389565
+    locked: 0
+  - name: Foreground
+    uniqueID: 3068336057
+    locked: 0
+  - name: Cup
+    uniqueID: 1991044353
+    locked: 0
+  - name: Cup_VFX1
+    uniqueID: 4267735585
+    locked: 0
+  - name: Cup_VFX2
+    uniqueID: 3890153557
     uniqueID: 258595973
     locked: 0
   - name: Cloud

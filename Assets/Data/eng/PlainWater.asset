@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PlainWater
   m_EditorClassIdentifier: 
   recipeType: 5
-  finishedCupSprite: {fileID: 21300000, guid: cafe113121756124c9a2d05ee61fb4a9, type: 2}
+  finishedCupSprite: {fileID: 21300000, guid: 24f8d14e5f93b4c41af18f040c366463, type: 2}
   coffee: 0
   milk: 0
   water: 4

@@ -18,10 +18,7 @@ public class RecipeManager : MonoBehaviour
         {
             if (IsCorrectRecipe(cup, recipe))
             {
-                Debug.Log(
-                    "Recipe Found: " +
-                    recipe.recipeType
-                );
+                Debug.Log( "Recipe Found: " + recipe.recipeType );
 
                 return recipe;
             }
@@ -33,9 +30,7 @@ public class RecipeManager : MonoBehaviour
     }
 
 
-    private bool IsCorrectRecipe(
-        Cup cup,
-        RecipeData recipe)
+    private bool IsCorrectRecipe( Cup cup, RecipeData recipe)
     {
         if (recipe == null)
             return false;
@@ -66,14 +61,11 @@ public class RecipeManager : MonoBehaviour
     }
 
 
-    private int Count(
-        Cup cup,
-        IngredientType type)
+    private int Count( Cup cup, IngredientType type)
     {
         int count = 0;
 
-        foreach (IngredientType ingredient
-                 in cup.GetIngredients())
+        foreach (IngredientType ingredient in cup.GetIngredients())
         {
             if (ingredient == type)
             {
