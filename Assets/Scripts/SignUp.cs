@@ -25,6 +25,9 @@ public class SignupUI : MonoBehaviour
     [SerializeField] Button signupButton;
     [SerializeField] Button googleButton;
 
+    [Header("popup")]
+    [SerializeField] LangClicker languagePopup;
+
     [Header("next")]
     [SerializeField] string nextScene = "SetCharacter";
     [SerializeField] float delay = 0.25f;
@@ -98,6 +101,11 @@ public class SignupUI : MonoBehaviour
         ClearError(passwordInput, passwordError, passwordErrorGroup);
     }
 
+    public void Unlock()
+    {
+        locked = false;
+    }
+
     public void OnSignupClick()
     {
         if (locked) return;
@@ -139,7 +147,7 @@ public class SignupUI : MonoBehaviour
         }
         else if (!CheckEmail(e))
         {
-            ShowError(emailInput, emailError, emailErrorGroup, "Please enter a valid email address.");
+            ShowError(emailInput, emailError, emailErrorGroup, "Please enter a valid email.");
             pass = false;
         }
         else
@@ -156,7 +164,8 @@ public class SignupUI : MonoBehaviour
         PlayerPrefs.SetString("Email", e);
         PlayerPrefs.Save();
 
-        StartCoroutine(GoNext());
+        if (languagePopup != null) languagePopup.Open();
+        else StartCoroutine(GoNext());
     }
 
     public void OnGoogleClick()
@@ -166,7 +175,9 @@ public class SignupUI : MonoBehaviour
         if (googleButton != null) StartCoroutine(Punch(googleButton.transform));
 
         locked = true;
-        StartCoroutine(GoNext());
+
+        if (languagePopup != null) languagePopup.Open();
+        else StartCoroutine(GoNext());
     }
 
     IEnumerator GoNext()
