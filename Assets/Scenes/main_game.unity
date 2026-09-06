@@ -3113,7 +3113,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attachPoint: {fileID: 992127881}
   mat: {fileID: 1964380544}
-  cupDispenser: {fileID: 0}
+  cupDispenser: {fileID: 581367826}
 --- !u!1 &1328226053
 GameObject:
   m_ObjectHideFlags: 0
@@ -3450,6 +3450,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d81d0df23b461a4aaa90fbffb46f5ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shakeDuration: 0.25
+  shakeMagnitude: 0.08
+  returnDuration: 0.2
 --- !u!61 &1408859715
 BoxCollider2D:
   m_ObjectHideFlags: 0

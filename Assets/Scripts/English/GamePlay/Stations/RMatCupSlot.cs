@@ -56,7 +56,7 @@ public class RMatCupSlot : MonoBehaviour
         // บอก Mat
         if (mat != null)
         {
-            mat.AttachLeftCup(cup);
+            mat.AttachRightCup(cup);
         }
 
         // บอก CupDispenser ว่า Left มี Cup
@@ -90,7 +90,7 @@ public class RMatCupSlot : MonoBehaviour
         // บอก Mat
         if (mat != null)
         {
-            mat.RemoveLeftCup(cup);
+            mat.RemoveRightCup(cup);
         }
 
         // บอก Dispenser ว่า RIGGHT ว่างแล้ว
