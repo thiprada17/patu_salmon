@@ -13,4 +13,7 @@ MonoBehaviour:
   m_Name: CustomerDialogue_Default
   m_EditorClassIdentifier: 
   dialogues:
-  - Can I get, {ITEM_NAME} please?
+  - Can I get a {ITEM_NAME}, please?
+  - I think i'll get the {ITEM_NAME}.
+  - One {ITEM_NAME}, please.
+  - "I\u2019d like the {ITEM_NAME}, please."

@@ -7,6 +7,11 @@ public class CustomerOrderBubble : MonoBehaviour
     [SerializeField] private GameObject bubbleObject;
     [SerializeField] private TMP_Text orderText;
 
+    private void Awake()
+    {
+        HideDialogue();
+    }
+
     public void ShowDialogue(string dialogue)
     {
         if (bubbleObject != null)
@@ -16,6 +21,7 @@ public class CustomerOrderBubble : MonoBehaviour
 
         if (orderText != null)
         {
+            orderText.gameObject.SetActive(true);
             orderText.text = dialogue;
         }
     }
@@ -25,6 +31,11 @@ public class CustomerOrderBubble : MonoBehaviour
         if (bubbleObject != null)
         {
             bubbleObject.SetActive(false);
+        }
+
+        if (orderText != null)
+        {
+            orderText.gameObject.SetActive(false);
         }
     }
 }

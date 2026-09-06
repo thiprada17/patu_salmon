@@ -21,16 +21,14 @@ public class CustomerOrder : MonoBehaviour
                 GetComponentInChildren<CustomerOrderBubble>(true);
         }
 
-        if (orderBubble == null)
+        if (orderBubble != null)
         {
-            Debug.LogError(
-                name + " cannot find CustomerOrderBubble!"
-            );
+            orderBubble.HideDialogue();
         }
         else
         {
-            Debug.Log(
-                name + " found CustomerOrderBubble!"
+            Debug.LogError(
+                name + " cannot find CustomerOrderBubble!"
             );
         }
     }
@@ -67,7 +65,10 @@ public class CustomerOrder : MonoBehaviour
 
         string dialogue =
             dialogueData.dialogues[
-                Random.Range(0, dialogueData.dialogues.Length)
+                Random.Range(
+                    0,
+                    dialogueData.dialogues.Length
+                )
             ];
 
         string itemName = GetItemName(order);
@@ -105,5 +106,124 @@ public class CustomerOrder : MonoBehaviour
             default:
                 return "";
         }
+    }
+
+    public void ReceiveCup(ServingCup cup)
+    {
+        if (cup == null)
+            return;
+
+        Cup cupComponent =
+            cup.GetComponent<Cup>();
+
+        if (cupComponent == null)
+        {
+            Debug.LogWarning(
+                name + " received object without Cup component!"
+            );
+            return;
+        }
+
+        // ห้ามรับแก้วเปล่า
+        if (!cupComponent.IsFinished())
+        {
+            Debug.Log(
+                name + " cannot receive an unfinished cup!"
+            );
+            return;
+        }
+
+        Debug.Log(
+            name +
+            " received " +
+            cup.RecipeType +
+            " | Expected = " +
+            order
+        );
+
+        if (cup.RecipeType == order)
+        {
+            CorrectOrder(cup);
+        }
+        else
+        {
+            WrongOrder(cup);
+        }
+    }
+
+    private void ServeCorrectOrder(ServingCup cup)
+    {
+        Debug.Log(
+            name + " received CORRECT order!"
+        );
+
+        HideDialogue();
+
+        CustomerMovement movement =
+            GetComponent<CustomerMovement>();
+
+        if (movement != null)
+        {
+            movement.LeaveHappy();
+        }
+
+        Destroy(cup.gameObject);
+    }
+
+    private void ServeWrongOrder(ServingCup cup)
+    {
+        Debug.Log(
+            name +
+            " received WRONG order! " +
+            "Expected = " +
+            order +
+            ", Received = " +
+            cup.RecipeType
+        );
+
+        // ตอนนี้ยังไม่ทำอะไรกับ Customer
+        // ภายหลังสามารถทำให้ Angry ได้
+    }
+
+    public void HideDialogue()
+    {
+        if (orderBubble != null)
+        {
+            orderBubble.HideDialogue();
+        }
+    }
+
+    private void CorrectOrder(ServingCup cup)
+    {
+        Debug.Log(name + " received CORRECT order!");
+
+        // ซ่อนกล่องข้อความ
+        HideDialogue();
+
+        // ให้ลูกค้าเดินออกแบบ Happy
+        CustomerMovement movement =
+            GetComponent<CustomerMovement>();
+
+        if (movement != null)
+        {
+            movement.LeaveHappy();
+        }
+
+        // ทำลายแก้วที่เสิร์ฟแล้ว
+        Destroy(cup.gameObject);
+    }
+
+    private void WrongOrder(ServingCup cup)
+    {
+        Debug.Log(
+            name +
+            " received WRONG order! Expected = " +
+            order +
+            " | Received = " +
+            cup.RecipeType
+        );
+
+        // ตอนนี้ยังไม่ทำอะไรกับลูกค้า
+        // แก้วยังอยู่ เพื่อให้เอาไปเสิร์ฟใหม่ได้
     }
 }

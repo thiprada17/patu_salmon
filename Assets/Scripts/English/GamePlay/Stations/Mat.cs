@@ -78,6 +78,6 @@ public class Mat : MonoBehaviour
 
 
         // เปลี่ยน Cup เป็นรูปเมนูสำเร็จ
-        currentCup.SetFinishedRecipe(recipe.finishedCupSprite);
+        currentCup.SetFinishedRecipe(recipe.finishedCupSprite, recipe.recipeType);
     }
 }
