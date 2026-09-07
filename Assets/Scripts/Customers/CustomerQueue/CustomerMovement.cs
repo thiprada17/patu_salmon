@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class CustomerMovement : MonoBehaviour
 {
@@ -259,16 +260,46 @@ public class CustomerMovement : MonoBehaviour
         if (isLeaving)
             return;
 
-        isLeaving = true;
         isWaiting = false;
         isAngry = false;
+        isMoving = false;
+
+        if (customerOrder != null)
+        {
+            customerOrder.HideDialogue();
+        }
+
+        StartCoroutine(HappyThenWalkOut());
+    }
+
+    private IEnumerator HappyThenWalkOut()
+    {
+        Debug.Log(name + " >>> PLAY HAPPY");
+
+
+        // HAPPY
+        if (animator != null)
+        {
+            animator.SetBool("IsWalking", false);
+            animator.Play("Happy", 0, 0f);
+        }
+
+        // ยืนเล่น Happy 2 วินาที
+        yield return new WaitForSeconds(2f);
+
+
+        // WALK OUT HAPPY
+        Debug.Log(name + " >>> PLAY Walk_out_Happy");
+
+        isLeaving = true;
+
+        targetX = transform.position.x - 5f;
 
         if (animator != null)
         {
-            animator.Play("Walk_out_Happy");
+            animator.Play("Walk_out_Happy", 0, 0f);
+            animator.SetBool("IsWalking", true);
         }
-
-        targetX = transform.position.x - 5f;
 
         Debug.Log(name + " leaving happy.");
     }
