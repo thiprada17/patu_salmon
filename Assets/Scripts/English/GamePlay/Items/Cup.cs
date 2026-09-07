@@ -4,6 +4,7 @@ using System.Collections;
 public class Cup : MonoBehaviour
 {
     private const int MaxIngredients = 4;
+    private ServingCup servingCup;
 
     [Header("Colliders")]
     [SerializeField]
@@ -43,7 +44,7 @@ public class Cup : MonoBehaviour
     [SerializeField]
     private GameObject[] coffeeObjects = new GameObject[MaxIngredients];
 
-
+    
     [Header("Milk")]
     [SerializeField]
     private GameObject[] milkObjects = new GameObject[MaxIngredients];
@@ -62,6 +63,15 @@ public class Cup : MonoBehaviour
     private void Awake()
     {
         DisableAllIngredientObjects();
+
+        servingCup = GetComponent<ServingCup>();
+
+        if (servingCup == null)
+        {
+            Debug.LogError(
+                name + " cannot find ServingCup!"
+            );
+        }
 
         if (finishedCupRenderer != null)
         {
@@ -235,7 +245,9 @@ public class Cup : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void SetFinishedRecipe(Sprite finishedSprite)
+    public void SetFinishedRecipe(
+    Sprite finishedSprite,
+    RecipeType recipeType)
     {
         if (finishedSprite == null)
         {
@@ -245,23 +257,30 @@ public class Cup : MonoBehaviour
 
         isFinished = true;
 
+        // อัปเดตข้อมูลเมนูของ Cup
+        if (servingCup != null)
+        {
+            servingCup.SetRecipe(recipeType);
+        }
+
         PlayPreFinishVFX();
 
-        // ปิดส่วนผสมทั้งหมด 
+        // ปิดส่วนผสมทั้งหมด
         DisableAllIngredientObjects();
 
-        // ปิดรูปแก้วเปล่า ไม่ให้ซ้อนกับแก้วสำเร็จ
+        // ปิดแก้วเปล่า
         if (emptyCupRenderer != null)
         {
             emptyCupRenderer.gameObject.SetActive(false);
         }
 
+        // ปิด Cap
         if (capObject != null)
         {
             capObject.SetActive(false);
         }
 
-        // เปลี่ยนเป็นรูปเมนูสำเร็จ 
+        // เปลี่ยนเป็นรูปเครื่องดื่มสำเร็จ
         if (finishedCupRenderer != null)
         {
             finishedCupRenderer.sprite = finishedSprite;
@@ -269,7 +288,15 @@ public class Cup : MonoBehaviour
         }
 
         PlayFinishVFX();
+
+        Debug.Log(
+            name +
+            " finished recipe: " +
+            recipeType
+        );
     }
+
+
     private void PlayPreFinishVFX()
     {
         if (finishVFX == null || vfxPoint == null)
