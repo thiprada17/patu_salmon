@@ -69,5 +69,11 @@ TagManager:
   - name: Country_Label
     uniqueID: 3281527575
     locked: 0
+  - name: Bubble
+    uniqueID: 3339749947
+    locked: 0
+  - name: Text
+    uniqueID: 71057919
+    locked: 0
   m_RenderingLayers:
   - Default

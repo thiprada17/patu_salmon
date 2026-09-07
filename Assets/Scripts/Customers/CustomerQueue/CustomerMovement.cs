@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class CustomerMovement : MonoBehaviour
 {
@@ -33,6 +34,9 @@ public class CustomerMovement : MonoBehaviour
     private bool isLeaving;
 
     private CustomerQueue customerQueue;
+    private CustomerOrder customerOrder;
+
+    private bool hasGeneratedOrder = false;
 
 
     private void Awake()
@@ -45,6 +49,7 @@ public class CustomerMovement : MonoBehaviour
         startY = transform.position.y;
 
         customerQueue = FindFirstObjectByType<CustomerQueue>();
+        customerOrder = GetComponent<CustomerOrder>();
     }
 
 
@@ -136,7 +141,6 @@ public class CustomerMovement : MonoBehaviour
         }
     }
 
-
     private void StopMoving()
     {
         isMoving = false;
@@ -154,10 +158,19 @@ public class CustomerMovement : MonoBehaviour
         );
 
         Debug.Log(
-            name +
-            " arrived at " +
-            currentQueueSlot.name
+            name + " arrived at " + currentQueueSlot.name
         );
+
+        // Generate Order แค่ครั้งแรกเท่านั้น
+        if (!hasGeneratedOrder)
+        {
+            hasGeneratedOrder = true;
+
+            if (customerOrder != null)
+            {
+                customerOrder.GenerateOrder();
+            }
+        }
     }
 
 
@@ -217,10 +230,15 @@ public class CustomerMovement : MonoBehaviour
         isWaiting = false;
         isLeaving = true;
 
-        // เล่น Animation เดินออกแบบโกรธ
+        // ซ่อน Bubble ตอน Customer เดินออก
+        if (customerOrder != null)
+        {
+            customerOrder.HideDialogue();
+        }
+
         if (animator != null)
         {
-            animator.Play("Walk_out_Angry");
+            animator.Play("Walk_Out_Angry");
         }
 
         // เดินไปทางซ้าย
@@ -235,6 +253,55 @@ public class CustomerMovement : MonoBehaviour
             name +
             " wait time expired. Walking out angry to LEFT."
         );
+    }
+
+    public void LeaveHappy()
+    {
+        if (isLeaving)
+            return;
+
+        isWaiting = false;
+        isAngry = false;
+        isMoving = false;
+
+        if (customerOrder != null)
+        {
+            customerOrder.HideDialogue();
+        }
+
+        StartCoroutine(HappyThenWalkOut());
+    }
+
+    private IEnumerator HappyThenWalkOut()
+    {
+        Debug.Log(name + " >>> PLAY HAPPY");
+
+
+        // HAPPY
+        if (animator != null)
+        {
+            animator.SetBool("IsWalking", false);
+            animator.Play("Happy", 0, 0f);
+        }
+
+        // ยืนเล่น Happy 2 วินาที
+        yield return new WaitForSeconds(2f);
+
+
+        // WALK OUT HAPPY
+        Debug.Log(name + " >>> PLAY Walk_out_Happy");
+
+        isLeaving = true;
+
+        targetX = transform.position.x - 5f;
+
+        if (animator != null)
+        {
+            animator.Play("Walk_out_Happy", 0, 0f);
+            animator.SetBool("IsWalking", true);
+        }
+
+        Debug.Log(name + " leaving happy.");
     }
 
 
