@@ -29,7 +29,7 @@ public class SignupUI : MonoBehaviour
 
     [SerializeField] LanguagePopup languagePopup;
 
-    [Header("next")]
+    [Header("next scene")]
     [SerializeField] string nextScene = "SetCharacter";
     [SerializeField] float delay = 0.25f;
 
@@ -165,8 +165,7 @@ public class SignupUI : MonoBehaviour
         PlayerPrefs.SetString("Email", e);
         PlayerPrefs.Save();
 
-        if (languagePopup != null) languagePopup.Open();
-        else StartCoroutine(GoNext());
+        SceneManager.LoadScene("SelectLanguage", LoadSceneMode.Additive);
     }
 
     public void OnGoogleClick()
@@ -177,8 +176,7 @@ public class SignupUI : MonoBehaviour
 
         locked = true;
 
-        if (languagePopup != null) languagePopup.Open();
-        else StartCoroutine(GoNext());
+        SceneManager.LoadScene("SelectLanguage", LoadSceneMode.Additive);
     }
 
     IEnumerator GoNext()

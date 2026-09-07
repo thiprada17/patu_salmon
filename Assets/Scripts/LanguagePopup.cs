@@ -9,27 +9,27 @@ public class LanguagePopup : MonoBehaviour
     public class LangButton
     {
         public Button button;
-        public Sprite normal;      // รูปปุ่มปกติ (ฟ้าอ่อน)
-        public Sprite selected;    // รูปปุ่มตอนถูกเลือก (ฟ้าเข้ม)
+        public Sprite normal;      
+        public Sprite selected;    
     }
 
     [Header("popup")]
-    [SerializeField] GameObject root;          // language_popup
-    [SerializeField] Transform box;            // popup_box
-    [SerializeField] CanvasGroup boxGroup;     // CanvasGroup ที่ popup_box
-    [SerializeField] CanvasGroup dimGroup;     // CanvasGroup ที่ dim
+    [SerializeField] GameObject root;          
+    [SerializeField] Transform box;            
+    [SerializeField] CanvasGroup boxGroup;     
+    [SerializeField] CanvasGroup dimGroup;     
 
-    [Header("lang (0=ไทย 1=อังกฤษ 2=ญี่ปุ่น)")]
+    [Header("lang btn")]
     [SerializeField] LangButton[] langButtons = new LangButton[3];
 
     [Header("btn")]
     [SerializeField] Button enterButton;
-    [SerializeField] Button closeButton;       // กากบาท
+    [SerializeField] Button closeButton;       
 
-    [Header("signup (ไว้ปลดล็อกตอนกดกากบาท)")]
+    [Header("signup")]
     [SerializeField] SignupUI signupUI;
 
-    [Header("next")]
+    [Header("next scene")]
     [SerializeField] string nextScene = "SetCharacter";
     [SerializeField] float delay = 0.25f;
 
@@ -37,7 +37,7 @@ public class LanguagePopup : MonoBehaviour
     [SerializeField] float punchScale = 1.15f;
     [SerializeField] float punchTime = 0.18f;
 
-    [Header("popup anim")]
+    [Header("popup")]
     [SerializeField] float openTime = 0.22f;
     [SerializeField] float closeTime = 0.14f;
     [SerializeField] float startScale = 0.80f;
@@ -45,7 +45,7 @@ public class LanguagePopup : MonoBehaviour
     [SerializeField] float dimAlpha = 0.55f;
 
     [Header("default")]
-    [SerializeField] int defaultIndex = -1;     // -1 = ยังไม่เลือก
+    [SerializeField] int defaultIndex = -1;     
 
     int selected = -1;
     bool busy = false;
@@ -58,11 +58,11 @@ public class LanguagePopup : MonoBehaviour
 
         for (int i = 0; i < langButtons.Length; i++)
         {
-            int index = i;   // ก็อปตัวแปรก่อน ไม่งั้นทุกปุ่มจะชี้ตัวสุดท้าย
+            int index = i;   
             LangButton lb = langButtons[i];
             if (lb == null || lb.button == null) continue;
 
-            lb.button.transition = Selectable.Transition.None;  // กัน Color Tint ทับสี
+            lb.button.transition = Selectable.Transition.None;  
             lb.button.onClick.AddListener(() =>
             {
                 Debug.Log("กดปุ่มที่ " + index);
@@ -75,7 +75,7 @@ public class LanguagePopup : MonoBehaviour
         if (closeButton != null) closeButton.onClick.AddListener(OnCloseClick);
     }
 
-    // ---------- เปิด / ปิด ----------
+
 
     public void Open()
     {
@@ -108,7 +108,7 @@ public class LanguagePopup : MonoBehaviour
         StartCoroutine(GoNext());
     }
 
-    // ---------- เลือกภาษา ----------
+
 
     void Select(int index)
     {
@@ -129,7 +129,7 @@ public class LanguagePopup : MonoBehaviour
         if (enterButton != null) enterButton.interactable = (selected >= 0);
     }
 
-    // ---------- แอนิเมชัน ----------
+
 
     IEnumerator OpenAnim()
     {
