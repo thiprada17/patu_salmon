@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class MapDragPan : MonoBehaviour
 {
@@ -40,6 +41,10 @@ public class MapDragPan : MonoBehaviour
 
     private void Update()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+            return;
+
+
         // เช็คว่าเป็นนิ้ว หรือเมาส์ 
         if (Input.touchCount > 0)
         {
