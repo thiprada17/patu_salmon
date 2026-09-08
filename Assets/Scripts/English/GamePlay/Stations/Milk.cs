@@ -90,7 +90,7 @@ public class Milk : MonoBehaviour
         }
 
         // รอ Animation
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1.3f);
 
         // เพิ่ม Milk เข้า Cup
         if (currentCup != null)
