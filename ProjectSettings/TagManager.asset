@@ -58,6 +58,22 @@ TagManager:
     locked: 0
   - name: Cup_VFX2
     uniqueID: 3890153557
+    uniqueID: 258595973
+    locked: 0
+  - name: Cloud
+    uniqueID: 2995588079
+    locked: 0
+  - name: Country
+    uniqueID: 3655656897
+    locked: 0
+  - name: Country_Label
+    uniqueID: 3281527575
+    locked: 0
+  - name: Bubble
+    uniqueID: 3339749947
+    locked: 0
+  - name: Text
+    uniqueID: 71057919
     locked: 0
   m_RenderingLayers:
   - Default
