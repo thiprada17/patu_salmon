@@ -9,12 +9,12 @@ public class CardSelect : MonoBehaviour
     [SerializeField] string nextScene = "idcard";
     [SerializeField] float delay = 0.2f;
 
-    [Header("เด้ง")]
+    [Header("punch")]
     [SerializeField] Transform card;
     [SerializeField] float punchScale = 0.9f;
     [SerializeField] float punchTime = 0.12f;
 
-    [Header("เลื่อนมากลางจอ")]
+    [Header("animation center")]
     [SerializeField] Vector3 centerPos = Vector3.zero;
     [SerializeField] bool useScreenCenter = true;
     [SerializeField] Vector2 centerOffset = Vector2.zero;
@@ -22,18 +22,18 @@ public class CardSelect : MonoBehaviour
     [SerializeField] float moveTime = 0.6f;
     [SerializeField] float zoomScale = 1.25f;
 
-    [Header("จัดของในการ์ด")]
+    [Header("animation in card")]
     [SerializeField] Transform selectButton;
     [SerializeField] float hideButtonTime = 0.2f;
     [SerializeField] Transform contentRoot;
     [SerializeField] Vector2 contentOffset = Vector2.zero;
 
-    [Header("จางหาย")]
+    [Header("fade")]
     [SerializeField] Transform[] otherStuff;
     [SerializeField] float fadeOthers = 0.35f;
     [SerializeField] float glowFadeTime = 0.25f;
 
-    [Header("ตัดหน้า")]
+    [Header("cut")]
     [SerializeField] float cutAtPercent = 0.85f;
 
     static bool locked = false;
