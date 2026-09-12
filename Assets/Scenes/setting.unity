@@ -2333,7 +2333,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 48.825, y: 1044}
+  m_AnchoredPosition: {x: 48.825, y: 953}
   m_SizeDelta: {x: 777.25, y: 207.7}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &968176435
@@ -3880,7 +3880,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -455.5, y: 1341}
+  m_AnchoredPosition: {x: -455.5, y: 1209}
   m_SizeDelta: {x: 269, y: 56}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1398571841
@@ -6139,7 +6139,7 @@ MonoBehaviour:
   - {fileID: 1517461289}
   - {fileID: 2000769505}
   logoutButton: {fileID: 1550333678}
-  logoutPopupScene: Setting_A1
+  logoutPopupScene: logout_popup
   popupAdditive: 1
   backButton: {fileID: 1398571841}
   backScene: MainMenu

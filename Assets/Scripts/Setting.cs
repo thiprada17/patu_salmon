@@ -4,33 +4,33 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 
-public class SettingScreen : MonoBehaviour
+public class Setting : MonoBehaviour
 {
-    // ---------- USERNAME ----------
+
     [Header("Username")]
     [SerializeField] TMP_InputField usernameInput;
-    [SerializeField] Button editButton;             // edit_icon
+    [SerializeField] Button editButton;             
     [SerializeField] int maxUsernameLength = 12;
 
-    // ---------- SOUND ----------
+
     [Header("Sound")]
     [SerializeField] Button effectButton;
     [SerializeField] TMP_Text effectValue;
     [SerializeField] Button backgroundButton;
     [SerializeField] TMP_Text backgroundValue;
 
-    // ---------- LANGUAGE ----------
+    
     [Header("Language")]
-    [SerializeField] Button languageButton;   // ตัว "Thai ▼" กดแล้วเปิด/ปิด
-    [SerializeField] TMP_Text languageValue;  // ข้อความ "Thai"
-    [SerializeField] GameObject dropdownPanel;   // กล่อง dropdown ที่วางไว้ในฉาก
-    [SerializeField] Button[] langButtons;       // ปุ่มแต่ละภาษา เรียง Thai, English, Japanese
-    [SerializeField] GameObject[] langChecks;    // ติ๊กถูกของแต่ละภาษา เรียงให้ตรงกับด้านบน
+    [SerializeField] Button languageButton;   
+    [SerializeField] TMP_Text languageValue;  
+    [SerializeField] GameObject dropdownPanel;   
+    [SerializeField] Button[] langButtons;       
+    [SerializeField] GameObject[] langChecks;   
 
     readonly string[] langNames = { "Thai", "English", "Japanese" };
     readonly string[] langCodes = { "th", "en", "ja" };
 
-    // ---------- SCENES ----------
+ 
     [Header("Logout")]
     [SerializeField] Button logoutButton;
     [SerializeField] string logoutPopupScene = "Setting_A1";
@@ -40,15 +40,15 @@ public class SettingScreen : MonoBehaviour
     [SerializeField] Button backButton;
     [SerializeField] string backScene = "MainMenu";
 
-    // ---------- เด้ง ----------
-    [Header("เด้ง")]
+    
+    [Header("Punch")]
     [SerializeField] float punchScale = 1.15f;
     [SerializeField] float punchTime = 0.18f;
 
     int langIndex;
     bool isBusy;
 
-    // =====================================================
+
     void Start()
     {
         NoClip(languageValue);
@@ -74,7 +74,7 @@ public class SettingScreen : MonoBehaviour
 
         if (dropdownPanel != null) dropdownPanel.SetActive(false);
 
-        // ผูกปุ่มภาษาแต่ละตัว
+        
         if (langButtons != null)
         {
             for (int i = 0; i < langButtons.Length; i++)
@@ -105,13 +105,11 @@ public class SettingScreen : MonoBehaviour
     void NoClip(TMP_Text t)
     {
         if (t == null) return;
-        t.enableWordWrapping = false;
+        t.textWrappingMode = TextWrappingModes.NoWrap;
         t.overflowMode = TextOverflowModes.Overflow;
     }
 
-    // =====================================================
-    // USERNAME
-    // =====================================================
+ 
     void BeginEditUsername()
     {
         if (usernameInput == null) return;
@@ -141,9 +139,7 @@ public class SettingScreen : MonoBehaviour
         usernameInput.readOnly = true;
     }
 
-    // =====================================================
-    // SOUND
-    // =====================================================
+    
     void ToggleSound(string key, TMP_Text label, Button btn)
     {
         bool next = PlayerPrefs.GetInt(key, 1) == 0;
@@ -153,8 +149,7 @@ public class SettingScreen : MonoBehaviour
         SetToggleLabel(label, next);
         if (btn != null) StartCoroutine(Punch(btn.transform));
 
-        // ตอนจะต่อเสียงจริง ค่อยมาเติมตรงนี้
-        // AudioManager.Instance.SetSfx(next);
+
     }
 
     void SetToggleLabel(TMP_Text label, bool on)
@@ -162,9 +157,7 @@ public class SettingScreen : MonoBehaviour
         if (label != null) label.text = on ? "ON" : "OFF";
     }
 
-    // =====================================================
-    // LANGUAGE
-    // =====================================================
+  
     void ToggleDropdown()
     {
         if (dropdownPanel == null) return;
@@ -189,7 +182,7 @@ public class SettingScreen : MonoBehaviour
         CloseDropdown();
     }
 
-    // เปิดติ๊กถูกเฉพาะภาษาที่เลือก ที่เหลือปิด
+ 
     void RefreshChecks()
     {
         if (langChecks == null) return;
@@ -206,9 +199,7 @@ public class SettingScreen : MonoBehaviour
         languageValue.text = langNames[Mathf.Clamp(index, 0, langNames.Length - 1)];
     }
 
-    // =====================================================
-    // SCENE
-    // =====================================================
+    
     void OnLogout()
     {
         if (isBusy) return;
@@ -237,9 +228,7 @@ public class SettingScreen : MonoBehaviour
         }));
     }
 
-    // =====================================================
-    // ANIMATION
-    // =====================================================
+
     IEnumerator Punch(Transform t)
     {
         Vector3 baseScale = t.localScale;
@@ -261,7 +250,7 @@ public class SettingScreen : MonoBehaviour
         {
             e += Time.unscaledDeltaTime;
             float k = Mathf.Clamp01(e / time);
-            k = 1f - Mathf.Pow(1f - k, 3f); // ease-out cubic
+            k = 1f - Mathf.Pow(1f - k, 3f); 
             t.localScale = Vector3.LerpUnclamped(from, to, k);
             yield return null;
         }
