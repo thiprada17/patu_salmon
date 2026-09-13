@@ -5,7 +5,7 @@ using TMPro;
 
 public class LoadingScreen : MonoBehaviour
 {
-    [Header("รูป info")]
+    [Header("info")]
     [SerializeField] SpriteRenderer infoBoard;
     [SerializeField] Sprite[] infoSprites;
 
