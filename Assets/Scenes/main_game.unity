@@ -658,7 +658,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1411764257}
         m_TargetAssemblyTypeName: MenuButtonLoader, Assembly-CSharp
-        m_MethodName: LoadScene
+        m_MethodName: LoadSceneOverlay
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
