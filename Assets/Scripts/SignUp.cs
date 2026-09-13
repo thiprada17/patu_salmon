@@ -7,17 +7,17 @@ using System.Collections;
 public class SignupUI : MonoBehaviour
 {
     [Header("input")]
-    [SerializeField] TMP_InputField usernameInput;
+
     [SerializeField] TMP_InputField emailInput;
     [SerializeField] TMP_InputField passwordInput;
 
     [Header("error_text")]
-    [SerializeField] TMP_Text usernameError;
+
     [SerializeField] TMP_Text emailError;
     [SerializeField] TMP_Text passwordError;
 
     [Header("error_gameobj")]
-    [SerializeField] GameObject usernameErrorGroup;
+
     [SerializeField] GameObject emailErrorGroup;
     [SerializeField] GameObject passwordErrorGroup;
 
@@ -53,18 +53,11 @@ public class SignupUI : MonoBehaviour
     {
         locked = false;
 
-        HookClearOnFocus(usernameInput, usernameError, usernameErrorGroup);
+
         HookClearOnFocus(emailInput, emailError, emailErrorGroup);
         HookClearOnFocus(passwordInput, passwordError, passwordErrorGroup);
 
-        if (usernameInput != null)
-        {
-            usernameInput.onDeselect.AddListener(_ =>
-            {
-                if (usernameInput.text.Trim() == "") return;
-                Paint(usernameInput, borderOk);
-            });
-        }
+
 
         if (passwordInput != null)
         {
@@ -97,7 +90,7 @@ public class SignupUI : MonoBehaviour
         if (signupButton != null) signupButton.onClick.AddListener(OnSignupClick);
         if (googleButton != null) googleButton.onClick.AddListener(OnGoogleClick);
 
-        ClearError(usernameInput, usernameError, usernameErrorGroup);
+
         ClearError(emailInput, emailError, emailErrorGroup);
         ClearError(passwordInput, passwordError, passwordErrorGroup);
     }
@@ -113,22 +106,13 @@ public class SignupUI : MonoBehaviour
 
         if (signupButton != null) StartCoroutine(Punch(signupButton.transform));
 
-        string u = usernameInput.text.Trim();
+
         string e = emailInput.text.Trim();
         string p = passwordInput.text;
 
         bool pass = true;
 
-        if (u == "")
-        {
-            ShowError(usernameInput, usernameError, usernameErrorGroup, "Username is required.");
-            pass = false;
-        }
-        else
-        {
-            ClearError(usernameInput, usernameError, usernameErrorGroup);
-            Paint(usernameInput, borderOk);
-        }
+
 
         if (p == "")
         {
@@ -161,7 +145,7 @@ public class SignupUI : MonoBehaviour
 
         locked = true;
 
-        PlayerPrefs.SetString("Username", u);
+
         PlayerPrefs.SetString("Email", e);
         PlayerPrefs.Save();
 
