@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 511c0d944e7fe15439ca45ef21338359
+guid: cd49e055a84012b408c3cd9723d24327
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7890566552281106577
-    second: Lanyard_0
+      213: 8476620262001915090
+    second: Screenshot 2026-09-07 005639_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Lanyard_0
+      name: Screenshot 2026-09-07 005639_0
       rect:
         serializedVersion: 2
-        x: 986
-        y: 488
-        width: 1518
-        height: 4119
+        x: 0
+        y: 0
+        width: 208
+        height: 431
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f67b4b6d6831f7290800000000000000
-      internalID: -7890566552281106577
+      spriteID: 2d4b08c973103a570800000000000000
+      internalID: 8476620262001915090
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Lanyard_0: -7890566552281106577
+      Screenshot 2026-09-07 005639_0: 8476620262001915090
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
