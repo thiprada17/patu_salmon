@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47e6c9470364fec4f91f8120e6e78978, type: 3}
   m_Name: Latte
   m_EditorClassIdentifier: 
-  recipeType: 0
-  finishedCupSprite: {fileID: 21300000, guid: 722f40ad53dd0a3428022ce86a41a5ab, type: 2}
+  recipeType: 1
+  finishedCupSprite: {fileID: 21300000, guid: d864d40a3530247418075fb0553bbb06, type: 2}
   coffee: 1
   milk: 3
   water: 0

@@ -2,7 +2,7 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!78 &1
 TagManager:
-  serializedVersion: 2
+  serializedVersion: 3
   tags: []
   layers:
   - Default
@@ -41,3 +41,39 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Background
+    uniqueID: 1422213727
+    locked: 0
+  - name: Customer
+    uniqueID: 607389565
+    locked: 0
+  - name: Foreground
+    uniqueID: 3068336057
+    locked: 0
+  - name: Cup
+    uniqueID: 1991044353
+    locked: 0
+  - name: Cup_VFX1
+    uniqueID: 4267735585
+    locked: 0
+  - name: Cup_VFX2
+    uniqueID: 3890153557
+    uniqueID: 258595973
+    locked: 0
+  - name: Cloud
+    uniqueID: 2995588079
+    locked: 0
+  - name: Country
+    uniqueID: 3655656897
+    locked: 0
+  - name: Country_Label
+    uniqueID: 3281527575
+    locked: 0
+  - name: Bubble
+    uniqueID: 3339749947
+    locked: 0
+  - name: Text
+    uniqueID: 71057919
+    locked: 0
+  m_RenderingLayers:
+  - Default

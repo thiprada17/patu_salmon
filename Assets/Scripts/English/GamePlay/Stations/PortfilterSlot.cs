@@ -16,8 +16,7 @@ public class PortfilterSlot : MonoBehaviour
         portfilter.transform.position = attachPoint.position;
 
         // บอกว่า Portfilter ติดอยู่กับ Slot
-        DraggableItem draggable =
-            portfilter.GetComponent<DraggableItem>();
+        DraggableItem draggable = portfilter.GetComponent<DraggableItem>();
 
         if (draggable != null)
         {

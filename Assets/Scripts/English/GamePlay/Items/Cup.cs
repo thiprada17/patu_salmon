@@ -1,16 +1,30 @@
 using UnityEngine;
+using System.Collections;
 
 public class Cup : MonoBehaviour
 {
     private const int MaxIngredients = 4;
+    private ServingCup servingCup;
 
+    [Header("Colliders")]
+    [SerializeField]
+    private BoxCollider2D dragCollider;
 
     [SerializeField]
-    private IngredientType[] ingredients =
-        new IngredientType[MaxIngredients];
+    private BoxCollider2D attachCollider;
 
-    private bool[] hasIngredient =
-        new bool[MaxIngredients];
+    public BoxCollider2D AttachCollider => attachCollider;
+
+    [SerializeField]
+    private IngredientType[] ingredients = new IngredientType[MaxIngredients];
+
+    private bool[] hasIngredient = new bool[MaxIngredients];
+
+    [SerializeField] private GameObject finishVFX;
+    [SerializeField] private Transform vfxPoint;
+
+    [SerializeField] private GameObject prefinishVFX;
+    [SerializeField] private Transform prevfxPoint;
 
     [Header("Empty Cup")]
     [SerializeField]
@@ -28,31 +42,36 @@ public class Cup : MonoBehaviour
 
     [Header("Coffee")]
     [SerializeField]
-    private GameObject[] coffeeObjects =
-        new GameObject[MaxIngredients];
+    private GameObject[] coffeeObjects = new GameObject[MaxIngredients];
 
-
+    
     [Header("Milk")]
     [SerializeField]
-    private GameObject[] milkObjects =
-        new GameObject[MaxIngredients];
+    private GameObject[] milkObjects = new GameObject[MaxIngredients];
 
 
     [Header("Water")]
     [SerializeField]
-    private GameObject[] waterObjects =
-        new GameObject[MaxIngredients];
+    private GameObject[] waterObjects = new GameObject[MaxIngredients];
 
 
     [Header("Cocoa")]
     [SerializeField]
-    private GameObject[] cocoaObjects =
-        new GameObject[MaxIngredients];
+    private GameObject[] cocoaObjects = new GameObject[MaxIngredients];
 
 
     private void Awake()
     {
         DisableAllIngredientObjects();
+
+        servingCup = GetComponent<ServingCup>();
+
+        if (servingCup == null)
+        {
+            Debug.LogError(
+                name + " cannot find ServingCup!"
+            );
+        }
 
         if (finishedCupRenderer != null)
         {
@@ -111,17 +130,9 @@ public class Cup : MonoBehaviour
                 ingredients[i] = ingredient;
                 hasIngredient[i] = true;
 
-                ShowIngredient(
-                    ingredient,
-                    i
-                );
+                ShowIngredient(ingredient, i);
 
-                Debug.Log(
-                    "Added " +
-                    ingredient +
-                    " to Cup Index " +
-                    i
-                );
+                Debug.Log( "Added " + ingredient + " to Cup Index " + i );
 
                 return true;
             }
@@ -141,25 +152,18 @@ public class Cup : MonoBehaviour
         if (index < 0 ||
             index >= MaxIngredients)
         {
-            Debug.LogError(
-                "Invalid Cup Index: " +
-                index
-            );
+            Debug.LogError( "Invalid Cup Index: " + index );
 
             return;
         }
 
 
-        GameObject[] objects =
-            GetIngredientObjects(ingredient);
+        GameObject[] objects = GetIngredientObjects(ingredient);
 
 
         if (objects == null)
         {
-            Debug.LogError(
-                "ไม่มี Object สำหรับ " +
-                ingredient
-            );
+            Debug.LogError( "ไม่มี Object สำหรับ " + ingredient );
 
             return;
         }
@@ -168,12 +172,7 @@ public class Cup : MonoBehaviour
         if (index >= objects.Length ||
             objects[index] == null)
         {
-            Debug.LogError(
-                "ไม่มี " +
-                ingredient +
-                "_Index_" +
-                index
-            );
+            Debug.LogError( "ไม่มี " + ingredient + "_Index_" + index );
 
             return;
         }
@@ -182,12 +181,7 @@ public class Cup : MonoBehaviour
         objects[index].SetActive(true);
 
 
-        Debug.Log(
-            "เปิด " +
-            ingredient +
-            "_Index_" +
-            index
-        );
+        Debug.Log( "เปิด " + ingredient + "_Index_" + index );
     }
 
 
@@ -227,8 +221,7 @@ public class Cup : MonoBehaviour
         }
 
 
-        IngredientType[] result =
-            new IngredientType[count];
+        IngredientType[] result = new IngredientType[count];
 
 
         int index = 0;
@@ -237,8 +230,7 @@ public class Cup : MonoBehaviour
         {
             if (hasIngredient[i])
             {
-                result[index] =
-                    ingredients[i];
+                result[index] = ingredients[i];
 
                 index++;
             }
@@ -253,7 +245,9 @@ public class Cup : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void SetFinishedRecipe(Sprite finishedSprite)
+    public void SetFinishedRecipe(
+    Sprite finishedSprite,
+    RecipeType recipeType)
     {
         if (finishedSprite == null)
         {
@@ -263,28 +257,78 @@ public class Cup : MonoBehaviour
 
         isFinished = true;
 
-        // ปิดส่วนผสมทั้งหมด 
+        // อัปเดตข้อมูลเมนูของ Cup
+        if (servingCup != null)
+        {
+            servingCup.SetRecipe(recipeType);
+        }
+
+        PlayPreFinishVFX();
+
+        // ปิดส่วนผสมทั้งหมด
         DisableAllIngredientObjects();
 
-        // ปิดรูปแก้วเปล่า ไม่ให้ซ้อนกับแก้วสำเร็จ
+        // ปิดแก้วเปล่า
         if (emptyCupRenderer != null)
         {
             emptyCupRenderer.gameObject.SetActive(false);
         }
 
+        // ปิด Cap
         if (capObject != null)
         {
             capObject.SetActive(false);
         }
 
-        // เปลี่ยนเป็นรูปเมนูสำเร็จ 
+        // เปลี่ยนเป็นรูปเครื่องดื่มสำเร็จ
         if (finishedCupRenderer != null)
         {
             finishedCupRenderer.sprite = finishedSprite;
             finishedCupRenderer.gameObject.SetActive(true);
         }
+
+        PlayFinishVFX();
+
+        Debug.Log(
+            name +
+            " finished recipe: " +
+            recipeType
+        );
     }
 
+
+    private void PlayPreFinishVFX()
+    {
+        if (finishVFX == null || vfxPoint == null)
+        {
+            Debug.LogWarning("ยังไม่ได้ใส่ Finish VFX หรือ VFX Point");
+            return;
+        }
+
+        GameObject vfx = Instantiate(
+            prefinishVFX,
+            prevfxPoint.position,
+            prevfxPoint.rotation
+        );
+
+        Destroy(vfx, 20f);
+    }
+    private void PlayFinishVFX()
+    {
+        if (finishVFX == null || vfxPoint == null)
+        {
+            Debug.LogWarning("ยังไม่ได้ใส่ Finish VFX หรือ VFX Point");
+            return;
+        }
+
+        GameObject vfx = Instantiate(
+            finishVFX,
+            vfxPoint.position,
+            vfxPoint.rotation
+        );
+
+        Destroy(vfx, 3f);
+    }
 
     private bool isFinished = false;
 
