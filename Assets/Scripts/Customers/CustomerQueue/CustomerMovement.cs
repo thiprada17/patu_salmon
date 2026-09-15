@@ -37,7 +37,6 @@ public class CustomerMovement : MonoBehaviour
     private CustomerOrder customerOrder;
 
     private bool hasGeneratedOrder = false;
-    private bool hasStartedWaiting = false;
 
 
     private void Awake()
@@ -56,14 +55,15 @@ public class CustomerMovement : MonoBehaviour
 
     public void MoveToQueueSlot(Transform queueSlot)
     {
-        if (isLeaving)
+
+        if (isLeaving) 
+        {
             return;
+        }
 
         if (queueSlot == null)
         {
-            Debug.LogError(
-                name + " received NULL queue slot!"
-            );
+            Debug.LogError(name + " received NULL queue slot!");
             return;
         }
 
@@ -74,7 +74,7 @@ public class CustomerMovement : MonoBehaviour
         isMoving = true;
         isWaiting = false;
 
-        // ห้าม reset waitTimer ตรงนี้
+        waitTimer = 0f;
         bobTimer = 0f;
 
         if (animator != null)
@@ -82,11 +82,7 @@ public class CustomerMovement : MonoBehaviour
             animator.SetBool("IsWalking", true);
         }
 
-        Debug.Log(
-            name +
-            " moving to " +
-            queueSlot.name
-        );
+        Debug.Log(name + " moving to " + queueSlot.name);
     }
 
 
@@ -182,26 +178,15 @@ public class CustomerMovement : MonoBehaviour
     private void StartWaiting()
     {
         isWaiting = true;
+        waitTimer = 0f;
+        isAngry = false;
 
-        if (!hasStartedWaiting)
-        {
-            hasStartedWaiting = true;
-
-            waitTimer = 0f;
-            isAngry = false;
-
-            if (customerOrder != null)
-            {
-                customerOrder.ShowTimeBar();
-            }
-
-            Debug.Log(
-                name +
-                " started waiting for " +
-                maxWaitTime +
-                " seconds."
-            );
-        }
+        Debug.Log(
+            name +
+            " started waiting for " +
+            maxWaitTime +
+            " seconds."
+        );
     }
 
 
@@ -209,19 +194,13 @@ public class CustomerMovement : MonoBehaviour
     {
         waitTimer += Time.deltaTime;
 
-        if (customerOrder != null)
-        {
-            customerOrder.UpdateTimeBar(
-                waitTimer,
-                maxWaitTime
-            );
-        }
-
+        // เหลือ 10 วินาที
         if (!isAngry && waitTimer >= angryTime)
         {
             BecomeAngry();
         }
 
+        // ครบ 30 วินาที
         if (waitTimer >= maxWaitTime)
         {
             LeaveAngry();
@@ -232,11 +211,6 @@ public class CustomerMovement : MonoBehaviour
     private void BecomeAngry()
     {
         isAngry = true;
-
-        if (customerOrder != null)
-        {
-            customerOrder.SetTimeBarAngry();
-        }
 
         if (animator != null)
         {
@@ -260,12 +234,11 @@ public class CustomerMovement : MonoBehaviour
         if (customerOrder != null)
         {
             customerOrder.HideDialogue();
-            customerOrder.HideTimeBar();
         }
 
         if (animator != null)
         {
-            animator.Play("Walk_out_Angry");
+            animator.Play("Walk_Out_Angry");
         }
 
         // เดินไปทางซ้าย
@@ -294,7 +267,6 @@ public class CustomerMovement : MonoBehaviour
         if (customerOrder != null)
         {
             customerOrder.HideDialogue();
-            customerOrder.HideTimeBar();
         }
 
         StartCoroutine(HappyThenWalkOut());

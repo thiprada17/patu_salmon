@@ -91,7 +91,7 @@ public class Cocoa : MonoBehaviour
         }
 
         // รอ Animation
-        yield return new WaitForSeconds(1.3f);
+        yield return new WaitForSeconds(1.5f);
 
         // เพิ่ม Milk เข้า Cup
         if (currentCup != null)

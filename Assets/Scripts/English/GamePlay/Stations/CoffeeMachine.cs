@@ -91,7 +91,7 @@ public class CoffeeMachine : MonoBehaviour
 
         Debug.Log("Making coffee...");
 
-        float duration = 2f;
+        float duration = 3f;
         float elapsed = 0f;
 
         while (elapsed < duration)

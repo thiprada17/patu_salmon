@@ -1,21 +1,13 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class PopupClose : MonoBehaviour
+public class PopupClose : MonoBehaviour, IPointerClickHandler
 {
-    [SerializeField] private GameObject thailandPopup;
-    [SerializeField] private GameObject americaPopup;
-    [SerializeField] private GameObject backgroundOverlay;
+    [SerializeField] private GameObject popup;
 
-    public void ClosePopup()
+    public void OnPointerClick(PointerEventData eventData)
     {
-        if (thailandPopup != null)
-            thailandPopup.SetActive(false);
-
-        if (americaPopup != null)
-            americaPopup.SetActive(false);
-
-        if (backgroundOverlay != null)
-            backgroundOverlay.SetActive(false);
+        if (popup != null)
+            popup.SetActive(false);
     }
 }
