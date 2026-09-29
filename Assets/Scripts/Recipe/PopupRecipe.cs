@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(CanvasGroup))]
-public class PopupPanel : MonoBehaviour
+public class PopupRecipe : MonoBehaviour
 {
     [Header("element")]
     [SerializeField] Transform box;          

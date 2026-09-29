@@ -6,7 +6,7 @@ public class BackButton : MonoBehaviour
 {
     [SerializeField] string sceneName = "MainMenu";
 
-    [Header("เด้ง")]
+    [Header("Punch")]
     [SerializeField] float punchScale = 1.15f;
     [SerializeField] float punchTime = 0.18f;
 
