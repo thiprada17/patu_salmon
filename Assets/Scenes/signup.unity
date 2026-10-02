@@ -253,7 +253,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_TargetDisplay: 0
 --- !u!114 &178966405
 MonoBehaviour:
@@ -445,7 +445,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &192289346
 Transform:
   m_ObjectHideFlags: 0
@@ -455,7 +455,7 @@ Transform:
   m_GameObject: {fileID: 192289345}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -413, y: -516, z: 1474.9344}
+  m_LocalPosition: {x: -413, y: -484, z: 1474.9344}
   m_LocalScale: {x: 295.99997, y: 295.99997, z: 295.99997}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -881,6 +881,7 @@ GameObject:
   - component: {fileID: 572846739}
   - component: {fileID: 572846741}
   - component: {fileID: 572846740}
+  - component: {fileID: 572846742}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -1007,6 +1008,29 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 572846738}
   m_CullTransparentMesh: 1
+--- !u!223 &572846742
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 572846738}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 1
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 25
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 2
+  m_TargetDisplay: 0
 --- !u!1 &693935204
 GameObject:
   m_ObjectHideFlags: 0
@@ -1099,7 +1123,7 @@ MonoBehaviour:
   m_AsteriskChar: 42
   m_KeyboardType: 0
   m_LineType: 0
-  m_HideMobileInput: 1
+  m_HideMobileInput: 0
   m_HideSoftKeyboard: 0
   m_CharacterValidation: 0
   m_RegexValue: 
@@ -1129,11 +1153,11 @@ MonoBehaviour:
   m_OnTouchScreenKeyboardStatusChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  m_CustomCaretColor: 0
+  m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 0}
+  m_CustomCaretColor: 1
   m_SelectionColor: {r: 1, g: 1, b: 1, a: 0}
   m_Text: 
-  m_CaretBlinkRate: 0.85
+  m_CaretBlinkRate: 0
   m_CaretWidth: 1
   m_ReadOnly: 0
   m_RichText: 1
@@ -1481,7 +1505,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_TargetDisplay: 0
 --- !u!114 &844163725
 MonoBehaviour:
@@ -2419,7 +2443,7 @@ MonoBehaviour:
   m_AsteriskChar: 42
   m_KeyboardType: 0
   m_LineType: 0
-  m_HideMobileInput: 1
+  m_HideMobileInput: 0
   m_HideSoftKeyboard: 0
   m_CharacterValidation: 0
   m_RegexValue: 
@@ -2449,11 +2473,11 @@ MonoBehaviour:
   m_OnTouchScreenKeyboardStatusChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  m_CustomCaretColor: 0
+  m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 0}
+  m_CustomCaretColor: 1
   m_SelectionColor: {r: 1, g: 1, b: 1, a: 0}
   m_Text: 
-  m_CaretBlinkRate: 0.85
+  m_CaretBlinkRate: 0
   m_CaretWidth: 1
   m_ReadOnly: 0
   m_RichText: 1
@@ -3205,6 +3229,7 @@ GameObject:
   - component: {fileID: 1762320577}
   - component: {fileID: 1762320576}
   - component: {fileID: 1762320578}
+  - component: {fileID: 1762320579}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -3351,6 +3376,29 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!223 &1762320579
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1762320574}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 1
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 25
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 2
+  m_TargetDisplay: 0
 --- !u!1 &1782487071
 GameObject:
   m_ObjectHideFlags: 0
@@ -3697,6 +3745,7 @@ GameObject:
   - component: {fileID: 1875639560}
   - component: {fileID: 1875639562}
   - component: {fileID: 1875639561}
+  - component: {fileID: 1875639563}
   m_Layer: 5
   m_Name: airplane
   m_TagString: Untagged
@@ -3711,7 +3760,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1875639559}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -3720,7 +3769,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -2.8e-14, y: -178}
+  m_AnchoredPosition: {x: 0, y: -177.99998}
   m_SizeDelta: {x: 1186.5, y: 810.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1875639561
@@ -3736,7 +3785,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.7137255}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.72156864}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -3761,6 +3810,29 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1875639559}
   m_CullTransparentMesh: 1
+--- !u!223 &1875639563
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1875639559}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 1
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 1
+  m_TargetDisplay: 0
 --- !u!1 &2114071392
 GameObject:
   m_ObjectHideFlags: 0
