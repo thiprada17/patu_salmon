@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 57e57e608a634a740bc755b184434688
+guid: 00a3f401ad7b7bb4f9cde7175ba69699
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7251145821191360375
-    second: selectbutton_salmon_0
+      213: -774328331534058873
+    second: char_btn1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: selectbutton_salmon_0
+      name: char_btn1_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 398
-        height: 133
+        width: 531
+        height: 177
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 77f4ba6c4be31a460800000000000000
-      internalID: 7251145821191360375
+      spriteID: 78a346b2c780145f0800000000000000
+      internalID: -774328331534058873
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      selectbutton_salmon_0: 7251145821191360375
+      char_btn1_0: -774328331534058873
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

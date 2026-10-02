@@ -20,7 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SelectLanguage.unity
     guid: e0a37b43bf6b2644ab03b8617054c590
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/idcard.unity
     guid: 0b8344bbe60326c45ad90fdc10006a94
   - enabled: 1
@@ -35,6 +35,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/bulb.unity
     guid: 1b63ab2e326488f4fb5c92771bc58dc5
+  - enabled: 1
+    path: Assets/Scenes/id_card.unity
+    guid: 79abd92e3321b5b43940b4b01b81b82c
+  - enabled: 1
+    path: Assets/Scenes/signup.unity
+    guid: 589f726b4c9dc87419a06fbb36da451e
+  - enabled: 1
+    path: Assets/Scenes/loading.unity
+    guid: 2eb154db8166a2145b978039bfb26f3f
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0
