@@ -41,6 +41,7 @@ public class EnterButton : MonoBehaviour
 
         leaving = true;
         GameData.username = username;
+        PlayerPrefs.SetString("Username", username);
         transform.DOKill(true);
         Sequence s = DOTween.Sequence();
         s.Append(transform.DOScale(0.88f, 0.08f));

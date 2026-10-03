@@ -24,6 +24,7 @@ public class CardSelect : MonoBehaviour
         foreach (Renderer r in card.GetComponentsInChildren<Renderer>(true))
             r.sortingOrder += 100;
         GameData.selectedCharacter = characterName;
+        PlayerPrefs.SetString("Character", characterName);
         glow.SetActive(true);
 
         Sequence s = DOTween.Sequence();

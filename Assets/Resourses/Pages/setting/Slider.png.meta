@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: cad3bc03803c3aa479f3c962de9b6538
+guid: 9bf48e244029b334c96649aa1b1858c8
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7040440478454705485
-    second: music_icon_0
+      213: 9169877530624898698
+    second: Slider_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: music_icon_0
+      name: Slider_0
       rect:
         serializedVersion: 2
-        x: 5
-        y: 9
-        width: 66
-        height: 65
+        x: 33
+        y: 126
+        width: 1982
+        height: 1795
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3b21d6bcfa45b4e90800000000000000
-      internalID: -7040440478454705485
+      spriteID: a86bbbea703f14f70800000000000000
+      internalID: 9169877530624898698
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      music_icon_0: -7040440478454705485
+      Slider_0: 9169877530624898698
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
