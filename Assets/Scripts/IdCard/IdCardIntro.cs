@@ -41,16 +41,17 @@ public class IdCardIntro : MonoBehaviour
             if (inputField != null) inputField.SetActive(true);
         });
         s.Append(card.DOScaleX(sx, 0.15f));
-        s.Append(enterButton.DOScale(1, 0.3f).SetEase(Ease.OutBack));
-        s.OnComplete(() =>
+        s.AppendCallback(() =>
         {
             Sequence swing = DOTween.Sequence();
             swing.timeScale = swingSpeed;
-            swing.Append(card.DORotate(new Vector3(0, 0, 4), 0.5f).SetEase(Ease.OutSine));
-            swing.Append(card.DORotate(new Vector3(0, 0, -3), 0.9f).SetEase(Ease.InOutSine));
-            swing.Append(card.DORotate(new Vector3(0, 0, 1.5f), 0.8f).SetEase(Ease.InOutSine));
-            swing.Append(card.DORotate(Vector3.zero, 0.7f).SetEase(Ease.InOutSine));
-
+            swing.Append(card.DORotate(new Vector3(0, 0, 2), 0.35f).SetEase(Ease.OutSine));
+            swing.Append(card.DORotate(new Vector3(0, 0, -1), 0.55f).SetEase(Ease.InOutSine));
+            swing.Append(card.DORotate(Vector3.zero, 0.45f).SetEase(Ease.InOutSine));
+        });
+        s.Append(enterButton.DOScale(1, 0.3f).SetEase(Ease.OutBack));
+        s.OnComplete(() =>
+        {
             if (inputField != null)
             {
                 var field = inputField.GetComponentInChildren<TMP_InputField>(true);
