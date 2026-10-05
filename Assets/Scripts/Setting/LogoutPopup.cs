@@ -22,13 +22,24 @@ public class LogoutPopup : MonoBehaviour
     [SerializeField] float punchTime = 0.16f;
 
     bool isBusy;
+    public GameObject popupRoot;
+    Vector3 panelScale;
+    bool scaleSaved;
 
     void Start()
     {
         if (cancelButton != null) cancelButton.onClick.AddListener(OnCancel);
         if (confirmButton != null) confirmButton.onClick.AddListener(OnConfirm);
+    }
 
-        if (panel != null) StartCoroutine(PopIn());
+    void OnEnable()
+    {
+        isBusy = false;
+        if (panel != null)
+        {
+            if (!scaleSaved) { panelScale = panel.localScale; scaleSaved = true; }
+            StartCoroutine(PopIn());
+        }
     }
 
     void Update()
@@ -58,17 +69,13 @@ public class LogoutPopup : MonoBehaviour
 
     void Close()
     {
-        Scene self = gameObject.scene;
-
-        if (SceneManager.sceneCount > 1 && self.isLoaded)
-            SceneManager.UnloadSceneAsync(self);
-        else
-            gameObject.SetActive(false);  
+        if (popupRoot != null) popupRoot.SetActive(false);
+        else gameObject.SetActive(false);
     }
 
     IEnumerator PopIn()
     {
-        Vector3 to = panel.localScale;
+        Vector3 to = panelScale;
         Vector3 from = to * startScale;
         panel.localScale = from;
 

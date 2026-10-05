@@ -8,6 +8,7 @@ using TMPro;
 
 public class Setting : MonoBehaviour
 {
+    public GameObject settingPopup;
 
     [Header("Username")]
     [SerializeField] TMP_InputField usernameInput;
@@ -43,8 +44,6 @@ public class Setting : MonoBehaviour
 
     [Header("Logout")]
     [SerializeField] Button logoutButton;
-    [SerializeField] string logoutPopupScene = "Setting_A1";
-    [SerializeField] bool popupAdditive = true;
 
     [Header("Back")]
     [SerializeField] Button backButton;
@@ -259,15 +258,9 @@ public class Setting : MonoBehaviour
         isBusy = true;
         StartCoroutine(PunchThen(logoutButton.transform, () =>
         {
-            if (popupAdditive)
-            {
-                SceneManager.LoadScene(logoutPopupScene, LoadSceneMode.Additive);
-                isBusy = false;
-            }
-            else
-            {
-                SceneManager.LoadScene(logoutPopupScene);
-            }
+            settingPopup.SetActive(true);
+            isBusy = false;
+
         }));
     }
 
