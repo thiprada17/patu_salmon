@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
-public class LanguageScene : MonoBehaviour
+public class LanguagePopup : MonoBehaviour
 {
     [System.Serializable]
     public class LangButton
@@ -13,20 +13,26 @@ public class LanguageScene : MonoBehaviour
         public Sprite selected;    
     }
 
+    public GameObject currentPage;
+    public GameObject nextPage;
+
+    [Header("popup")]
+    [SerializeField] GameObject root;          
+    [SerializeField] Transform box;            
+    [SerializeField] CanvasGroup boxGroup;     
+    [SerializeField] CanvasGroup dimGroup;     
+
     [Header("lang btn")]
     [SerializeField] LangButton[] langButtons = new LangButton[3];
 
-    [Header("other btn")]
+    [Header("btn")]
     [SerializeField] Button enterButton;
-    [SerializeField] Button closeButton;
+    [SerializeField] Button closeButton;       
 
-    [Header("animation")]
-    [SerializeField] RectTransform box;       
-    [SerializeField] CanvasGroup boxGroup;   
-    [SerializeField] CanvasGroup dimGroup;    
+    [Header("signup")]
+    [SerializeField] SignupUI signupUI;
 
-    [Header("next scene")]
-    [SerializeField] string nextScene = "SelectCharacter";
+
     [SerializeField] float delay = 0.25f;
 
     [Header("punch")]
@@ -41,33 +47,70 @@ public class LanguageScene : MonoBehaviour
     [SerializeField] float dimAlpha = 0.55f;
 
     [Header("default")]
-    [SerializeField] int defaultIndex = 1;     
+    [SerializeField] int defaultIndex = -1;     
 
     int selected = -1;
     bool busy = false;
+    bool ready = false;
 
-    void Start()
+    void Setup()
     {
+        if (ready) return;
+        ready = true;
+
         for (int i = 0; i < langButtons.Length; i++)
         {
-            int index = i;
+            int index = i;   
             LangButton lb = langButtons[i];
             if (lb == null || lb.button == null) continue;
 
-            lb.button.transition = Selectable.Transition.None;
+            lb.button.transition = Selectable.Transition.None;  
             lb.button.onClick.AddListener(() =>
             {
+                Debug.Log("กดปุ่มที่ " + index);
                 Select(index);
                 StartCoroutine(Punch(langButtons[index].button.transform));
             });
         }
 
-        if (enterButton != null) enterButton.onClick.AddListener(OnEnter);
-        if (closeButton != null) closeButton.onClick.AddListener(OnClose);
+        if (enterButton != null) enterButton.onClick.AddListener(OnEnterClick);
+        if (closeButton != null) closeButton.onClick.AddListener(OnCloseClick);
+    }
+
+
+
+    public void Open()
+    {
+        if (root == null) return;
+
+        root.SetActive(true);
+        Setup();
+
+        StopAllCoroutines();
+        busy = false;
 
         Select(defaultIndex);
         StartCoroutine(OpenAnim());
     }
+
+    void OnCloseClick()
+    {
+        if (busy) return;
+
+        busy = true;
+        StartCoroutine(CloseAnim());
+    }
+
+    void OnEnterClick()
+    {
+        if (busy || selected < 0) return;
+
+        busy = true;
+        if (enterButton != null) StartCoroutine(Punch(enterButton.transform));
+        StartCoroutine(GoNext());
+    }
+
+
 
     void Select(int index)
     {
@@ -88,39 +131,6 @@ public class LanguageScene : MonoBehaviour
         if (enterButton != null) enterButton.interactable = (selected >= 0);
     }
 
-    void OnEnter()
-    {
-        if (busy || selected < 0) return;
-
-        busy = true;
-        if (enterButton != null) StartCoroutine(Punch(enterButton.transform));
-        StartCoroutine(GoNext());
-    }
-
-    void OnClose()
-    {
-        if (busy) return;
-
-        busy = true;
-        if (closeButton != null) StartCoroutine(Punch(closeButton.transform));
-        StartCoroutine(CloseAndUnload());
-    }
-
-    IEnumerator GoNext()
-    {
-        yield return new WaitForSecondsRealtime(delay);
-        SceneManager.LoadScene(nextScene);   
-    }
-
-    IEnumerator CloseAndUnload()
-    {
-        yield return CloseAnim();
-
-        SignupUI signup = FindFirstObjectByType<SignupUI>();
-        if (signup != null) signup.Unlock();
-
-        SceneManager.UnloadSceneAsync(gameObject.scene);
-    }
 
 
     IEnumerator OpenAnim()
@@ -131,11 +141,11 @@ public class LanguageScene : MonoBehaviour
         if (boxGroup != null) boxGroup.alpha = 0f;
         if (dimGroup != null) dimGroup.alpha = 0f;
 
-        float p1 = openTime * 0.65f;
-        while (e < p1)
+        float phase1 = openTime * 0.65f;
+        while (e < phase1)
         {
             e += Time.unscaledDeltaTime;
-            float p = Mathf.Clamp01(e / p1);
+            float p = Mathf.Clamp01(e / phase1);
             float ease = 1f - Mathf.Pow(1f - p, 3f);
 
             if (box != null) box.localScale = Vector3.one * Mathf.Lerp(startScale, overshoot, ease);
@@ -145,11 +155,11 @@ public class LanguageScene : MonoBehaviour
         }
 
         e = 0f;
-        float p2 = openTime * 0.35f;
-        while (e < p2)
+        float phase2 = openTime * 0.35f;
+        while (e < phase2)
         {
             e += Time.unscaledDeltaTime;
-            float p = Mathf.Clamp01(e / p2);
+            float p = Mathf.Clamp01(e / phase2);
             float ease = 1f - Mathf.Pow(1f - p, 3f);
 
             if (box != null) box.localScale = Vector3.one * Mathf.Lerp(overshoot, 1f, ease);
@@ -176,15 +186,26 @@ public class LanguageScene : MonoBehaviour
             if (dimGroup != null) dimGroup.alpha = dimAlpha * (1f - p);
             yield return null;
         }
+
+        if (root != null) root.SetActive(false);
+        if (signupUI != null) signupUI.Unlock();
+        busy = false;
+    }
+
+    IEnumerator GoNext()
+    {
+        yield return new WaitForSecondsRealtime(delay);
+        currentPage.SetActive(false);
+        nextPage.SetActive(true);
     }
 
     IEnumerator Punch(Transform t)
     {
-        Vector3 a = Vector3.one;
-        Vector3 b = a * punchScale;
-        yield return ScaleTo(t, a, b, punchTime * 0.4f);
-        yield return ScaleTo(t, b, a, punchTime * 0.6f);
-        t.localScale = a;
+        Vector3 baseScale = Vector3.one;
+        Vector3 bigScale = baseScale * punchScale;
+        yield return ScaleTo(t, baseScale, bigScale, punchTime * 0.4f);
+        yield return ScaleTo(t, bigScale, baseScale, punchTime * 0.6f);
+        t.localScale = baseScale;
     }
 
     IEnumerator ScaleTo(Transform t, Vector3 from, Vector3 to, float time)

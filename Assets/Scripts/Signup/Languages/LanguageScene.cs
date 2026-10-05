@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
-public class LanguagePopup : MonoBehaviour
+public class LanguageScene : MonoBehaviour
 {
     [System.Serializable]
     public class LangButton
@@ -12,25 +12,23 @@ public class LanguagePopup : MonoBehaviour
         public Sprite normal;      
         public Sprite selected;    
     }
-
-    [Header("popup")]
-    [SerializeField] GameObject root;          
-    [SerializeField] Transform box;            
-    [SerializeField] CanvasGroup boxGroup;     
-    [SerializeField] CanvasGroup dimGroup;     
+    public GameObject currentPage;
+    public GameObject nextPage;
+    public GameObject signup;
 
     [Header("lang btn")]
     [SerializeField] LangButton[] langButtons = new LangButton[3];
 
-    [Header("btn")]
+    [Header("other btn")]
     [SerializeField] Button enterButton;
-    [SerializeField] Button closeButton;       
+    [SerializeField] Button closeButton;
 
-    [Header("signup")]
-    [SerializeField] SignupUI signupUI;
+    [Header("animation")]
+    [SerializeField] RectTransform box;       
+    [SerializeField] CanvasGroup boxGroup;   
+    [SerializeField] CanvasGroup dimGroup;    
 
-    [Header("next scene")]
-    [SerializeField] string nextScene = "SetCharacter";
+
     [SerializeField] float delay = 0.25f;
 
     [Header("punch")]
@@ -45,70 +43,33 @@ public class LanguagePopup : MonoBehaviour
     [SerializeField] float dimAlpha = 0.55f;
 
     [Header("default")]
-    [SerializeField] int defaultIndex = -1;     
+    [SerializeField] int defaultIndex = 1;     
 
     int selected = -1;
     bool busy = false;
-    bool ready = false;
 
-    void Setup()
+    void OnEnable()
     {
-        if (ready) return;
-        ready = true;
-
         for (int i = 0; i < langButtons.Length; i++)
         {
-            int index = i;   
+            int index = i;
             LangButton lb = langButtons[i];
             if (lb == null || lb.button == null) continue;
 
-            lb.button.transition = Selectable.Transition.None;  
+            lb.button.transition = Selectable.Transition.None;
             lb.button.onClick.AddListener(() =>
             {
-                Debug.Log("กดปุ่มที่ " + index);
                 Select(index);
                 StartCoroutine(Punch(langButtons[index].button.transform));
             });
         }
 
-        if (enterButton != null) enterButton.onClick.AddListener(OnEnterClick);
-        if (closeButton != null) closeButton.onClick.AddListener(OnCloseClick);
-    }
-
-
-
-    public void Open()
-    {
-        if (root == null) return;
-
-        root.SetActive(true);
-        Setup();
-
-        StopAllCoroutines();
-        busy = false;
+        if (enterButton != null) enterButton.onClick.AddListener(OnEnter);
+        if (closeButton != null) closeButton.onClick.AddListener(OnClose);
 
         Select(defaultIndex);
         StartCoroutine(OpenAnim());
     }
-
-    void OnCloseClick()
-    {
-        if (busy) return;
-
-        busy = true;
-        StartCoroutine(CloseAnim());
-    }
-
-    void OnEnterClick()
-    {
-        if (busy || selected < 0) return;
-
-        busy = true;
-        if (enterButton != null) StartCoroutine(Punch(enterButton.transform));
-        StartCoroutine(GoNext());
-    }
-
-
 
     void Select(int index)
     {
@@ -129,6 +90,42 @@ public class LanguagePopup : MonoBehaviour
         if (enterButton != null) enterButton.interactable = (selected >= 0);
     }
 
+    void OnEnter()
+    {
+        if (busy || selected < 0) return;
+
+        busy = true;
+        if (enterButton != null) StartCoroutine(Punch(enterButton.transform));
+        StartCoroutine(GoNext());
+    }
+
+    void OnClose()
+    {
+        if (busy) return;
+
+        busy = true;
+        if (closeButton != null) StartCoroutine(Punch(closeButton.transform));
+        StartCoroutine(CloseAndUnload());
+    }
+
+    IEnumerator GoNext()
+    {
+        yield return new WaitForSecondsRealtime(delay);
+        nextPage.SetActive(true);
+        signup.SetActive(false);
+        currentPage.SetActive(false);
+    }
+
+    IEnumerator CloseAndUnload()
+    {
+        yield return CloseAnim();
+
+        SignupUI signup = FindFirstObjectByType<SignupUI>();
+        if (signup != null) signup.Unlock();
+
+        busy = false;
+        currentPage.SetActive(false);
+    }
 
 
     IEnumerator OpenAnim()
@@ -139,11 +136,11 @@ public class LanguagePopup : MonoBehaviour
         if (boxGroup != null) boxGroup.alpha = 0f;
         if (dimGroup != null) dimGroup.alpha = 0f;
 
-        float phase1 = openTime * 0.65f;
-        while (e < phase1)
+        float p1 = openTime * 0.65f;
+        while (e < p1)
         {
             e += Time.unscaledDeltaTime;
-            float p = Mathf.Clamp01(e / phase1);
+            float p = Mathf.Clamp01(e / p1);
             float ease = 1f - Mathf.Pow(1f - p, 3f);
 
             if (box != null) box.localScale = Vector3.one * Mathf.Lerp(startScale, overshoot, ease);
@@ -153,11 +150,11 @@ public class LanguagePopup : MonoBehaviour
         }
 
         e = 0f;
-        float phase2 = openTime * 0.35f;
-        while (e < phase2)
+        float p2 = openTime * 0.35f;
+        while (e < p2)
         {
             e += Time.unscaledDeltaTime;
-            float p = Mathf.Clamp01(e / phase2);
+            float p = Mathf.Clamp01(e / p2);
             float ease = 1f - Mathf.Pow(1f - p, 3f);
 
             if (box != null) box.localScale = Vector3.one * Mathf.Lerp(overshoot, 1f, ease);
@@ -184,25 +181,15 @@ public class LanguagePopup : MonoBehaviour
             if (dimGroup != null) dimGroup.alpha = dimAlpha * (1f - p);
             yield return null;
         }
-
-        if (root != null) root.SetActive(false);
-        if (signupUI != null) signupUI.Unlock();
-        busy = false;
-    }
-
-    IEnumerator GoNext()
-    {
-        yield return new WaitForSecondsRealtime(delay);
-        SceneManager.LoadScene(nextScene);
     }
 
     IEnumerator Punch(Transform t)
     {
-        Vector3 baseScale = Vector3.one;
-        Vector3 bigScale = baseScale * punchScale;
-        yield return ScaleTo(t, baseScale, bigScale, punchTime * 0.4f);
-        yield return ScaleTo(t, bigScale, baseScale, punchTime * 0.6f);
-        t.localScale = baseScale;
+        Vector3 a = Vector3.one;
+        Vector3 b = a * punchScale;
+        yield return ScaleTo(t, a, b, punchTime * 0.4f);
+        yield return ScaleTo(t, b, a, punchTime * 0.6f);
+        t.localScale = a;
     }
 
     IEnumerator ScaleTo(Transform t, Vector3 from, Vector3 to, float time)

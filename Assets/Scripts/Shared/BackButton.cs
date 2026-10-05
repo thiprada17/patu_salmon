@@ -4,6 +4,9 @@ using System.Collections;
 
 public class BackButton : MonoBehaviour
 {
+    public GameObject showPage;
+    public GameObject hidePage;
+
     [SerializeField] string sceneName = "MainMenu";
 
     [Header("Punch")]
@@ -11,6 +14,11 @@ public class BackButton : MonoBehaviour
     [SerializeField] float punchTime = 0.18f;
 
     bool isBusy;
+
+    void OnEnable()
+    {
+        isBusy = false;
+    }
 
     void OnMouseDown()
     {
@@ -27,7 +35,15 @@ public class BackButton : MonoBehaviour
         yield return Scale(baseScale, bigScale, punchTime * 0.4f);
         yield return Scale(bigScale, baseScale, punchTime * 0.6f);
 
-        SceneManager.LoadScene(sceneName);
+        if (showPage != null)
+        {
+            showPage.SetActive(true);
+            hidePage.SetActive(false);
+        }
+        else
+        {
+            SceneManager.LoadScene(sceneName);
+        }
     }
 
     IEnumerator Scale(Vector3 from, Vector3 to, float time)

@@ -12,16 +12,51 @@ public class CardSelect : MonoBehaviour
     public GameObject glow;
     public Vector3 targetPosition;
     public Vector3 targetScale = Vector3.one;
+    public GameObject currentPage;
+    public GameObject nextPage;
 
     [Range(0.1f, 2f)] public float speed = 0.5f;
 
     static bool clicked;
 
+    Vector3 startPos, startScale, titleScale;
+    Quaternion startRot;
+    Renderer[] renderers;
+    int[] startOrders;
+
+    void Awake()
+    {
+        startPos = card.localPosition;
+        startRot = card.localRotation;
+        startScale = card.localScale;
+        if (title != null) titleScale = title.localScale;
+
+        renderers = card.GetComponentsInChildren<Renderer>(true);
+        startOrders = new int[renderers.Length];
+        for (int i = 0; i < renderers.Length; i++)
+            startOrders[i] = renderers[i].sortingOrder;
+    }
+
+    void OnEnable()
+    {
+        card.DOKill();
+        card.localPosition = startPos;
+        card.localRotation = startRot;
+        card.localScale = startScale;
+        if (title != null) title.localScale = titleScale;
+
+        for (int i = 0; i < renderers.Length; i++)
+            renderers[i].sortingOrder = startOrders[i];
+        if (glow != null) glow.SetActive(false);
+
+        clicked = false;
+    }
+
     void OnMouseDown()
     {
         if (clicked) return;
         clicked = true;
-        foreach (Renderer r in card.GetComponentsInChildren<Renderer>(true))
+        foreach (Renderer r in renderers)
             r.sortingOrder += 100;
         GameData.selectedCharacter = characterName;
         PlayerPrefs.SetString("Character", characterName);
@@ -38,7 +73,8 @@ public class CardSelect : MonoBehaviour
         s.OnComplete(() =>
         {
             clicked = false;
-            SceneManager.LoadScene("id_card");
+            currentPage.SetActive(false);
+            nextPage.SetActive(true);
         });
         s.timeScale = speed;
     }

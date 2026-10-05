@@ -6,6 +6,8 @@ using System.Collections;
 
 public class SignupUI : MonoBehaviour
 {
+    public GameObject Language;
+
     [Header("input")]
 
     [SerializeField] TMP_InputField emailInput;
@@ -149,7 +151,7 @@ public class SignupUI : MonoBehaviour
         PlayerPrefs.SetString("Email", e);
         PlayerPrefs.Save();
 
-        SceneManager.LoadScene("SelectLanguage", LoadSceneMode.Additive);
+        Language.SetActive(true);
     }
 
     public void OnGoogleClick()
@@ -160,7 +162,7 @@ public class SignupUI : MonoBehaviour
 
         locked = true;
 
-        SceneManager.LoadScene("SelectLanguage", LoadSceneMode.Additive);
+        Language.SetActive(true);
     }
 
     IEnumerator GoNext()

@@ -4,10 +4,12 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using DG.Tweening;
 
+
 public class EnterButton : MonoBehaviour
 {
     public TMP_InputField inputField;
-    public string nextScene;
+    public GameObject currentPage;
+    public GameObject nextPage;
 
     int lastFrame = -1;
     bool leaving;
@@ -33,11 +35,7 @@ public class EnterButton : MonoBehaviour
             transform.DOShakeRotation(0.3f, new Vector3(0, 0, 10));
             return;
         }
-        if (!Application.CanStreamedLevelBeLoaded(nextScene))
-        {
-            Debug.LogError("EnterButton: โหลด scene \"" + nextScene + "\" ไม่ได้ เช็กชื่อและ Build Profiles");
-            return;
-        }
+
 
         leaving = true;
         GameData.username = username;
@@ -46,6 +44,11 @@ public class EnterButton : MonoBehaviour
         Sequence s = DOTween.Sequence();
         s.Append(transform.DOScale(0.88f, 0.08f));
         s.Append(transform.DOScale(1f, 0.15f).SetEase(Ease.OutBack));
-        s.OnComplete(() => SceneManager.LoadScene(nextScene));
+        s.OnComplete(() =>
+        {
+            leaving = false;
+            currentPage.SetActive(false);
+            nextPage.SetActive(true);
+        });
     }
 }
