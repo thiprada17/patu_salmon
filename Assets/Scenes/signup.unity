@@ -5612,11 +5612,11 @@ PrefabInstance:
     - target: {fileID: 4367535725852453839, guid: 72686a5d5ea861147b7d618e64ae54bb, type: 3}
       propertyPath: hidePage
       value: 
-      objectReference: {fileID: 1147420523}
+      objectReference: {fileID: 668958104}
     - target: {fileID: 4367535725852453839, guid: 72686a5d5ea861147b7d618e64ae54bb, type: 3}
       propertyPath: showPage
       value: 
-      objectReference: {fileID: 668958104}
+      objectReference: {fileID: 727961191}
     - target: {fileID: 4367535725852453839, guid: 72686a5d5ea861147b7d618e64ae54bb, type: 3}
       propertyPath: sceneName
       value: signup

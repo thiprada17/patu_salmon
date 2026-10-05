@@ -111,6 +111,11 @@ public class LanguageScene : MonoBehaviour
     IEnumerator GoNext()
     {
         yield return new WaitForSecondsRealtime(delay);
+
+        SignupUI ui = FindFirstObjectByType<SignupUI>();
+        if (ui != null) ui.Unlock();
+
+        busy = false;
         nextPage.SetActive(true);
         signup.SetActive(false);
         currentPage.SetActive(false);
