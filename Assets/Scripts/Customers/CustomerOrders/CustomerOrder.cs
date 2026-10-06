@@ -73,9 +73,14 @@ public class CustomerOrder : MonoBehaviour
 
         string itemName = GetItemName(order);
 
+        string highlightedItem =
+            "<b><color=#F87400>" +
+            itemName +
+            "</color></b>";
+
         dialogue = dialogue.Replace(
             "{ITEM_NAME}",
-            itemName
+            highlightedItem
         );
 
         if (orderBubble != null)
@@ -225,5 +230,42 @@ public class CustomerOrder : MonoBehaviour
 
         // ตอนนี้ยังไม่ทำอะไรกับลูกค้า
         // แก้วยังอยู่ เพื่อให้เอาไปเสิร์ฟใหม่ได้
+    }
+
+    public void ShowTimeBar()
+    {
+        if (orderBubble != null)
+        {
+            orderBubble.ShowTimeBar();
+        }
+    }
+
+    public void UpdateTimeBar(
+        float currentTime,
+        float maxTime)
+    {
+        if (orderBubble != null)
+        {
+            orderBubble.UpdateTimeBar(
+                currentTime,
+                maxTime
+            );
+        }
+    }
+
+    public void SetTimeBarAngry()
+    {
+        if (orderBubble != null)
+        {
+            orderBubble.SetTimeBarAngry();
+        }
+    }
+
+    public void HideTimeBar()
+    {
+        if (orderBubble != null)
+        {
+            orderBubble.HideTimeBar();
+        }
     }
 }
