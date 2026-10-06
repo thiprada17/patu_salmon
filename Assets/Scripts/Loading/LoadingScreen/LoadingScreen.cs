@@ -21,8 +21,8 @@ public class LoadingScreen : MonoBehaviour
     void Awake()
     {
         int id = PlayerPrefs.GetInt("SelectedCharacter", 0);
-        int index = GameData.selectedCharacter == "platu" ? 1 : 0;
-        infoBoard.sprite = infoSprites[index];
+        if (infoBoard != null && infoSprites != null && id < infoSprites.Length)
+            infoBoard.sprite = infoSprites[id];
     }
 
     void Start()
