@@ -2,6 +2,7 @@ from urllib.parse import urlencode
 
 from fastapi.responses import RedirectResponse
 from supabase import create_client
+from datetime import datetime, timezone
 
 from config import SUPABASE_URL, SUPABASE_KEY
 
@@ -127,33 +128,159 @@ def get_current_user(access_token: str):
 # Email Login
 # =========================
 
-def email_login(email: str, password: str):
+def email_login(
+    email: str,
+    password: str
+):
 
     try:
+
+        # ---------------------------------
+        # 1. Login to Supabase Auth
+        # ---------------------------------
+
         response = supabase.auth.sign_in_with_password({
             "email": email,
             "password": password
         })
 
-        if response.session is None:
-            raise Exception("Session is empty")
+        if response.user is None:
+            raise Exception(
+                "User not found"
+            )
 
-        access_token = response.session.access_token
-        refresh_token = response.session.refresh_token
+        if response.session is None:
+            raise Exception(
+                "Session is empty"
+            )
+
+        user = response.user
+
+        print("================================")
+        print("Email login successful")
+        print("User ID:", user.id)
+        print("Email:", user.email)
+        print("================================")
+
+
+        # ---------------------------------
+        # 2. Check game users table
+        # ---------------------------------
+
+        player_response = (
+            supabase
+            .table("users")
+            .select("*")
+            .eq("user_id", user.id)
+            .execute()
+        )
+
+
+        # ---------------------------------
+        # 3. First time Login?
+        # ---------------------------------
+
+        if not player_response.data:
+
+            print("First time login")
+            print("Creating player...")
+
+
+            now = datetime.now(
+                timezone.utc
+            ).isoformat()
+
+
+            new_player = {
+                "user_id": user.id,
+
+                # Required because your
+                # database columns are NOT NULL
+                "username": "Player",
+                "character": "default",
+                "language": "en",
+
+                "created_at": now,
+                "last_login_at": now
+            }
+
+
+            insert_response = (
+                supabase
+                .table("users")
+                .insert(new_player)
+                .execute()
+            )
+
+
+            if not insert_response.data:
+                raise Exception(
+                    "Failed to create player"
+                )
+
+
+            print("Player created")
+
+
+        # ---------------------------------
+        # 4. Existing player
+        # ---------------------------------
+
+        else:
+
+            print("Existing player")
+
+            supabase.table("users").update({
+                "last_login_at":
+                    datetime.now(
+                        timezone.utc
+                    ).isoformat()
+            }).eq(
+                "user_id",
+                user.id
+            ).execute()
+
+
+        # ---------------------------------
+        # 5. Return tokens to Unity
+        # ---------------------------------
+
+        access_token = (
+            response.session.access_token
+        )
+
+        refresh_token = (
+            response.session.refresh_token
+        )
+
 
         query = urlencode({
             "access_token": access_token,
             "refresh_token": refresh_token
         })
 
+
+        deep_link = (
+            "platusalmon://login-callback?"
+            + query
+        )
+
+
         return RedirectResponse(
-            url=f"platusalmon://login-callback?{query}",
+            url=deep_link,
             status_code=302
         )
 
+
     except Exception as e:
+
+        print("================================")
+        print("Email login error")
+        print("================================")
+        print(str(e))
+
+
         return {
-            "message": "Email login failed",
+            "message": "Login failed",
             "error": str(e)
         }
-

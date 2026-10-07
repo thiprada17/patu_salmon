@@ -10,7 +10,8 @@ class User(BaseModel):
 
 #Player Class (Email)
 class Player(BaseModel):
-    user_id: str | None = None
+
+    user_id: str
     username: str | None = None
     character: str | None = None
     language: str | None = None
