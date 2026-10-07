@@ -34,7 +34,7 @@ public class EmailAuth : MonoBehaviour
 
     [Header("Server")]
     [SerializeField]
-    private string apiUrl = "http://127.0.0.1:8000";
+    private string apiUrl = "http://127.0.0.1:3000";
 
 
     private void Start()

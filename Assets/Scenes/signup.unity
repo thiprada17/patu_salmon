@@ -3531,7 +3531,7 @@ MonoBehaviour:
   emailInput: {fileID: 1113054988}
   passwordInput: {fileID: 693935206}
   signupButton: {fileID: 1233433329}
-  apiUrl: http://127.0.0.1:8000
+  apiUrl: http://127.0.0.1:3000
 --- !u!1 &1283529068
 GameObject:
   m_ObjectHideFlags: 0
