@@ -122,3 +122,38 @@ def get_current_user(access_token: str):
         print(e)
 
         raise e
+
+# =========================
+# Email Login
+# =========================
+
+def email_login(email: str, password: str):
+
+    try:
+        response = supabase.auth.sign_in_with_password({
+            "email": email,
+            "password": password
+        })
+
+        if response.session is None:
+            raise Exception("Session is empty")
+
+        access_token = response.session.access_token
+        refresh_token = response.session.refresh_token
+
+        query = urlencode({
+            "access_token": access_token,
+            "refresh_token": refresh_token
+        })
+
+        return RedirectResponse(
+            url=f"platusalmon://login-callback?{query}",
+            status_code=302
+        )
+
+    except Exception as e:
+        return {
+            "message": "Email login failed",
+            "error": str(e)
+        }
+

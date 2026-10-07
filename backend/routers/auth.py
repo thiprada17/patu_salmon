@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Header, HTTPException
+from pydantic import BaseModel
 
 from controllers.LoginController import (
     google_login,
     google_callback,
-    get_current_user
+    get_current_user,
+    email_login
 )
 
 
@@ -62,4 +64,24 @@ def current_user(
 
     return get_current_user(
         access_token
+    )
+
+# =========================
+# Email Login
+# =========================
+
+class EmailLoginRequest(BaseModel):
+
+    email: str
+    password: str
+
+
+@router.post("/email")
+def email_auth(
+    data: EmailLoginRequest
+):
+
+    return email_login(
+        data.email,
+        data.password
     )
