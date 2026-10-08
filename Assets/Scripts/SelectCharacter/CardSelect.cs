@@ -38,6 +38,8 @@ public class CardSelect : MonoBehaviour
 
     static bool locked = false;
 
+    private string backendUrl = "http://127.0.0.1:8000";
+
     void Start()
     {
         locked = false;
@@ -52,6 +54,8 @@ public class CardSelect : MonoBehaviour
         if (glow != null) glow.SetActive(true);
         PlayerPrefs.SetInt("SelectedCharacter", characterId);
         PlayerPrefs.Save();
+
+
 
         StartCoroutine(Punch(transform));
         StartCoroutine(GoNext());
