@@ -9,28 +9,25 @@ supabase = create_client(
 )
 
 
-def get_google_login_url(redirect_url):
+def create_google_login_url():
     response = supabase.auth.sign_in_with_oauth({
         "provider": "google",
         "options": {
-            "redirect_to": redirect_url
+            "redirect_to": "http://10.0.2.2:8000/auth/callback",
+            # "skip_http_redirect": True
         }
     })
 
     return response.url
 
 
-def exchange_code(code):
-    response = supabase.auth.exchange_code_for_session({
+def exchange_code(code: str):
+    return supabase.auth.exchange_code_for_session({
         "auth_code": code
     })
 
-    return response
 
-
-def get_user(access_token):
-    response = supabase.auth.get_user(
-        access_token
-    )
+def get_user(access_token: str):
+    response = supabase.auth.get_user(access_token)
 
     return response.user

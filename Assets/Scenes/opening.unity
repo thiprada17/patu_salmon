@@ -2155,7 +2155,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loadingSlider: {fileID: 686007630}
   loadingText: {fileID: 778248967}
-  loadSpeed: 0.03
+  loadSpeed: 0.1
   tipChangeInterval: 2.5
   menuSceneName: signup
   tips:

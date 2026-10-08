@@ -15,3 +15,8 @@ DEEPLINK_URL = os.getenv(
     "DEEPLINK_URL",
     "platusalmon://login-callback"
 )
+if not SUPABASE_URL:
+    raise ValueError("SUPABASE_URL is missing")
+
+if not SUPABASE_KEY:
+    raise ValueError("SUPABASE_KEY is missing")

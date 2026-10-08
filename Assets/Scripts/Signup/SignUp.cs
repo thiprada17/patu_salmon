@@ -114,6 +114,7 @@ public class SignupUI : MonoBehaviour
 
 
 
+
         if (p == "")
         {
             ShowError(passwordInput, passwordError, passwordErrorGroup, "Password is required.");
@@ -149,7 +150,7 @@ public class SignupUI : MonoBehaviour
         PlayerPrefs.SetString("Email", e);
         PlayerPrefs.Save();
 
-        SceneManager.LoadScene("SelectLanguage", LoadSceneMode.Additive);
+        languagePopup.Open();
     }
 
     public void OnGoogleClick()
@@ -159,8 +160,7 @@ public class SignupUI : MonoBehaviour
         if (googleButton != null) StartCoroutine(Punch(googleButton.transform));
 
         locked = true;
-
-        SceneManager.LoadScene("SelectLanguage", LoadSceneMode.Additive);
+        //languagePopup.Open();
     }
 
     IEnumerator GoNext()
