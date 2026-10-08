@@ -44,6 +44,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
+  include("D:/Projects/patu_salmon/.utmp/RelWithDebInfo/672y3050/x86_64/GameActivity/cmake_install.cmake")
   include("D:/Projects/patu_salmon/.utmp/RelWithDebInfo/672y3050/x86_64/FramePacing/cmake_install.cmake")
 
 endif()
