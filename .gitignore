@@ -25,9 +25,5 @@ Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/
 
 backend/services/__pycache__/
 
-Library/Bee/
-Library/Il2cppBuildCache/
-
-.utmp/                  
-backend/__pycache__/config.cpython-314.pyc
-backend/__pycache__/main.cpython-314.pyc
+               
+backend/__pycache__/

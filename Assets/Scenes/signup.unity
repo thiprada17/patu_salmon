@@ -1720,6 +1720,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 141ada00551b7ae47872407c134cbd95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  langButtons:
+  - button: {fileID: 0}
+    normal: {fileID: 0}
+    selected: {fileID: 0}
+  - button: {fileID: 0}
+    normal: {fileID: 0}
+    selected: {fileID: 0}
+  - button: {fileID: 0}
+    normal: {fileID: 0}
+    selected: {fileID: 0}
+  enterButton: {fileID: 0}
+  closeButton: {fileID: 0}
+  box: {fileID: 0}
+  boxGroup: {fileID: 0}
+  dimGroup: {fileID: 0}
+  nextScene: SelectCharacter
+  delay: 0.25
+  punchScale: 1.15
+  punchTime: 0.18
+  openTime: 0.22
+  closeTime: 0.14
+  startScale: 0.8
+  overshoot: 1.04
+  dimAlpha: 0.55
+  defaultIndex: 1
 --- !u!114 &640072337
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3930,7 +3955,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1117477445
 RectTransform:
   m_ObjectHideFlags: 0
