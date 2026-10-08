@@ -1,9 +1,7 @@
-
 using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.SceneManagement;
 
 [Serializable]
 public class GoogleLoginResponse
@@ -13,19 +11,17 @@ public class GoogleLoginResponse
 
 public class GoogleLogin : MonoBehaviour
 {
+    [SerializeField] private LanguagePopup languagePopup;
+
     private string backendUrl = "http://10.0.2.2:8000";
+    private string lastHandledUrl = null;
 
     private void Awake()
     {
         Application.deepLinkActivated += HandleDeepLink;
 
-        Debug.Log("GoogleLogin Awake");
-
         if (!string.IsNullOrEmpty(Application.absoluteURL))
-        {
-            Debug.Log("Initial Deep Link: " + Application.absoluteURL);
             HandleDeepLink(Application.absoluteURL);
-        }
     }
 
     private void OnDestroy()
@@ -41,7 +37,6 @@ public class GoogleLogin : MonoBehaviour
     private IEnumerator StartGoogleLogin()
     {
         string url = backendUrl + "/auth/google";
-
         Debug.Log("Request Google Login: " + url);
 
         using (UnityWebRequest request = UnityWebRequest.Get(url))
@@ -54,28 +49,14 @@ public class GoogleLogin : MonoBehaviour
                 yield break;
             }
 
-            Debug.Log("Backend Response:");
-            Debug.Log(request.downloadHandler.text);
-
             GoogleLoginResponse response =
-                JsonUtility.FromJson<GoogleLoginResponse>(
-                    request.downloadHandler.text
-                );
+                JsonUtility.FromJson<GoogleLoginResponse>(request.downloadHandler.text);
 
-            if (response == null)
-            {
-                Debug.LogError("Cannot parse login response");
-                yield break;
-            }
-
-            if (string.IsNullOrEmpty(response.login_url))
+            if (response == null || string.IsNullOrEmpty(response.login_url))
             {
                 Debug.LogError("Login URL is empty");
                 yield break;
             }
-
-            Debug.Log("Opening Google Login:");
-            Debug.Log(response.login_url);
 
             Application.OpenURL(response.login_url);
         }
@@ -83,8 +64,9 @@ public class GoogleLogin : MonoBehaviour
 
     private void HandleDeepLink(string url)
     {
-        Debug.Log("Received Deep Link:");
-        Debug.Log(url);
+        if (string.IsNullOrEmpty(url) || url == lastHandledUrl) return;
+
+        Debug.Log("Received Deep Link: " + url);
 
         if (!url.StartsWith("platusalmon://login-callback"))
         {
@@ -92,15 +74,8 @@ public class GoogleLogin : MonoBehaviour
             return;
         }
 
-        string accessToken = GetQueryParameter(
-            url,
-            "access_token"
-        );
-
-        string refreshToken = GetQueryParameter(
-            url,
-            "refresh_token"
-        );
+        string accessToken = GetQueryParameter(url, "access_token");
+        string refreshToken = GetQueryParameter(url, "refresh_token");
 
         if (string.IsNullOrEmpty(accessToken))
         {
@@ -108,101 +83,60 @@ public class GoogleLogin : MonoBehaviour
             return;
         }
 
-        PlayerPrefs.SetString(
-            "access_token",
-            accessToken
-        );
+        lastHandledUrl = url;
 
+        PlayerPrefs.SetString("access_token", accessToken);
         if (!string.IsNullOrEmpty(refreshToken))
-        {
-            PlayerPrefs.SetString(
-                "refresh_token",
-                refreshToken
-            );
-        }
-
+            PlayerPrefs.SetString("refresh_token", refreshToken);
         PlayerPrefs.Save();
 
-        Debug.Log("Google Login Success!");
-        Debug.Log("Access Token saved.");
-
+        Debug.Log("Google Login Success! Token saved.");
         OnLoginSuccess();
     }
 
-    private string GetQueryParameter(
-        string url,
-        string parameter
-    )
+    private string GetQueryParameter(string url, string parameter)
     {
         try
         {
             Uri uri = new Uri(url);
-
             string query = uri.Query;
+            if (string.IsNullOrEmpty(query)) return null;
 
-            if (string.IsNullOrEmpty(query))
+            foreach (string param in query.TrimStart('?').Split('&'))
             {
-                return null;
-            }
+                string[] pair = param.Split(new char[] { '=' }, 2);
+                if (pair.Length != 2) continue;
 
-            query = query.TrimStart('?');
-
-            string[] parameters = query.Split('&');
-
-            foreach (string param in parameters)
-            {
-                string[] pair = param.Split(
-                    new char[] { '=' },
-                    2
-                );
-
-                if (pair.Length != 2)
-                {
-                    continue;
-                }
-
-                string key = Uri.UnescapeDataString(
-                    pair[0]
-                );
-
-                string value = Uri.UnescapeDataString(
-                    pair[1]
-                );
-
-                if (key == parameter)
-                {
-                    return value;
-                }
+                if (Uri.UnescapeDataString(pair[0]) == parameter)
+                    return Uri.UnescapeDataString(pair[1]);
             }
         }
         catch (Exception e)
         {
-            Debug.LogError(
-                "Deep Link Parse Error: " + e.Message
-            );
+            Debug.LogError("Deep Link Parse Error: " + e.Message);
         }
 
         return null;
     }
-
     private void OnLoginSuccess()
     {
         Debug.Log("User logged in!");
 
-        SceneManager.LoadScene("SelectCharacter");
-    }
+        if (languagePopup == null)
+        {
+            Debug.LogError("GoogleLogin: languagePopup = NULL");
+            return;
+        }
 
+        Debug.Log("GoogleLogin: Opening Language Popup");
+        languagePopup.Open();
+    }
     private void OnApplicationFocus(bool hasFocus)
     {
-        if (!hasFocus)
-            return;
+        if (!hasFocus) return;
 
         string url = Application.absoluteURL;
-
         if (!string.IsNullOrEmpty(url))
-        {
-            Debug.Log("Application Focus Deep Link: " + url);
             HandleDeepLink(url);
-        }
     }
 }
