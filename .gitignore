@@ -27,5 +27,5 @@ backend/services/__pycache__/
 
                
 backend/__pycache__/
-/.utmp
+.utmp\
 /backend/services/__pycache__
