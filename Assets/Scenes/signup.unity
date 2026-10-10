@@ -1702,7 +1702,7 @@ GameObject:
   - component: {fileID: 640072337}
   - component: {fileID: 640072336}
   m_Layer: 5
-  m_Name: Canvas (1)
+  m_Name: lang popup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
