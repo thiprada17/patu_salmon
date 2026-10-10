@@ -1,5 +1,0 @@
-D:/Projects/patu_salmon/.utmp/RelWithDebInfo/2p161v19/armeabi-v7a/CMakeFiles/edit_cache.dir
-D:/Projects/patu_salmon/.utmp/RelWithDebInfo/2p161v19/armeabi-v7a/CMakeFiles/rebuild_cache.dir
-D:/Projects/patu_salmon/.utmp/RelWithDebInfo/2p161v19/armeabi-v7a/FramePacing/CMakeFiles/swappywrapper.dir
-D:/Projects/patu_salmon/.utmp/RelWithDebInfo/2p161v19/armeabi-v7a/FramePacing/CMakeFiles/edit_cache.dir
-D:/Projects/patu_salmon/.utmp/RelWithDebInfo/2p161v19/armeabi-v7a/FramePacing/CMakeFiles/rebuild_cache.dir

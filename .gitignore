@@ -27,5 +27,10 @@ backend/services/__pycache__/
 
                
 backend/__pycache__/
-.utmp\
 /backend/services/__pycache__
+/.utmp
+/.utmp/RelWithDebInfo
+/Assets/AddressableAssetsData
+**/.utmp/
+
+**/.utmp/
