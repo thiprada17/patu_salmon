@@ -58,7 +58,6 @@ TagManager:
     locked: 0
   - name: Cup_VFX2
     uniqueID: 3890153557
-    uniqueID: 258595973
     locked: 0
   - name: Cloud
     uniqueID: 2995588079
@@ -74,6 +73,12 @@ TagManager:
     locked: 0
   - name: Text
     uniqueID: 71057919
+    locked: 0
+  - name: Pointer
+    uniqueID: 1392824109
+    locked: 0
+  - name: Button
+    uniqueID: 2608755099
     locked: 0
   m_RenderingLayers:
   - Default
