@@ -7,12 +7,18 @@ using System.Collections;
 public class MapDialogueController : MonoBehaviour
 {
     [Header("Dialogue UI")]
+    [SerializeField] private GameObject tutorialOverlay;
     [SerializeField] private GameObject dialogueRoot;
     [SerializeField] private TMP_Text dialogueText;
     [SerializeField] private TMP_Text speakerText;
     [SerializeField] private Button advanceButton;
+
+    [Header("Auto Button")]
     [SerializeField] private Button autoButton;
     [SerializeField] private TMP_Text autoButtonText;
+    [SerializeField] private Image autoButtonImage;
+    [SerializeField] private Sprite autoOffSprite;
+    [SerializeField] private Sprite autoOnSprite;
 
     [Header("Dialogue Content")]
     [SerializeField] private string[] speakerNames;
@@ -20,16 +26,17 @@ public class MapDialogueController : MonoBehaviour
     [TextArea(2, 4)]
     [SerializeField] private string[] dialogueLines;
 
+    [Header("Typewriter Settings")]
+    [SerializeField] private float typingSpeed = 0.035f;
+
     [Header("Auto Settings")]
     [SerializeField] private float autoAdvanceDelay = 2.5f;
 
-    [Header("Auto Button Sprites")]
-    [SerializeField] private Image autoButtonImage;
-    [SerializeField] private Sprite autoOffSprite;
-    [SerializeField] private Sprite autoOnSprite;
-
     private int currentLine;
     private bool autoMode;
+    private bool isTyping;
+
+    private Coroutine typingCoroutine;
     private Coroutine autoCoroutine;
 
     private void Awake()
@@ -43,6 +50,7 @@ public class MapDialogueController : MonoBehaviour
         UpdateAutoButton();
     }
 
+
     private void Start()
     {
         if (dialogueLines == null || dialogueLines.Length == 0)
@@ -52,38 +60,122 @@ public class MapDialogueController : MonoBehaviour
         }
 
         currentLine = 0;
-        dialogueRoot.SetActive(true);
+        autoMode = false;
+
+        // Show the tutorial overlay at the beginning.
+        if (tutorialOverlay != null)
+            tutorialOverlay.SetActive(true);
+
+        // Show the dialogue.
+        if (dialogueRoot != null)
+            dialogueRoot.SetActive(true);
+
+        if (advanceButton != null)
+            advanceButton.gameObject.SetActive(true);
+
         ShowDialogue();
     }
 
+
     public void NextDialogue()
     {
-        StopAutoAdvance();
+        if (dialogueLines == null ||
+            currentLine >= dialogueLines.Length)
+            return;
 
-        currentLine++;
-
-        if (currentLine >= dialogueLines.Length)
+        // First click: reveal the entire current line.
+        if (isTyping)
         {
-            dialogueRoot.SetActive(false);
+            FinishTyping();
             return;
         }
 
+        StopAutoAdvance();
+
+        // Reached the end of the dialogue.
+        if (currentLine >= dialogueLines.Length - 1)
+        {
+            EndDialogue();
+            return;
+        }
+
+        currentLine++;
         ShowDialogue();
     }
 
     private void ShowDialogue()
     {
+        StopTyping();
+        StopAutoAdvance();
+
+        if (dialogueText == null)
+            return;
+
         dialogueText.text = dialogueLines[currentLine];
+        dialogueText.maxVisibleCharacters = 0;
+        dialogueText.ForceMeshUpdate();
 
         if (speakerText != null &&
             speakerNames != null &&
-            speakerNames.Length > currentLine)
+            currentLine < speakerNames.Length)
         {
             speakerText.text = speakerNames[currentLine];
         }
 
+        typingCoroutine = StartCoroutine(TypeText());
+    }
+
+    private IEnumerator TypeText()
+    {
+        isTyping = true;
+
+        int totalCharacters = dialogueText.textInfo.characterCount;
+
+        for (int i = 0; i < totalCharacters; i++)
+        {
+            dialogueText.maxVisibleCharacters = i + 1;
+
+            if (typingSpeed > 0f)
+                yield return new WaitForSecondsRealtime(typingSpeed);
+            else
+                yield return null;
+        }
+
+        dialogueText.maxVisibleCharacters = totalCharacters;
+
+        isTyping = false;
+        typingCoroutine = null;
+
+        // Start Auto timer only after typing finishes.
         if (autoMode)
             ScheduleAutoAdvance();
+    }
+
+    private void FinishTyping()
+    {
+        StopTyping();
+
+        if (dialogueText != null)
+        {
+            dialogueText.maxVisibleCharacters =
+                dialogueText.textInfo.characterCount;
+        }
+
+        isTyping = false;
+
+        if (autoMode)
+            ScheduleAutoAdvance();
+    }
+
+    private void StopTyping()
+    {
+        if (typingCoroutine != null)
+        {
+            StopCoroutine(typingCoroutine);
+            typingCoroutine = null;
+        }
+
+        isTyping = false;
     }
 
     public void ToggleAutoMode()
@@ -91,10 +183,14 @@ public class MapDialogueController : MonoBehaviour
         autoMode = !autoMode;
         UpdateAutoButton();
 
-        if (autoMode)
-            ScheduleAutoAdvance();
-        else
+        if (!autoMode)
+        {
             StopAutoAdvance();
+        }
+        else if (!isTyping)
+        {
+            ScheduleAutoAdvance();
+        }
     }
 
     private void UpdateAutoButton()
@@ -102,8 +198,8 @@ public class MapDialogueController : MonoBehaviour
         if (autoButtonText != null)
         {
             autoButtonText.text = autoMode
-                ? "PLAYING" //AUTO: ON
-                : "AUTO"; //AUTO: OFF
+                ? "PLAYING" //Auto: on
+                : "AUTO"; //Auto: off
         }
 
         if (autoButtonImage != null)
@@ -123,10 +219,15 @@ public class MapDialogueController : MonoBehaviour
     private IEnumerator AutoAdvanceRoutine()
     {
         yield return new WaitForSecondsRealtime(autoAdvanceDelay);
+
         autoCoroutine = null;
 
-        if (autoMode && dialogueRoot.activeSelf)
+        if (autoMode &&
+            dialogueRoot != null &&
+            dialogueRoot.activeSelf)
+        {
             NextDialogue();
+        }
     }
 
     private void StopAutoAdvance()
@@ -138,8 +239,32 @@ public class MapDialogueController : MonoBehaviour
         }
     }
 
+
+    private void EndDialogue()
+    {
+        StopTyping();
+        StopAutoAdvance();
+
+        autoMode = false;
+        UpdateAutoButton();
+
+        // Hide the dialogue panel.
+        if (dialogueRoot != null)
+            dialogueRoot.SetActive(false);
+
+        // Hide the tutorial overlay when the dialogue ends.
+        if (tutorialOverlay != null)
+            tutorialOverlay.SetActive(false);
+
+        // Disable the full-screen advance button.
+        if (advanceButton != null)
+            advanceButton.gameObject.SetActive(false);
+    }
+
+
     private void OnDestroy()
     {
+        StopTyping();
         StopAutoAdvance();
     }
 }
