@@ -1,4 +1,4 @@
-from config import DEEPLINK_URL
+from core.config import DEEPLINK_URL
 
 
 def create_login_deep_link(access_token, refresh_token):

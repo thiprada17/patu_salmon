@@ -238,7 +238,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 58208418}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1117477446}
+        m_TargetAssemblyTypeName: LanguagePopup, Assembly-CSharp
+        m_MethodName: Close
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &127416508
 GameObject:
   m_ObjectHideFlags: 0
@@ -1294,6 +1306,69 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &373815051
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 373815053}
+  - component: {fileID: 373815052}
+  m_Layer: 0
+  m_Name: SignUpController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &373815052
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 373815051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a634778d2b44ba34da35704470935c56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  emailInput: {fileID: 1113054988}
+  passwordInput: {fileID: 693935206}
+  emailError: {fileID: 1762320576}
+  passwordError: {fileID: 572846740}
+  emailErrorGroup: {fileID: 1719070292}
+  passwordErrorGroup: {fileID: 297911221}
+  signupButton: {fileID: 1233433329}
+  googleButton: {fileID: 1036876197}
+  languagePopup: {fileID: 1117477446}
+  nextScene: SelectCharacter
+  delay: 0.25
+  punchScale: 1.15
+  punchTime: 0.18
+  borderNormal: {r: 0.8, g: 0.8, b: 0.8, a: 1}
+  borderOk: {r: 0.55, g: 0.85, b: 0.55, a: 1}
+  borderError: {r: 0.9, g: 0.35, b: 0.2, a: 1}
+  messageError: {r: 1, g: 1, b: 1, a: 1}
+  hoverLighten: 0.15
+  pressDarken: 0.1
+--- !u!4 &373815053
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 373815051}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2.0571027, y: -3.3529806, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &428890683
 GameObject:
   m_ObjectHideFlags: 0
@@ -1720,31 +1795,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 141ada00551b7ae47872407c134cbd95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  langButtons:
-  - button: {fileID: 0}
-    normal: {fileID: 0}
-    selected: {fileID: 0}
-  - button: {fileID: 0}
-    normal: {fileID: 0}
-    selected: {fileID: 0}
-  - button: {fileID: 0}
-    normal: {fileID: 0}
-    selected: {fileID: 0}
-  enterButton: {fileID: 0}
-  closeButton: {fileID: 0}
-  box: {fileID: 0}
-  boxGroup: {fileID: 0}
-  dimGroup: {fileID: 0}
-  nextScene: SelectCharacter
-  delay: 0.25
-  punchScale: 1.15
-  punchTime: 0.18
-  openTime: 0.22
-  closeTime: 0.14
-  startScale: 0.8
-  overshoot: 1.04
-  dimAlpha: 0.55
-  defaultIndex: 1
 --- !u!114 &640072337
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3173,7 +3223,7 @@ MonoBehaviour:
   signupButton: {fileID: 1233433329}
   googleButton: {fileID: 1036876197}
   languagePopup: {fileID: 1117477446}
-  nextScene: 
+  nextScene: SelectCharacter
   delay: 0.25
   punchScale: 1.15
   punchTime: 0.18
@@ -4384,7 +4434,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1233433330}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 373815052}
+        m_TargetAssemblyTypeName: SignupUI, Assembly-CSharp
+        m_MethodName: OnSignupClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1233433330
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5916,3 +5978,4 @@ SceneRoots:
   - {fileID: 841197035}
   - {fileID: 823892923}
   - {fileID: 640072340}
+  - {fileID: 373815053}

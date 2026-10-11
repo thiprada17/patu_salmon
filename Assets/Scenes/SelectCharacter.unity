@@ -1538,6 +1538,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1839956883}
     - target: {fileID: 2916936333599900342, guid: 3682bbd86924d4c4098ddd16c5f7ead9, type: 3}
+      propertyPath: characterName
+      value: salmon
+      objectReference: {fileID: 0}
+    - target: {fileID: 2916936333599900342, guid: 3682bbd86924d4c4098ddd16c5f7ead9, type: 3}
       propertyPath: centerOffset.x
       value: 0.03
       objectReference: {fileID: 0}
@@ -1806,6 +1810,10 @@ PrefabInstance:
       propertyPath: selectButton
       value: 
       objectReference: {fileID: 1905283655}
+    - target: {fileID: 5470113065614662453, guid: 62149492fd8a1894396d22fad658543c, type: 3}
+      propertyPath: characterName
+      value: platu
+      objectReference: {fileID: 0}
     - target: {fileID: 5470113065614662453, guid: 62149492fd8a1894396d22fad658543c, type: 3}
       propertyPath: centerOffset.x
       value: -0.15

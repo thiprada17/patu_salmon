@@ -13,7 +13,7 @@ public class GoogleLogin : MonoBehaviour
 {
     [SerializeField] private LanguagePopup languagePopup;
 
-    private string backendUrl = "http://10.0.2.2:8000";
+    private string backendUrl = "http://127.0.0.1:8000";
     private string lastHandledUrl = null;
 
     private void Awake()
@@ -91,8 +91,25 @@ public class GoogleLogin : MonoBehaviour
         PlayerPrefs.Save();
 
         Debug.Log("Google Login Success! Token saved.");
+
+        StartCoroutine(GetUserIdAndOpenPopup(accessToken));
+    }
+
+
+    private IEnumerator GetUserIdAndOpenPopup(string accessToken)
+    {
+        yield return StartCoroutine(GetUserId(accessToken));
+
+        // ตรวจสอบว่าได้บันทึก UserID แล้วหรือไม่
+        if (string.IsNullOrEmpty(PlayerPrefs.GetString("UserID", "")))
+        {
+            Debug.LogError("ไม่สามารถดึง UserID ได้");
+            yield break;
+        }
+
         OnLoginSuccess();
     }
+
 
     private string GetQueryParameter(string url, string parameter)
     {
@@ -124,13 +141,23 @@ public class GoogleLogin : MonoBehaviour
 
         if (languagePopup == null)
         {
-            Debug.LogError("GoogleLogin: languagePopup = NULL");
+            Debug.LogError("languagePopup = NULL");
             return;
         }
 
-        Debug.Log("GoogleLogin: Opening Language Popup");
-        languagePopup.Open();
+        StartCoroutine(OpenPopupNextFrame());
     }
+
+    private IEnumerator OpenPopupNextFrame()
+    {
+        yield return null;
+
+        languagePopup.gameObject.SetActive(true);
+        languagePopup.Open();
+
+        Debug.Log("Popup Open called");
+    }
+
     private void OnApplicationFocus(bool hasFocus)
     {
         if (!hasFocus) return;
@@ -139,4 +166,56 @@ public class GoogleLogin : MonoBehaviour
         if (!string.IsNullOrEmpty(url))
             HandleDeepLink(url);
     }
+
+    [System.Serializable]
+    public class AuthMeResponse
+    {
+        public string id;
+        public string email;
+    }
+
+    private IEnumerator GetUserId(string accessToken)
+    {
+        string url = backendUrl + "/auth/me";
+
+        using (UnityWebRequest request = UnityWebRequest.Get(url))
+        {
+            request.SetRequestHeader(
+                "Authorization",
+                "Bearer " + accessToken
+            );
+
+            yield return request.SendWebRequest();
+
+            if (request.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError("Get user ID failed: " + request.error);
+                Debug.LogError(request.downloadHandler.text);
+                yield break;
+            }
+
+            AuthMeResponse response =
+                JsonUtility.FromJson<AuthMeResponse>(
+                    request.downloadHandler.text
+                );
+
+            if (response == null || string.IsNullOrEmpty(response.id))
+            {
+                Debug.LogError("Backend response ไม่มี user ID");
+                yield break;
+            }
+
+            PlayerPrefs.SetString("UserID", response.id);
+
+            if (!string.IsNullOrEmpty(response.email))
+                PlayerPrefs.SetString("Email", response.email);
+
+            PlayerPrefs.Save();
+
+            Debug.Log("Google UserID saved: " + response.id);
+        }
+    }
+
 }
+
+
