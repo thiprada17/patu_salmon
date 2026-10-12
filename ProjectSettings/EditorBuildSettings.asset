@@ -39,5 +39,7 @@ EditorBuildSettings:
     path: Assets/Scenes/signup.unity
     guid: 589f726b4c9dc87419a06fbb36da451e
   m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: e46753aed7ec1ea438bac4c1a13da476, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+    com.unity.localization.settings: {fileID: 11400000, guid: 50d5a1ac7932bcd44b6d63584b2886b7, type: 2}
   m_UseUCBPForAssetBundles: 0
