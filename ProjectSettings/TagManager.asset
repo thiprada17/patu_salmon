@@ -80,5 +80,8 @@ TagManager:
   - name: Button
     uniqueID: 2608755099
     locked: 0
+  - name: Overlay
+    uniqueID: 809729759
+    locked: 0
   m_RenderingLayers:
   - Default
