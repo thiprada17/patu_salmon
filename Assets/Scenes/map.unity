@@ -535,6 +535,52 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &71261912
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 71261914}
+  - component: {fileID: 71261913}
+  m_Layer: 0
+  m_Name: TutorialVisualController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &71261913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 71261912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0617b0ac3ea807f439463940d2f7b38d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handPointer: {fileID: 2061425677}
+  overlayCanvas: {fileID: 567850521}
+--- !u!4 &71261914
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 71261912}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.2308522, y: -2.3740265, z: 4.2016864}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &84304842
 GameObject:
   m_ObjectHideFlags: 0
@@ -857,6 +903,50 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &145599626
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 145599628}
+  - component: {fileID: 145599627}
+  m_Layer: 0
+  m_Name: TutorialTargetRegistry
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &145599627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 145599626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86a4cdb12224d8a4393ef672f9086e79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &145599628
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 145599626}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.0231196, y: -2.1242619, z: 4.20839}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &151109367
 GameObject:
   m_ObjectHideFlags: 0
@@ -3550,16 +3640,71 @@ MonoBehaviour:
   - This is your profile where you can see your <color=#F87400>ID card</color>.
   - Oh! And communication is very important! you might want to <color=#F87400>remember</color>
     the name of each tool, ingredients and menu.
-  - you can view all your <color=#F87400>vocabulary collection</color> here in the
-    <color=#F87400>receipt board</color>.
+  - you can view all your <color=#F87400>vocabulary collection</color> here.
   - To start working you simply have to tap on the <color=#F87400>Country Icon</color>.
-  - The <color=#F87400>window</color> will appear and show all the information about
-    this place.
-  - Then click the <color=#F87400>start shift</color> right here to begin your <color=#F87400>shift</color>!
+  - The window will appear and show all the information about this place.
+  - Then click the <color=#F87400>start shift</color> right here to begin your start
+    <color=#F87400>shift</color>!
   - Sometimes we might want to keep track of our customers in <color=#F87400>customer
     collections</color>. Who knows? They could be our regular in the future.
+  - Task
+  - Gacha
+  - Mail
+  dialogueSequence:
+  - entryType: 0
+    normalDialogueIndex: 0
+    tutorialStep: {fileID: 0}
+  - entryType: 0
+    normalDialogueIndex: 1
+    tutorialStep: {fileID: 0}
+  - entryType: 0
+    normalDialogueIndex: 2
+    tutorialStep: {fileID: 0}
+  - entryType: 0
+    normalDialogueIndex: 3
+    tutorialStep: {fileID: 0}
+  - entryType: 0
+    normalDialogueIndex: 4
+    tutorialStep: {fileID: 0}
+  - entryType: 0
+    normalDialogueIndex: 5
+    tutorialStep: {fileID: 0}
+  - entryType: 0
+    normalDialogueIndex: 6
+    tutorialStep: {fileID: 0}
+  - entryType: 0
+    normalDialogueIndex: 7
+    tutorialStep: {fileID: 0}
+  - entryType: 0
+    normalDialogueIndex: 8
+    tutorialStep: {fileID: 0}
+  - entryType: 1
+    normalDialogueIndex: 9
+    tutorialStep: {fileID: 11400000, guid: c37f6ffae9a652d48b4bd7edec04d4c5, type: 2}
+  - entryType: 0
+    normalDialogueIndex: 10
+    tutorialStep: {fileID: 0}
+  - entryType: 0
+    normalDialogueIndex: 11
+    tutorialStep: {fileID: 0}
+  - entryType: 0
+    normalDialogueIndex: 12
+    tutorialStep: {fileID: 0}
+  - entryType: 1
+    normalDialogueIndex: 13
+    tutorialStep: {fileID: 11400000, guid: 36833509ee3010e4bb7cafcf58e6975b, type: 2}
+  - entryType: 1
+    normalDialogueIndex: 14
+    tutorialStep: {fileID: 11400000, guid: 28aa9fc2dbfbe714db02c15c94f204a8, type: 2}
+  - entryType: 1
+    normalDialogueIndex: 15
+    tutorialStep: {fileID: 11400000, guid: d9f3280feb368124f8393711595df995, type: 2}
+  - entryType: 1
+    normalDialogueIndex: 16
+    tutorialStep: {fileID: 11400000, guid: bd3fd77e13e71554b9ff3caaf5992960, type: 2}
   typingSpeed: 0.025
   autoAdvanceDelay: 2.5
+  tutorialVisuals: {fileID: 71261913}
 --- !u!1 &742951807
 GameObject:
   m_ObjectHideFlags: 0
@@ -4683,6 +4828,7 @@ GameObject:
   - component: {fileID: 918799789}
   - component: {fileID: 918799788}
   - component: {fileID: 918799787}
+  - component: {fileID: 918799790}
   m_Layer: 5
   m_Name: CustomerCollection
   m_TagString: Untagged
@@ -4792,6 +4938,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 918799785}
   m_CullTransparentMesh: 1
+--- !u!114 &918799790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 918799785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5124da06bbbdf4d4db4519b22defd09a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetID: 1
 --- !u!1 &946051308
 GameObject:
   m_ObjectHideFlags: 0
@@ -5705,6 +5864,7 @@ GameObject:
   - component: {fileID: 1146218009}
   - component: {fileID: 1146218008}
   - component: {fileID: 1146218007}
+  - component: {fileID: 1146218010}
   m_Layer: 5
   m_Name: VocabCollection
   m_TagString: Untagged
@@ -5814,6 +5974,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1146218005}
   m_CullTransparentMesh: 1
+--- !u!114 &1146218010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1146218005}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5124da06bbbdf4d4db4519b22defd09a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetID: 0
 --- !u!1001 &1147096412
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7272,6 +7445,7 @@ GameObject:
   - component: {fileID: 1448004319}
   - component: {fileID: 1448004318}
   - component: {fileID: 1448004317}
+  - component: {fileID: 1448004320}
   m_Layer: 5
   m_Name: DailyTask
   m_TagString: Untagged
@@ -7381,6 +7555,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1448004315}
   m_CullTransparentMesh: 1
+--- !u!114 &1448004320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1448004315}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5124da06bbbdf4d4db4519b22defd09a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetID: 2
 --- !u!1 &1457075050
 GameObject:
   m_ObjectHideFlags: 0
@@ -7393,6 +7580,7 @@ GameObject:
   - component: {fileID: 1457075054}
   - component: {fileID: 1457075053}
   - component: {fileID: 1457075052}
+  - component: {fileID: 1457075055}
   m_Layer: 5
   m_Name: Gacha
   m_TagString: Untagged
@@ -7502,6 +7690,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1457075050}
   m_CullTransparentMesh: 1
+--- !u!114 &1457075055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1457075050}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5124da06bbbdf4d4db4519b22defd09a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetID: 3
 --- !u!1 &1458194386
 GameObject:
   m_ObjectHideFlags: 0
@@ -8718,7 +8919,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -34, y: -84.000244}
+  m_AnchoredPosition: {x: -34, y: -84}
   m_SizeDelta: {x: -1340, y: -2860}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1822603858
@@ -8929,6 +9130,7 @@ GameObject:
   - component: {fileID: 1954355601}
   - component: {fileID: 1954355600}
   - component: {fileID: 1954355599}
+  - component: {fileID: 1954355602}
   m_Layer: 5
   m_Name: MailBox
   m_TagString: Untagged
@@ -9038,6 +9240,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1954355597}
   m_CullTransparentMesh: 1
+--- !u!114 &1954355602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1954355597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5124da06bbbdf4d4db4519b22defd09a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetID: 4
 --- !u!1 &1955209328
 GameObject:
   m_ObjectHideFlags: 0
@@ -9478,6 +9693,7 @@ GameObject:
   - component: {fileID: 2061425674}
   - component: {fileID: 2061425676}
   - component: {fileID: 2061425675}
+  - component: {fileID: 2061425677}
   m_Layer: 5
   m_Name: HandPoiter
   m_TagString: Untagged
@@ -9501,8 +9717,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -314, y: 64.00008}
-  m_SizeDelta: {x: 199.89, y: 235.5}
+  m_AnchoredPosition: {x: -328.1, y: 80.6}
+  m_SizeDelta: {x: 171.7, y: 202.3}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2061425675
 MonoBehaviour:
@@ -9542,6 +9758,25 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2061425673}
   m_CullTransparentMesh: 1
+--- !u!114 &2061425677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2061425673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a76428f36ed1167478e711912b1d2f8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handPointer: {fileID: 0}
+  pointerParent: {fileID: 0}
+  pointerCanvas: {fileID: 0}
+  pointerImage: {fileID: 0}
+  tiltAngle: -25
+  bounceHeight: 12
+  bounceSpeed: 4
 --- !u!1 &2100455568
 GameObject:
   m_ObjectHideFlags: 0
@@ -9659,3 +9894,5 @@ SceneRoots:
   - {fileID: 1834425794}
   - {fileID: 567850522}
   - {fileID: 1955209332}
+  - {fileID: 145599628}
+  - {fileID: 71261914}

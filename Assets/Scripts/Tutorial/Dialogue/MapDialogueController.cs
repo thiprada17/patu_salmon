@@ -2,10 +2,33 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 using System.Collections;
 
 public class MapDialogueController : MonoBehaviour
 {
+    public enum DialogueEntryType
+    {
+        Normal,
+        Tutorial
+    }
+
+    [Serializable]
+    public class DialogueSequenceEntry
+    {
+        [SerializeField] private DialogueEntryType entryType;
+
+        [Tooltip("Index in the existing speakerNames and dialogueLines arrays.")]
+        [SerializeField] private int normalDialogueIndex;
+
+        [Tooltip("Tutorial asset to display for this entry.")]
+        [SerializeField] private TutorialStepData tutorialStep;
+
+        public DialogueEntryType EntryType => entryType;
+        public int NormalDialogueIndex => normalDialogueIndex;
+        public TutorialStepData TutorialStep => tutorialStep;
+    }
+
     [Header("Dialogue UI")]
     [SerializeField] private GameObject tutorialOverlay;
     [SerializeField] private GameObject dialogueRoot;
@@ -20,17 +43,23 @@ public class MapDialogueController : MonoBehaviour
     [SerializeField] private Sprite autoOffSprite;
     [SerializeField] private Sprite autoOnSprite;
 
-    [Header("Dialogue Content")]
+    [Header("Normal Dialogue Content")]
     [SerializeField] private string[] speakerNames;
 
     [TextArea(2, 4)]
     [SerializeField] private string[] dialogueLines;
+
+    [Header("Dialogue Sequence")]
+    [SerializeField] private DialogueSequenceEntry[] dialogueSequence;
 
     [Header("Typewriter Settings")]
     [SerializeField] private float typingSpeed = 0.035f;
 
     [Header("Auto Settings")]
     [SerializeField] private float autoAdvanceDelay = 2.5f;
+
+    [Header("Tutorial Visuals")]
+    [SerializeField] private TutorialVisualController tutorialVisuals;
 
     private int currentLine;
     private bool autoMode;
@@ -50,23 +79,22 @@ public class MapDialogueController : MonoBehaviour
         UpdateAutoButton();
     }
 
-
     private void Start()
     {
-        if (dialogueLines == null || dialogueLines.Length == 0)
+        if (dialogueSequence == null || dialogueSequence.Length == 0)
         {
-            Debug.LogWarning("No dialogue lines assigned.");
+            Debug.LogWarning(
+                "No entries assigned to Dialogue Sequence."
+            );
             return;
         }
 
         currentLine = 0;
         autoMode = false;
 
-        // Show the tutorial overlay at the beginning.
         if (tutorialOverlay != null)
             tutorialOverlay.SetActive(true);
 
-        // Show the dialogue.
         if (dialogueRoot != null)
             dialogueRoot.SetActive(true);
 
@@ -76,14 +104,13 @@ public class MapDialogueController : MonoBehaviour
         ShowDialogue();
     }
 
-
     public void NextDialogue()
     {
-        if (dialogueLines == null ||
-            currentLine >= dialogueLines.Length)
+        if (dialogueSequence == null ||
+            currentLine >= dialogueSequence.Length)
             return;
 
-        // First click: reveal the entire current line.
+        // First click reveals the complete current line.
         if (isTyping)
         {
             FinishTyping();
@@ -92,8 +119,8 @@ public class MapDialogueController : MonoBehaviour
 
         StopAutoAdvance();
 
-        // Reached the end of the dialogue.
-        if (currentLine >= dialogueLines.Length - 1)
+        // Close the dialogue after the last sequence entry.
+        if (currentLine >= dialogueSequence.Length - 1)
         {
             EndDialogue();
             return;
@@ -108,19 +135,88 @@ public class MapDialogueController : MonoBehaviour
         StopTyping();
         StopAutoAdvance();
 
-        if (dialogueText == null)
+        if (dialogueSequence == null ||
+            currentLine < 0 ||
+            currentLine >= dialogueSequence.Length)
             return;
 
-        dialogueText.text = dialogueLines[currentLine];
+        DialogueSequenceEntry entry = dialogueSequence[currentLine];
+
+        if (entry == null)
+        {
+            Debug.LogWarning(
+                "Dialogue Sequence entry is empty at index " + currentLine
+            );
+            return;
+        }
+
+        string line;
+        string speaker;
+
+        if (entry.EntryType == DialogueEntryType.Normal)
+        {
+            int index = entry.NormalDialogueIndex;
+
+            if (dialogueLines == null ||
+                index < 0 ||
+                index >= dialogueLines.Length)
+            {
+                Debug.LogWarning(
+                    "Invalid normal dialogue index: " + index
+                );
+                return;
+            }
+
+            line = dialogueLines[index] ?? "";
+
+            speaker = speakerNames != null &&
+                      index >= 0 &&
+                      index < speakerNames.Length
+                ? speakerNames[index] ?? ""
+                : "";
+        }
+        else
+        {
+            TutorialStepData step = entry.TutorialStep;
+
+            if (step == null)
+            {
+                Debug.LogWarning(
+                    "Missing TutorialStepData at sequence index " +
+                    currentLine
+                );
+                return;
+            }
+
+            line = step.Dialogue ?? "";
+            speaker = step.SpeakerName ?? "";
+        }
+
+        // Show the finger for tutorial dialogue only.
+        if (tutorialVisuals != null)
+        {
+            if (entry.EntryType == DialogueEntryType.Tutorial)
+            {
+                tutorialVisuals.ShowStep(entry.TutorialStep);
+            }
+            else
+            {
+                tutorialVisuals.HideAll();
+            }
+        }
+
+        if (speakerText != null)
+            speakerText.text = speaker;
+
+        if (dialogueText == null)
+        {
+            Debug.LogWarning("Dialogue Text is not assigned.");
+            return;
+        }
+
+        dialogueText.text = line;
         dialogueText.maxVisibleCharacters = 0;
         dialogueText.ForceMeshUpdate();
-
-        if (speakerText != null &&
-            speakerNames != null &&
-            currentLine < speakerNames.Length)
-        {
-            speakerText.text = speakerNames[currentLine];
-        }
 
         typingCoroutine = StartCoroutine(TypeText());
     }
@@ -146,7 +242,6 @@ public class MapDialogueController : MonoBehaviour
         isTyping = false;
         typingCoroutine = null;
 
-        // Start Auto timer only after typing finishes.
         if (autoMode)
             ScheduleAutoAdvance();
     }
@@ -198,8 +293,8 @@ public class MapDialogueController : MonoBehaviour
         if (autoButtonText != null)
         {
             autoButtonText.text = autoMode
-                ? "PLAYING" //Auto: on
-                : "AUTO"; //Auto: off
+                ? "PLAYING"
+                : "AUTO";
         }
 
         if (autoButtonImage != null)
@@ -239,7 +334,6 @@ public class MapDialogueController : MonoBehaviour
         }
     }
 
-
     private void EndDialogue()
     {
         StopTyping();
@@ -248,23 +342,28 @@ public class MapDialogueController : MonoBehaviour
         autoMode = false;
         UpdateAutoButton();
 
-        // Hide the dialogue panel.
         if (dialogueRoot != null)
             dialogueRoot.SetActive(false);
 
-        // Hide the tutorial overlay when the dialogue ends.
         if (tutorialOverlay != null)
             tutorialOverlay.SetActive(false);
 
-        // Disable the full-screen advance button.
         if (advanceButton != null)
             advanceButton.gameObject.SetActive(false);
-    }
 
+        if (tutorialVisuals != null)
+            tutorialVisuals.HideAll();
+    }
 
     private void OnDestroy()
     {
         StopTyping();
         StopAutoAdvance();
+
+        if (advanceButton != null)
+            advanceButton.onClick.RemoveListener(NextDialogue);
+
+        if (autoButton != null)
+            autoButton.onClick.RemoveListener(ToggleAutoMode);
     }
 }
