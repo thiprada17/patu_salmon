@@ -38,6 +38,12 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Overlay
+    uniqueID: 2332979219
+    locked: 0
+  - name: BehideDialogue
+    uniqueID: 809729759
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
@@ -79,9 +85,6 @@ TagManager:
     locked: 0
   - name: Button
     uniqueID: 2608755099
-    locked: 0
-  - name: Overlay
-    uniqueID: 809729759
     locked: 0
   m_RenderingLayers:
   - Default
