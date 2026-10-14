@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -32,8 +31,10 @@ public class MapDialogueController : MonoBehaviour
     [Header("Dialogue UI")]
     [SerializeField] private GameObject tutorialOverlay;
     [SerializeField] private GameObject dialogueRoot;
+    [SerializeField] private RectTransform dialogueBox;
     [SerializeField] private TMP_Text dialogueText;
     [SerializeField] private TMP_Text speakerText;
+    [SerializeField] private GameObject speakerRoot;
     [SerializeField] private Button advanceButton;
 
     [Header("Auto Button")]
@@ -61,26 +62,52 @@ public class MapDialogueController : MonoBehaviour
     [Header("Tutorial Visuals")]
     [SerializeField] private TutorialVisualController tutorialVisuals;
 
+    [Header("Temporary Country Highlights")]
+    [SerializeField] private CountryTempCanvasController countryTempCanvas;
+
+    [Header("Tutorial Character")]
+    [SerializeField] private GameObject mysteriousFox;
+
     private int currentLine;
     private bool autoMode;
     private bool isTyping;
+    private bool dialogueStarted;
+
+    // True only while the current dialogue entry is a tutorial step.
+    private bool isTutorial;
+
+    private string currentSpeakerName = "";
+
+    private Vector2 originalDialoguePosition;
+    private bool originalPositionSaved;
 
     private Coroutine typingCoroutine;
     private Coroutine autoCoroutine;
 
     private void Awake()
     {
+        if (dialogueBox != null)
+        {
+            originalDialoguePosition = dialogueBox.anchoredPosition;
+            originalPositionSaved = true;
+        }
+
         if (advanceButton != null)
             advanceButton.onClick.AddListener(NextDialogue);
 
         if (autoButton != null)
             autoButton.onClick.AddListener(ToggleAutoMode);
 
+        if (mysteriousFox != null)
+            mysteriousFox.SetActive(false);
+
         UpdateAutoButton();
     }
 
     private void Start()
     {
+        Debug.Log("MapDialogueController Start() is running!");
+
         if (dialogueSequence == null || dialogueSequence.Length == 0)
         {
             Debug.LogWarning(
@@ -91,6 +118,9 @@ public class MapDialogueController : MonoBehaviour
 
         currentLine = 0;
         autoMode = false;
+        currentSpeakerName = "";
+        dialogueStarted = true;
+        isTutorial = false;
 
         if (tutorialOverlay != null)
             tutorialOverlay.SetActive(true);
@@ -104,13 +134,24 @@ public class MapDialogueController : MonoBehaviour
         ShowDialogue();
     }
 
+    // Called by map and country click-handler scripts.
+    public bool IsTutorialInputLocked()
+    {
+        bool locked = dialogueStarted && isTutorial;
+
+        return locked;
+    }
+
     public void NextDialogue()
     {
-        if (dialogueSequence == null ||
+        if (!dialogueStarted ||
+            dialogueSequence == null ||
+            currentLine < 0 ||
             currentLine >= dialogueSequence.Length)
+        {
             return;
+        }
 
-        // First click reveals the complete current line.
         if (isTyping)
         {
             FinishTyping();
@@ -119,7 +160,6 @@ public class MapDialogueController : MonoBehaviour
 
         StopAutoAdvance();
 
-        // Close the dialogue after the last sequence entry.
         if (currentLine >= dialogueSequence.Length - 1)
         {
             EndDialogue();
@@ -138,20 +178,49 @@ public class MapDialogueController : MonoBehaviour
         if (dialogueSequence == null ||
             currentLine < 0 ||
             currentLine >= dialogueSequence.Length)
+        {
+            isTutorial = false;
+            HideTutorialObjects();
             return;
+        }
 
         DialogueSequenceEntry entry = dialogueSequence[currentLine];
 
         if (entry == null)
         {
+            isTutorial = false;
+
             Debug.LogWarning(
                 "Dialogue Sequence entry is empty at index " + currentLine
             );
+
+            HideTutorialObjects();
             return;
         }
 
+        // Update the shared tutorial-lock state for this entry.
+        isTutorial = entry.EntryType == DialogueEntryType.Tutorial;
+
+        TutorialStepData step = isTutorial
+            ? entry.TutorialStep
+            : null;
+
         string line;
         string speaker;
+
+        // Keep the fox visible throughout the dialogue sequence.
+        if (mysteriousFox != null)
+            mysteriousFox.SetActive(true);
+
+        if (isTutorial && step == null)
+        {
+            Debug.LogWarning(
+                "Missing TutorialStepData at sequence index " + currentLine
+            );
+
+            HideTutorialObjects();
+            return;
+        }
 
         if (entry.EntryType == DialogueEntryType.Normal)
         {
@@ -164,49 +233,89 @@ public class MapDialogueController : MonoBehaviour
                 Debug.LogWarning(
                     "Invalid normal dialogue index: " + index
                 );
+
+                HideTutorialObjects();
                 return;
             }
 
             line = dialogueLines[index] ?? "";
 
             speaker = speakerNames != null &&
-                      index >= 0 &&
                       index < speakerNames.Length
                 ? speakerNames[index] ?? ""
                 : "";
+
+            RestoreDialoguePosition();
         }
         else
         {
-            TutorialStepData step = entry.TutorialStep;
-
-            if (step == null)
-            {
-                Debug.LogWarning(
-                    "Missing TutorialStepData at sequence index " +
-                    currentLine
-                );
-                return;
-            }
-
             line = step.Dialogue ?? "";
             speaker = step.SpeakerName ?? "";
+
+            ApplyDialoguePosition(step);
         }
 
-        // Show the finger for tutorial dialogue only.
-        if (tutorialVisuals != null)
+        if (!string.IsNullOrWhiteSpace(speaker))
+            currentSpeakerName = speaker;
+
+        // Update tutorial visuals and temporary country highlights.
+        if (isTutorial)
         {
-            if (entry.EntryType == DialogueEntryType.Tutorial)
+            Debug.Log("Tutorial dialogue reached: " + currentLine);
+            Debug.Log("Tutorial TargetID: " + step.TargetID);
+
+            if (tutorialVisuals != null)
+                tutorialVisuals.ShowStep(step);
+
+            if (countryTempCanvas != null)
             {
-                tutorialVisuals.ShowStep(entry.TutorialStep);
+                switch (step.TargetID)
+                {
+                    case global::TutorialTargetID.CountryIcon:
+                        countryTempCanvas.ShowCountryIcon();
+                        break;
+
+                    case global::TutorialTargetID.CountryWindow:
+                        countryTempCanvas.ShowCountryPopup();
+                        break;
+
+                    case global::TutorialTargetID.StartShift:
+                        countryTempCanvas.ShowCountryPopupGlow();
+                        break;
+
+                    default:
+                        countryTempCanvas.HideAll();
+                        break;
+                }
             }
             else
             {
-                tutorialVisuals.HideAll();
+                Debug.LogWarning(
+                    "CountryTempCanvas is NOT assigned!"
+                );
             }
         }
+        else
+        {
+            HideTutorialObjects();
+        }
+
+        // Apply Hide Speaker to the speaker UI.
+        bool hideSpeaker = isTutorial &&
+                           step != null &&
+                           step.HideSpeaker;
 
         if (speakerText != null)
-            speakerText.text = speaker;
+            speakerText.text = hideSpeaker ? "" : currentSpeakerName;
+
+        if (speakerRoot != null)
+        {
+            speakerRoot.SetActive(!hideSpeaker);
+        }
+        else if (speakerText != null)
+        {
+            speakerText.gameObject.SetActive(!hideSpeaker);
+        }
 
         if (dialogueText == null)
         {
@@ -219,6 +328,35 @@ public class MapDialogueController : MonoBehaviour
         dialogueText.ForceMeshUpdate();
 
         typingCoroutine = StartCoroutine(TypeText());
+    }
+
+    private void HideTutorialObjects()
+    {
+        if (tutorialVisuals != null)
+            tutorialVisuals.HideAll();
+
+        if (countryTempCanvas != null)
+            countryTempCanvas.HideAll();
+
+        // Do not hide the fox here.
+        // It is hidden when the entire sequence ends.
+    }
+
+    private void ApplyDialoguePosition(TutorialStepData step)
+    {
+        if (dialogueBox == null || step == null)
+            return;
+
+        if (step.UseCustomDialoguePosition)
+            dialogueBox.anchoredPosition = step.DialoguePosition;
+        else
+            RestoreDialoguePosition();
+    }
+
+    private void RestoreDialoguePosition()
+    {
+        if (dialogueBox != null && originalPositionSaved)
+            dialogueBox.anchoredPosition = originalDialoguePosition;
     }
 
     private IEnumerator TypeText()
@@ -318,6 +456,7 @@ public class MapDialogueController : MonoBehaviour
         autoCoroutine = null;
 
         if (autoMode &&
+            dialogueStarted &&
             dialogueRoot != null &&
             dialogueRoot.activeSelf)
         {
@@ -339,8 +478,13 @@ public class MapDialogueController : MonoBehaviour
         StopTyping();
         StopAutoAdvance();
 
+        dialogueStarted = false;
+        isTutorial = false;
         autoMode = false;
+
         UpdateAutoButton();
+        RestoreDialoguePosition();
+        HideTutorialObjects();
 
         if (dialogueRoot != null)
             dialogueRoot.SetActive(false);
@@ -351,8 +495,17 @@ public class MapDialogueController : MonoBehaviour
         if (advanceButton != null)
             advanceButton.gameObject.SetActive(false);
 
-        if (tutorialVisuals != null)
-            tutorialVisuals.HideAll();
+        if (speakerText != null)
+        {
+            speakerText.text = "";
+            speakerText.gameObject.SetActive(false);
+        }
+
+        if (speakerRoot != null)
+            speakerRoot.SetActive(false);
+
+        if (mysteriousFox != null)
+            mysteriousFox.SetActive(false);
     }
 
     private void OnDestroy()

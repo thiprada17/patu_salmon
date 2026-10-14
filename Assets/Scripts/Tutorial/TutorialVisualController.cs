@@ -7,16 +7,33 @@ public class TutorialVisualController : MonoBehaviour
     [SerializeField] private HandPointerController handPointer;
 
     [Header("Overlay Canvas")]
-    [Tooltip("The Canvas that contains TutorialOverlay.")]
+    [Tooltip("The Canvas containing the tutorial overlay.")]
     [SerializeField] private Canvas overlayCanvas;
 
     private Transform currentHighlightedTarget;
-    private Canvas targetCanvas;
 
+    // SpriteRenderer target settings
+    private SpriteRenderer targetSpriteRenderer;
+    private int originalSpriteSortingLayerID;
+    private int originalSpriteSortingOrder;
+
+    // Canvas target settings
+    private Canvas targetCanvas;
     private bool addedCanvas;
     private bool originalOverrideSorting;
-    private int originalSortingOrder;
-    private int originalSortingLayerID;
+    private bool originalCanvasEnabled;
+    private int originalCanvasSortingOrder;
+    private int originalCanvasSortingLayerID;
+
+    private enum TargetRenderType
+    {
+        None,
+        SpriteRenderer,
+        Canvas
+    }
+
+    private TargetRenderType currentRenderType =
+        TargetRenderType.None;
 
     public void ShowStep(TutorialStepData step)
     {
@@ -33,6 +50,7 @@ public class TutorialVisualController : MonoBehaviour
             Debug.LogWarning(
                 "TutorialTargetRegistry is missing from the scene."
             );
+
             HideAll();
             return;
         }
@@ -42,6 +60,10 @@ public class TutorialVisualController : MonoBehaviour
 
         if (target == null)
         {
+            Debug.LogWarning(
+                "Tutorial target not found: " + step.TargetID
+            );
+
             HideAll();
             return;
         }
@@ -74,55 +96,113 @@ public class TutorialVisualController : MonoBehaviour
         if (overlayCanvas == null)
         {
             Debug.LogWarning(
-                "Overlay Canvas is not assigned in TutorialVisualController."
+                "Overlay Canvas is not assigned."
             );
+
             return;
         }
 
         currentHighlightedTarget = target;
 
-        // Use the existing Canvas if one is present.
+        // CASE 1: The target is a SpriteRenderer.
+        targetSpriteRenderer = target.GetComponent<SpriteRenderer>();
+
+        if (targetSpriteRenderer != null)
+        {
+            currentRenderType = TargetRenderType.SpriteRenderer;
+
+            // Save the original sorting settings.
+            originalSpriteSortingLayerID =
+                targetSpriteRenderer.sortingLayerID;
+
+            originalSpriteSortingOrder =
+                targetSpriteRenderer.sortingOrder;
+
+            // Temporarily render it above the overlay.
+            targetSpriteRenderer.sortingLayerID =
+                overlayCanvas.sortingLayerID;
+
+            targetSpriteRenderer.sortingOrder =
+                overlayCanvas.sortingOrder + 1;
+
+            return;
+        }
+
+        // CASE 2: The target is a UI element with its own Canvas.
         targetCanvas = target.GetComponent<Canvas>();
         addedCanvas = targetCanvas == null;
 
         if (addedCanvas)
+        {
             targetCanvas = target.gameObject.AddComponent<Canvas>();
+        }
 
-        // Remember the original settings.
+        currentRenderType = TargetRenderType.Canvas;
+
+        // Save the original Canvas settings.
         originalOverrideSorting = targetCanvas.overrideSorting;
-        originalSortingOrder = targetCanvas.sortingOrder;
-        originalSortingLayerID = targetCanvas.sortingLayerID;
+        originalCanvasEnabled = targetCanvas.enabled;
 
-        // Render this target above the tutorial overlay.
+        originalCanvasSortingOrder =
+            targetCanvas.sortingOrder;
+
+        originalCanvasSortingLayerID =
+            targetCanvas.sortingLayerID;
+
+        // Temporarily render it above the overlay Canvas.
         targetCanvas.overrideSorting = true;
-        targetCanvas.sortingLayerID = overlayCanvas.sortingLayerID;
-        targetCanvas.sortingOrder = overlayCanvas.sortingOrder + 1;
+        targetCanvas.sortingLayerID =
+            overlayCanvas.sortingLayerID;
+
+        targetCanvas.sortingOrder =
+            overlayCanvas.sortingOrder + 1;
+
+        targetCanvas.enabled = true;
     }
 
     private void RestoreTargetOrder()
     {
-        if (targetCanvas == null)
+        if (currentRenderType == TargetRenderType.SpriteRenderer)
         {
-            currentHighlightedTarget = null;
-            return;
+            if (targetSpriteRenderer != null)
+            {
+                targetSpriteRenderer.sortingLayerID =
+                    originalSpriteSortingLayerID;
+
+                targetSpriteRenderer.sortingOrder =
+                    originalSpriteSortingOrder;
+            }
+        }
+        else if (currentRenderType == TargetRenderType.Canvas)
+        {
+            if (targetCanvas != null)
+            {
+                if (addedCanvas)
+                {
+                    Destroy(targetCanvas);
+                }
+                else
+                {
+                    targetCanvas.overrideSorting =
+                        originalOverrideSorting;
+
+                    targetCanvas.enabled =
+                        originalCanvasEnabled;
+
+                    targetCanvas.sortingOrder =
+                        originalCanvasSortingOrder;
+
+                    targetCanvas.sortingLayerID =
+                        originalCanvasSortingLayerID;
+                }
+            }
         }
 
-        if (addedCanvas)
-        {
-            // Remove only the Canvas this script added.
-            Destroy(targetCanvas);
-        }
-        else
-        {
-            // Restore the Canvas that was already there.
-            targetCanvas.overrideSorting = originalOverrideSorting;
-            targetCanvas.sortingOrder = originalSortingOrder;
-            targetCanvas.sortingLayerID = originalSortingLayerID;
-        }
-
-        targetCanvas = null;
         currentHighlightedTarget = null;
+        targetSpriteRenderer = null;
+        targetCanvas = null;
         addedCanvas = false;
+        currentRenderType = TargetRenderType.None;
     }
 
     public void HideAll()

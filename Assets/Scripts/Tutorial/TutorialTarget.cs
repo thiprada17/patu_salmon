@@ -7,7 +7,13 @@ public enum TutorialTargetID
     CustomerCollection,
     DailyTask,
     Gacha,
-    MailBox
+    MailBox,
+    Wallet,
+    Calendar,
+    Profile,
+    CountryIcon,
+    CountryWindow,
+    StartShift
 }
 
 public class TutorialTarget : MonoBehaviour
