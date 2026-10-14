@@ -25,8 +25,6 @@ public class RMatCupSlot : MonoBehaviour
         // เช็คก่อนว่า slot นี้มีแก้วอยู่แล้วรึยัง
         if (cupDispenser != null && cupDispenser.IsSlotOccupied("R"))
         {
-            Debug.Log("RIGHT slot มีแก้วอยู่แล้ว ไม่ให้ attach ซ้อน");
-
             DraggableItem rejectedDraggable = cup.GetComponent<DraggableItem>();
             if (rejectedDraggable != null)
             {
@@ -39,7 +37,7 @@ public class RMatCupSlot : MonoBehaviour
         // เช็ก Attach Point
         if (attachPoint == null)
         {
-            Debug.LogError("ยังไม่ได้ใส่ Attach Point");
+            GameLogger.Warn("RMat", "ยังไม่ได้ใส่ Attach Point");
             return;
         }
 
@@ -65,7 +63,7 @@ public class RMatCupSlot : MonoBehaviour
             cupDispenser.OccupySlot("R", cup);
         }
 
-        Debug.Log("Cup attached to RIGHT slot");
+        GameLogger.DebugLog("RMat", "Cup attached to RIGHT slot");
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -99,6 +97,6 @@ public class RMatCupSlot : MonoBehaviour
             cupDispenser.ReleaseSlot("R", cup);
         }
 
-        Debug.Log("Cup removed from RIGHT slot");
+        GameLogger.DebugLog("RMat", "Cup removed from RIGHT slot");
     }
 }

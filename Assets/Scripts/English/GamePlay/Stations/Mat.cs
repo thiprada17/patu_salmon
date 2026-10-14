@@ -10,10 +10,7 @@ public class Mat : MonoBehaviour
 
     public void AttachLeftCup(Cup cup)
     {
-        Debug.Log("Cup อยู่ Slot ซ้าย");
-
         currentCup = cup;
-
         CheckRecipe();
     }
 
@@ -23,17 +20,12 @@ public class Mat : MonoBehaviour
         if (currentCup == cup)
         {
             currentCup = null;
-
-            Debug.Log("Cup ออกจาก Slot ซ้าย");
         }
     }
 
     public void AttachRightCup(Cup cup)
     {
-        Debug.Log("Cup อยู่ Slot ขวา");
-
         currentCup = cup;
-
         CheckRecipe();
     }
 
@@ -43,8 +35,6 @@ public class Mat : MonoBehaviour
         if (currentCup == cup)
         {
             currentCup = null;
-
-            Debug.Log("Cup ออกจาก Slot ขวา");
         }
     }
 
@@ -58,7 +48,7 @@ public class Mat : MonoBehaviour
 
         if (recipeManager == null)
         {
-            Debug.LogError("ยังไม่ได้ใส่ RecipeManager");
+            GameLogger.Warn("Mat", "ยังไม่ได้ใส่ RecipeManager");
             return;
         }
 
@@ -68,14 +58,12 @@ public class Mat : MonoBehaviour
 
 
         if (recipe == null)
-        {
-            Debug.Log("Cup นี้ไม่ตรงกับสูตร");
+        { 
+            GameLogger.Warn("Mat", "Cup นี้ไม่ตรงกับสูตร");
             return;
         }
 
-
-        Debug.Log("Cup is " + recipe.recipeType);
-
+        GameLogger.Info("Mat", "Cup is " + recipe.recipeType);
 
         // เปลี่ยน Cup เป็นรูปเมนูสำเร็จ
         currentCup.SetFinishedRecipe(recipe.finishedCupSprite, recipe.recipeType);

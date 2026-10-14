@@ -13,8 +13,7 @@ public class Water : MonoBehaviour
     public void AttachCup(Cup cup)
     {
         currentCup = cup;
-
-        Debug.Log("Cup attached to water");
+        GameLogger.DebugLog("Water", "Cup attached to water");
     }
 
     public void RemoveCup(Cup cup)
@@ -23,7 +22,7 @@ public class Water : MonoBehaviour
         {
             currentCup = null;
 
-            Debug.Log("Cup removed from water");
+            GameLogger.DebugLog("Water", "Cup removed from water");
         }
     }
 
@@ -61,13 +60,13 @@ public class Water : MonoBehaviour
     {
         if (currentCup == null)
         {
-            Debug.Log("ยังไม่ได้ใส่ Cup");
+            GameLogger.Warn("Water", "ยังไม่ได้ใส่ Cup");
             return;
         }
 
         if (isAddingWater)
         {
-            Debug.Log("Water กำลังทำงานอยู่");
+            GameLogger.DebugLog("Water", "Water กำลังทำงานอยู่");
             return;
         }
 
@@ -89,11 +88,11 @@ public class Water : MonoBehaviour
 
             if (success)
             {
-                Debug.Log("Water added to Cup");
+                GameLogger.Info("Water", "Water added to Cup");
             }
             else
             {
-                Debug.Log("ไม่สามารถใส่ Water ลง Cup ได้");
+                GameLogger.Info("Water", "ไม่สามารถใส่ Water ลง Cup ได้");
             }
         }
 

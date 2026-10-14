@@ -2,13 +2,17 @@
 from fastapi import APIRouter, Depends, Header, HTTPException
 from pydantic import BaseModel, EmailStr
 
-from schemas.auth import AuthRequest
+from schemas.auth import AuthRequest, RefreshRequest
 from services.auth_service import AuthService
 
 router = APIRouter(
     prefix="/auth",
     tags=["Authentication"]
 )
+
+
+auth_service = AuthService()
+
 
 
 def get_auth_service():
@@ -88,3 +92,8 @@ def continue_auth(
         email=str(data.email),
         password=data.password
     )
+
+
+@router.post("/refresh")
+def refresh_session(request: RefreshRequest):
+    return auth_service.refresh_session(request.refresh_token)

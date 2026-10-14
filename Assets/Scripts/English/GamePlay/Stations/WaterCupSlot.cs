@@ -24,7 +24,7 @@ public class WaterCupSlot : MonoBehaviour
         // เช็ก Attach Point
         if (attachPoint == null)
         {
-            Debug.LogError("ยังไม่ได้ใส่ Attach Point");
+            GameLogger.DebugLog("Water", "ยังไม่ได้ใส่ Attach Point");
             return;
         }
 
@@ -41,7 +41,7 @@ public class WaterCupSlot : MonoBehaviour
 
         water.AttachCup(cup);
 
-        Debug.Log("Cup attached to water");
+        GameLogger.DebugLog("Water", "Cup attached to water");
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -72,6 +72,6 @@ public class WaterCupSlot : MonoBehaviour
             water.RemoveCup(cup);
         }
 
-        Debug.Log("Cup removed from water");
+        GameLogger.DebugLog("Water", "Cup removed from water");
     }
 }

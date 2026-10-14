@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System;
 
 public class Cup : MonoBehaviour
 {
@@ -26,36 +27,36 @@ public class Cup : MonoBehaviour
     [SerializeField] private GameObject prefinishVFX;
     [SerializeField] private Transform prevfxPoint;
 
-    [Header("Empty Cup")]
+    [Header("Empty Cup")] 
     [SerializeField]
     private SpriteRenderer emptyCupRenderer;
 
 
-    [Header("Finished Cup")]
+    [Header("Finished Cup")] 
     [SerializeField]
     private SpriteRenderer finishedCupRenderer;
 
-    [Header("Cap")]
+    [Header("Cap")] 
     [SerializeField]
     private GameObject capObject;
 
 
-    [Header("Coffee")]
+    [Header("Coffee")] 
     [SerializeField]
     private GameObject[] coffeeObjects = new GameObject[MaxIngredients];
 
     
-    [Header("Milk")]
+    [Header("Milk")] 
     [SerializeField]
     private GameObject[] milkObjects = new GameObject[MaxIngredients];
 
 
-    [Header("Water")]
+    [Header("Water")] 
     [SerializeField]
     private GameObject[] waterObjects = new GameObject[MaxIngredients];
 
 
-    [Header("Cocoa")]
+    [Header("Cocoa")] 
     [SerializeField]
     private GameObject[] cocoaObjects = new GameObject[MaxIngredients];
 
@@ -63,16 +64,12 @@ public class Cup : MonoBehaviour
     private void Awake()
     {
         DisableAllIngredientObjects();
-
         servingCup = GetComponent<ServingCup>();
 
         if (servingCup == null)
         {
-            Debug.LogError(
-                name + " cannot find ServingCup!"
-            );
+            GameLogger.Error("CUP", name + " cannot find ServingCup");
         }
-
         if (finishedCupRenderer != null)
         {
             finishedCupRenderer.gameObject.SetActive(false);
@@ -91,8 +88,7 @@ public class Cup : MonoBehaviour
 
     private void DisableObjects(GameObject[] objects)
     {
-        if (objects == null)
-            return;
+        if (objects == null) return;
 
         for (int i = 0; i < objects.Length; i++)
         {
@@ -104,22 +100,17 @@ public class Cup : MonoBehaviour
     }
 
 
-    public bool AddIngredient(
-        IngredientType ingredient)
+    public bool AddIngredient(IngredientType ingredient)
     {
-        if (ingredients == null ||
-            ingredients.Length != MaxIngredients)
+        if (ingredients == null || ingredients.Length != MaxIngredients)
         {
-            ingredients =
-                new IngredientType[MaxIngredients];
+            ingredients = new IngredientType[MaxIngredients];
         }
 
 
-        if (hasIngredient == null ||
-            hasIngredient.Length != MaxIngredients)
+        if (hasIngredient == null || hasIngredient.Length != MaxIngredients)
         {
-            hasIngredient =
-                new bool[MaxIngredients];
+            hasIngredient = new bool[MaxIngredients];
         }
 
 
@@ -131,16 +122,9 @@ public class Cup : MonoBehaviour
                 hasIngredient[i] = true;
 
                 ShowIngredient(ingredient, i);
-
-                Debug.Log( "Added " + ingredient + " to Cup Index " + i );
-
                 return true;
             }
         }
-
-
-        Debug.Log("Cup is full!");
-
         return false;
     }
 
@@ -152,8 +136,6 @@ public class Cup : MonoBehaviour
         if (index < 0 ||
             index >= MaxIngredients)
         {
-            Debug.LogError( "Invalid Cup Index: " + index );
-
             return;
         }
 
@@ -163,7 +145,7 @@ public class Cup : MonoBehaviour
 
         if (objects == null)
         {
-            Debug.LogError( "ไม่มี Object สำหรับ " + ingredient );
+            GameLogger.Warn("CUP", "ไม่มี Object สำหรับ " + ingredient );
 
             return;
         }
@@ -172,21 +154,15 @@ public class Cup : MonoBehaviour
         if (index >= objects.Length ||
             objects[index] == null)
         {
-            Debug.LogError( "ไม่มี " + ingredient + "_Index_" + index );
-
+            GameLogger.Error("CUP", "ไม่มี " + ingredient + "Index: " + index);
             return;
         }
 
-
         objects[index].SetActive(true);
-
-
-        Debug.Log( "เปิด " + ingredient + "_Index_" + index );
     }
 
 
-    private GameObject[] GetIngredientObjects(
-        IngredientType ingredient)
+    private GameObject[] GetIngredientObjects(IngredientType ingredient)
     {
         switch (ingredient)
         {
@@ -220,9 +196,7 @@ public class Cup : MonoBehaviour
             }
         }
 
-
         IngredientType[] result = new IngredientType[count];
-
 
         int index = 0;
 
@@ -231,11 +205,9 @@ public class Cup : MonoBehaviour
             if (hasIngredient[i])
             {
                 result[index] = ingredients[i];
-
                 index++;
             }
         }
-
 
         return result;
     }
@@ -245,13 +217,11 @@ public class Cup : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void SetFinishedRecipe(
-    Sprite finishedSprite,
-    RecipeType recipeType)
+    public void SetFinishedRecipe(Sprite finishedSprite, RecipeType recipeType)
     {
         if (finishedSprite == null)
         {
-            Debug.LogError("Finished Sprite is null!");
+            GameLogger.Error("CUP", "Finished Sprite is null!");
             return;
         }
 
@@ -289,11 +259,7 @@ public class Cup : MonoBehaviour
 
         PlayFinishVFX();
 
-        Debug.Log(
-            name +
-            " finished recipe: " +
-            recipeType
-        );
+        GameLogger.Info("CUP", name + " finished recipe: " + recipeType);
     }
 
 
@@ -301,7 +267,7 @@ public class Cup : MonoBehaviour
     {
         if (finishVFX == null || vfxPoint == null)
         {
-            Debug.LogWarning("ยังไม่ได้ใส่ Finish VFX หรือ VFX Point");
+            GameLogger.Warn("CUP","ยังไม่ได้ใส่ Finish VFX หรือ VFX Point");
             return;
         }
 
@@ -317,7 +283,7 @@ public class Cup : MonoBehaviour
     {
         if (finishVFX == null || vfxPoint == null)
         {
-            Debug.LogWarning("ยังไม่ได้ใส่ Finish VFX หรือ VFX Point");
+            GameLogger.Info("CUP","ยังไม่ได้ใส่ Finish VFX หรือ VFX Point");
             return;
         }
 

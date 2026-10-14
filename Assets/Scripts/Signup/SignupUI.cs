@@ -143,28 +143,6 @@ public class SignupUI : MonoBehaviour
 
     // ---------- callbacks จาก LoginManager ----------
 
-    public void OnContinueSuccess(LoginManager.AuthResponse res)
-    {
-        Debug.Log($"Continue OK. new={res.is_new_user} profile={res.has_profile}");
-
-        if (res.needs_email_confirmation)
-        {
-            Debug.Log("Please confirm email first");
-            return;
-        }
-
-        if (res.is_new_user || !res.has_profile)
-        {
-            // ไปหน้าตั้งค่าตัวละคร/สร้างโปรไฟล์
-            SceneManager.LoadScene("SelectCharacter");
-        }
-        else
-        {
-            // บัญชีเดิมที่มีโปรไฟล์แล้ว
-            SceneManager.LoadScene("loading");
-        }
-    }
-
     void OnContinueFailed(string error)
     {
         Debug.LogError("Continue failed: " + error);
@@ -179,16 +157,34 @@ public class SignupUI : MonoBehaviour
         if (signupButton != null) signupButton.interactable = true;
     }
 
-    private IEnumerator OpenPopupNextFrame()
+ 
+public void OnContinueSuccess(LoginManager.AuthResponse res)
+{
+    Debug.Log($"Continue OK. new={res.is_new_user} profile={res.has_profile}");
+
+    if (res.needs_email_confirmation)
     {
-        yield return null;
-
-        languagePopup.gameObject.SetActive(true);
-        languagePopup.Open();
-
-        Debug.Log("Signup: Popup Open called");
+        Debug.Log("Please confirm email first");
+        return;
     }
 
+    if (res.is_new_user || !res.has_profile)
+    {
+        if (languagePopup != null)
+        {
+            languagePopup.gameObject.SetActive(true);
+            languagePopup.Open();
+        }
+        else
+        {
+            Debug.LogError("LanguagePopup is not assigned!");
+        }
+    }
+    else
+    {
+        SceneManager.LoadScene("loading");
+    }
+}
     // ---------- UI helpers ----------
 
     void HookClearOnFocus(TMP_InputField field, TMP_Text label, GameObject group)

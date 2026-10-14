@@ -8,7 +8,7 @@ public class TrashBin : MonoBehaviour
 
         if (cup != null)
         {
-            Debug.Log("Cup ¶Ù¡·Ôé§Å§¶Ñ§¢ÂÐ");
+            GameLogger.Info("Trash", "Cup ¶Ù¡·Ôé§Å§¶Ñ§¢ÂÐ");
 
             cup.DestroyCup();
         }

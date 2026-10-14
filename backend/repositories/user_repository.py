@@ -11,7 +11,7 @@ class UserRepository:
     def get_by_user_id(self, user_id: str):
         result = (
             self._users()
-            .select("user_id, username, character")
+            .select("user_id, username, character", "language")
             .eq("user_id", user_id)
             .limit(1)
             .execute()
@@ -43,12 +43,14 @@ class UserRepository:
         user_id: str,
         username: str,
         character: str,
+        language: str
     ) -> bool:
         result = (
             self._users()
             .update({
                 "username": username,
                 "character": character,
+                "language": language
             })
             .eq("user_id", user_id)
             .execute()

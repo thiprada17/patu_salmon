@@ -122,10 +122,11 @@ public class IdCard : MonoBehaviour
         PlayerPrefs.Save();
 
         string character = PlayerPrefs.GetString("SelectedCharacter", "salmon");
-
+        string language = PlayerPrefs.GetString("Language", "english");
         LoginManager.Instance.SendStarterPlayer(
             name,
             character,
+            language,
             onSuccess: () =>
             {
                 Debug.Log("Player data sent successfully!");

@@ -8,7 +8,7 @@ using UnityEngine.Networking;
 /// สร้างตัวเองอัตโนมัติและอยู่ข้ามซีน ไม่ต้องวางใน Scene
 public class LoginManager : MonoBehaviour
 {
-    const string DefaultBackendUrl = "http://127.0.0.1:8000";
+    const string backendUrl = "http://127.0.0.1:8000";
 
     static LoginManager instance;
     public static LoginManager Instance
@@ -23,8 +23,6 @@ public class LoginManager : MonoBehaviour
             return instance;
         }
     }
-
-    [SerializeField] string backendUrl = DefaultBackendUrl;
 
     public static string UserId => PlayerPrefs.GetString("UserID", "");
 
@@ -63,14 +61,15 @@ public class LoginManager : MonoBehaviour
             onError));
     }
 
-    public void SendStarterPlayer(string username, string character,
+    public void SendStarterPlayer(string username, string character, string language,
                                   Action onSuccess, Action<string> onError)
     {
         string json = JsonUtility.ToJson(new StarterPlayerData
         {
-            userID = UserId,
+            user_id = UserId,
             username = username,
-            character = character
+            character = character,
+            language = language,
         });
 
         Debug.Log("Sending player data: " + json);
@@ -140,7 +139,7 @@ public class LoginManager : MonoBehaviour
 
     [Serializable] class AuthRequest { public string email; public string password; }
     [Serializable] class ErrorBody { public string detail; }
-    [Serializable] class StarterPlayerData { public string userID; public string username; public string character; }
+    [Serializable] class StarterPlayerData { public string user_id; public string username; public string character; public string language; }
 
     [Serializable]
     public class AuthResponse

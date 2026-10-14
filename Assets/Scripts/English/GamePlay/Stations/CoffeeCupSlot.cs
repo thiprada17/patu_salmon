@@ -24,7 +24,7 @@ public class CoffeeCupSlot : MonoBehaviour
         // เช็ก Attach Point
         if (attachPoint == null)
         {
-            Debug.LogError("ยังไม่ได้ใส่ Attach Point");
+            GameLogger.Warn("Cocoa", "ยังไม่ได้ใส่ Attach Point");
             return;
         }
 
@@ -42,7 +42,7 @@ public class CoffeeCupSlot : MonoBehaviour
         // บอก CoffeeMachine ว่ามี Portfilter อยู่
         coffeeMachine.AttachCup(cup);
 
-        Debug.Log("cup attached to Coffee machine");
+        GameLogger.DebugLog("Cocoa", "cup attached to Coffee machine");
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -70,6 +70,6 @@ public class CoffeeCupSlot : MonoBehaviour
         // บอก CoffeeMachine ว่าเอา Portfilter ออกแล้ว
         coffeeMachine.RemoveCup(cup);
 
-        Debug.Log("cup removed from Coffee machine");
+        GameLogger.DebugLog("Cocoa", "cup removed from Coffee machine");
     }
 }

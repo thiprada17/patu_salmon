@@ -38,8 +38,7 @@ public class Milk : MonoBehaviour
         if (currentCup == cup)
         {
             currentCup = null;
-
-            Debug.Log("Cup removed from milk");
+            GameLogger.DebugLog("Milk", "Cup removed from milk");
         }
     }
 
@@ -48,14 +47,14 @@ public class Milk : MonoBehaviour
         // ยังไม่มี Cup
         if (currentCup == null)
         {
-            Debug.Log("ยังไม่ได้ใส่ Cup");
+            GameLogger.Warn("Milk", "ยังไม่ได้ใส่ Cup");
             return;
         }
 
   
         if (isPumping)
         {
-            Debug.Log("pls wait milk");
+            GameLogger.DebugLog("Milk", "pls wait milk");
             return;
         }
 
@@ -98,9 +97,9 @@ public class Milk : MonoBehaviour
             bool success = currentCup.AddIngredient(IngredientType.Milk);
 
             if (success)
-                Debug.Log("Milk added to Cup");
+                GameLogger.Info("Milk", "Milk added to Cup");
             else
-                Debug.Log("ไม่สามารถใส่ milk ลง Cup ได้");
+                GameLogger.Info("Milk", "ไม่สามารถใส่ milk ลง Cup ได้");
         }
 
         // ซ่อน Animation

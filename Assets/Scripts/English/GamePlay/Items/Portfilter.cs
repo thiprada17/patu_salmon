@@ -9,8 +9,7 @@ public class Portfilter : MonoBehaviour
         if (!hasCoffeeGround)
         {
             hasCoffeeGround = true;
-
-            Debug.Log("Added coffee ground");
+            GameLogger.DebugLog("Portfilter", "Added coffee ground");
         }
     }
 
@@ -19,8 +18,7 @@ public class Portfilter : MonoBehaviour
         if (hasCoffeeGround)
         {
             hasCoffeeGround = false;
-
-            Debug.Log("Coffee ground removed from Portfilter");
+            GameLogger.DebugLog("Portfilter", "Coffee ground removed from Portfilter");
         }
     }
 }

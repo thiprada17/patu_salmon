@@ -17,9 +17,11 @@ class AuthService:
     def __init__(self):
         pass
 
+    # สร้าง URL Login Google
     def google_login(self):
         return {"login_url": create_google_login_url()}
 
+    # รับ code จาก Google แลกเป็น Token
     def google_callback(self, code: str):
         try:
             result = exchange_code(code)
@@ -55,6 +57,7 @@ class AuthService:
                 detail="Google login failed",
             )
 
+    # verify token เพื่อดึงข้อมูลผู้ใช้ปจบ.
     def get_current_user(self, access_token: str):
         try:
             user = get_user(access_token)
@@ -80,6 +83,7 @@ class AuthService:
             )
 
 
+    # check ว่ามีบัญชีมั้ย ถ้ามีให้ Login ถ้าไม่มีให้ Signup
     def email_continue(self, email: str, password: str):
         email = email.strip().lower()
 
@@ -197,7 +201,7 @@ class AuthService:
             "needs_email_confirmation": False,
         }
 
-
+    # หาว่า email นี้อยู่ใน supabase auth อยู่แล้วมั้ย
     def _find_auth_user(self, email: str):
         page = 1
         per_page = 1000
@@ -218,19 +222,22 @@ class AuthService:
 
             page += 1
 
-
-    def _profile_exists(self, user_id: str) -> bool:
+    # หาว่า email นี้อยู่ใน user_management.users อยู่แล้วมั้ย
+    def _profile_exists(self, user_id: str) -> dict | None:
         result = (
             admin_client
             .schema("user_management")
             .table("users")
-            .select("user_id")
+            .select("user_id, character")
             .eq("user_id", user_id)
             .limit(1)
             .execute()
         )
 
-        return bool(result.data)
+        return result.data[0] if result.data else None
+
+
+    # verify และ สร้างโปรไฟล์ถ้าไม่มี
 
     def _ensure_profile(self, user_id: str) -> bool:
         users = (
@@ -239,26 +246,20 @@ class AuthService:
             .table("users")
         )
 
-        # ตรวจสอบก่อน โดยใช้ admin_client เพื่อหลีกเลี่ยงปัญหา RLS
-        result = (
-            users
-            .select("user_id, character")
-            .eq("user_id", user_id)
-            .limit(1)
-            .execute()
-        )
+        # ตรวจสอบโปรไฟล์ผ่าน function ที่มีอยู่แล้ว
+        player = self._profile_exists(user_id)
 
-        if not result.data:
-            # ส่วนนี้เป็น fallback กรณีที่ไม่มีโปรไฟล์จริง ๆ
+        if not player:
+            # สร้างโปรไฟล์สำรองเมื่อยังไม่มี
             try:
                 users.insert({
                     "user_id": user_id,
-                    "username": "Player",
+                    "username": f"Player_{user_id[:8]}",
                     "character": "salmon",
                     "language": "english",
                 }).execute()
             except Exception:
-                # อาจมี request อื่นสร้างแถวนี้พร้อมกัน
+                # อาจมี request อื่นสร้างโปรไฟล์พร้อมกัน
                 logger.warning(
                     "Profile insert failed for user_id=%s; "
                     "checking whether it already exists",
@@ -266,24 +267,17 @@ class AuthService:
                     exc_info=True,
                 )
 
-            # อ่านใหม่หลัง insert หรือเมื่อ insert ล้มเหลว
-            result = (
-                users
-                .select("user_id, character")
-                .eq("user_id", user_id)
-                .limit(1)
-                .execute()
-            )
+            # ตรวจสอบอีกครั้งหลังพยายามสร้างโปรไฟล์
+            player = self._profile_exists(user_id)
 
-        if not result.data:
+        if not player:
             logger.error(
                 "Profile does not exist after ensure: user_id=%s",
                 user_id,
             )
             return False
 
-        player = result.data[0]
-
+        # อัปเดตเวลา Login ล่าสุด
         try:
             from datetime import datetime, timezone
 
@@ -292,11 +286,44 @@ class AuthService:
                     timezone.utc
                 ).isoformat()
             }).eq("user_id", user_id).execute()
+
         except Exception:
-            # ไม่ควรทำให้ Login ล้มเหลวเพียงเพราะอัปเดตเวลาไม่ได้
             logger.exception(
                 "Failed to update last_login_at for user_id=%s",
                 user_id,
             )
 
+        # ตรวจสอบว่าตัวละครที่เลือกถูกต้องหรือไม่
         return player.get("character") in ("salmon", "platu")
+
+    def refresh_session(self, refresh_token: str):
+        if not refresh_token:
+            raise HTTPException(
+                status_code=400,
+                detail="Refresh token is required",
+            )
+
+        try:
+            result = supabase.auth.refresh_session(refresh_token)
+
+            if not result.session or not result.user:
+                raise HTTPException(
+                    status_code=401,
+                    detail="Unable to refresh session",
+                )
+
+            return {
+                "user_id": result.user.id,
+                "email": result.user.email,
+                "access_token": result.session.access_token,
+                "refresh_token": result.session.refresh_token,
+            }
+
+        except HTTPException:
+            raise
+        except Exception:
+            logger.exception("Failed to refresh session")
+            raise HTTPException(
+                status_code=401,
+                detail="Session expired. Please login again",
+            )

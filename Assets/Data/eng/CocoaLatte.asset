@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: CocoaLatte
   m_EditorClassIdentifier: 
   recipeType: 4
+  price: 55
   finishedCupSprite: {fileID: 21300000, guid: 7fb695c2905436b42850b08148bed069, type: 2}
   coffee: 0
   milk: 2

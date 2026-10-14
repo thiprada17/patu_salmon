@@ -29,8 +29,7 @@ public class CoffeeMachinePortSlot : MonoBehaviour
 
         // บอก CoffeeMachine ว่ามี Portfilter อยู่
         coffeeMachine.AttachPortfilter(portfilter);
-
-        Debug.Log("Portfilter attached to Coffee machine");
+        GameLogger.DebugLog("CoffeeMech", "Portfilter attached to Coffee machine");
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -51,7 +50,6 @@ public class CoffeeMachinePortSlot : MonoBehaviour
 
         // บอก CoffeeMachine ว่าเอา Portfilter ออกแล้ว
         coffeeMachine.RemovePortfilter(portfilter);
-
-        Debug.Log("Portfilter removed from Coffee machine");
+        GameLogger.DebugLog("CoffeeMech", "Portfilter removed from Coffee machine");
     }
 }

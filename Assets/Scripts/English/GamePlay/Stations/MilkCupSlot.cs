@@ -25,7 +25,7 @@ public class MilkCupSlot : MonoBehaviour
         // เช็ก Attach Point
         if (attachPoint == null)
         {
-            Debug.LogError("ยังไม่ได้ใส่ Attach Point");
+            GameLogger.Warn("Milk", "ยังไม่ได้ใส่ Attach Point");
             return;
         }
 
@@ -43,7 +43,7 @@ public class MilkCupSlot : MonoBehaviour
         // บอก Cocoa ว่ามี Cup อยู่
         milk.AttachCup(cup);
 
-        Debug.Log("Cup attached to milk");
+        GameLogger.DebugLog("Milk", "Cup attached to milk");
     }
 
 
@@ -75,6 +75,6 @@ public class MilkCupSlot : MonoBehaviour
             milk.RemoveCup(cup);
         }
 
-        Debug.Log("Cup removed from milk");
+        GameLogger.DebugLog("Milk", "Cup removed from milk");
     }
 }

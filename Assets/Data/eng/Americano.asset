@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Americano
   m_EditorClassIdentifier: 
   recipeType: 2
+  price: 60
   finishedCupSprite: {fileID: 21300000, guid: 2552e1c47f0270144a499c227c0165df, type: 2}
   coffee: 1
   milk: 0

@@ -47,10 +47,8 @@ public class DraggableItem : MonoBehaviour,
         if (isAttached)
         {
             isAttached = false;
-            Debug.Log(gameObject.name + " detached!");
+            GameLogger.DebugLog("Dragable",gameObject.name + " detached!");
         }
-
-        Debug.Log(gameObject.name + " Start Drag");
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -66,7 +64,6 @@ public class DraggableItem : MonoBehaviour,
     public void OnPointerUp(PointerEventData eventData)
     {
         isDragging = false;
-        Debug.Log(gameObject.name + " Drop");
     }
 
     public void SetAttached(bool value)

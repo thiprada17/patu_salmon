@@ -29,8 +29,7 @@ public class Cocoa : MonoBehaviour
     public void AttachCup(Cup cup)
     {
         currentCup = cup;
-
-        Debug.Log("Cup attached to Cocoa");
+        GameLogger.DebugLog("Cocoa", "Cup attached to Cocoa");
     }
 
 
@@ -39,8 +38,7 @@ public class Cocoa : MonoBehaviour
         if (currentCup == cup)
         {
             currentCup = null;
-
-            Debug.Log("Cup removed from Cocoa");
+            GameLogger.DebugLog("Cocoa", "Cup removed from Cocoa");
         }
     }
 
@@ -50,13 +48,13 @@ public class Cocoa : MonoBehaviour
         // เช็กว่ามี Cup
         if (currentCup == null)
         {
-            Debug.Log("ยังไม่ได้ใส่ Cup");
+            GameLogger.Warn("Cocoa", "ยังไม่ได้ใส่ Cup");
             return;
         }
 
         if (isPumping)
         {
-            Debug.Log("cocoa waiting");
+            GameLogger.DebugLog("Cocoa", "cocoa waiting");
             return;
         }
 
@@ -99,9 +97,9 @@ public class Cocoa : MonoBehaviour
             bool success = currentCup.AddIngredient(IngredientType.Cocoa);
 
             if (success)
-                Debug.Log("Cocoa added to Cup");
+                GameLogger.DebugLog("Cocoa", "Cocoa added to Cup");
             else
-                Debug.Log("ไม่สามารถใส่ cocoa ลง Cup ได้");
+                GameLogger.DebugLog("Cocoa", "ไม่สามารถใส่ cocoa ลง Cup ได้");
         }
 
         // ซ่อน Animation

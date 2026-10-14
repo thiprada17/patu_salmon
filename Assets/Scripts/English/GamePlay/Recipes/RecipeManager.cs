@@ -10,7 +10,7 @@ public class RecipeManager : MonoBehaviour
     {
         if (cup == null)
         {
-            Debug.LogError("Cup is null!");
+            GameLogger.Error("Recipe", "Cup is null!");
             return null;
         }
 
@@ -18,13 +18,12 @@ public class RecipeManager : MonoBehaviour
         {
             if (IsCorrectRecipe(cup, recipe))
             {
-                Debug.Log( "Recipe Found: " + recipe.recipeType );
-
+                GameLogger.DebugLog("Recipe","Recipe Found: " + recipe.recipeType);
                 return recipe;
             }
         }
 
-        Debug.Log("No matching recipe");
+        GameLogger.DebugLog("Recipe", "No matching recipe");
 
         return null;
     }
@@ -40,19 +39,19 @@ public class RecipeManager : MonoBehaviour
         int waterCount = Count(cup, IngredientType.Water);
         int cocoaCount = Count(cup, IngredientType.Cocoa);
 
-        Debug.Log(
-            "Checking Recipe: " + recipe.recipeType +
-            "\nCup = " +
-            "Coffee:" + coffeeCount +
-            " Milk:" + milkCount +
-            " Water:" + waterCount +
-            " Cocoa:" + cocoaCount +
-            "\nRecipe = " +
-            "Coffee:" + recipe.coffee +
-            " Milk:" + recipe.milk +
-            " Water:" + recipe.water +
-            " Cocoa:" + recipe.cocoa
-        );
+
+        //GameLogger.DebugLog("Recipe", "Checking Recipe: " + recipe.recipeType +
+        //    "\nCup = " +
+        //    "Coffee:" + coffeeCount +
+        //    " Milk:" + milkCount +
+        //    " Water:" + waterCount +
+        //    " Cocoa:" + cocoaCount +
+        //    "\nRecipe = " +
+        //    "Coffee:" + recipe.coffee +
+        //    " Milk:" + recipe.milk +
+        //    " Water:" + recipe.water +
+        //    " Cocoa:" + recipe.cocoa
+        //);
 
         return coffeeCount == recipe.coffee
             && milkCount == recipe.milk
@@ -64,7 +63,6 @@ public class RecipeManager : MonoBehaviour
     private int Count( Cup cup, IngredientType type)
     {
         int count = 0;
-
         foreach (IngredientType ingredient in cup.GetIngredients())
         {
             if (ingredient == type)
@@ -72,7 +70,6 @@ public class RecipeManager : MonoBehaviour
                 count++;
             }
         }
-
         return count;
     }
 }

@@ -22,7 +22,7 @@ public class CoffeeMachine : MonoBehaviour
     {
         currentPortfilter = portfilter;
         portfilterOriginalPosition = portfilter.transform.localPosition;
-        Debug.Log("Portfilter attached to Coffee Machine");
+        GameLogger.DebugLog("CoffeeMach", "Portfilter attached to Coffee Machine");
     }
 
     public void RemovePortfilter(Portfilter portfilter)
@@ -30,8 +30,7 @@ public class CoffeeMachine : MonoBehaviour
         if (currentPortfilter == portfilter)
         {
             currentPortfilter = null;
-
-            Debug.Log("Portfilter removed from Coffee Machine");
+            GameLogger.DebugLog("CoffeeMach", "Portfilter removed from Coffee Machine");
         }
     }
 
@@ -39,7 +38,7 @@ public class CoffeeMachine : MonoBehaviour
     {
         currentCup = cup;
         cupOriginalPosition = cup.transform.localPosition;
-        Debug.Log("Cup attached to Coffee Machine");
+        GameLogger.DebugLog("CoffeeMach", "Cup attached to Coffee Machine");
     }
 
     public void RemoveCup(Cup cup)
@@ -47,8 +46,7 @@ public class CoffeeMachine : MonoBehaviour
         if (currentCup == cup)
         {
             currentCup = null;
-
-            Debug.Log("Cup removed from Coffee Machine");
+            GameLogger.DebugLog("CoffeeMach", "Cup removed from Coffee Machine");
         }
     }
     private void OnMouseDown()
@@ -56,28 +54,28 @@ public class CoffeeMachine : MonoBehaviour
         // ถ้ากำลังทำกาแฟอยู่
         if (isMakingCoffee)
         {
-            Debug.Log("Coffee Machine is working...");
+            GameLogger.DebugLog("CoffeeMach", "Coffee Machine is working...");
             return;
         }
 
         // เช็ก Portfilter
         if (currentPortfilter == null)
         {
-            Debug.Log("ยังไม่ได้ใส่ Portfilter");
+            GameLogger.Warn("CoffeeMach", "ยังไม่ได้ใส่ Portfilter");
             return;
         }
 
         // เช็ก Coffee Ground
         if (!currentPortfilter.hasCoffeeGround)
         {
-            Debug.Log("Need coffee ground");
+            GameLogger.DebugLog("CoffeeMach", "Need coffee ground");
             return;
         }
 
         // เช็ก Cup
         if (currentCup == null)
         {
-            Debug.Log("ยังไม่ได้ใส่ Cup");
+            GameLogger.Warn("CoffeeMach", "ยังไม่ได้ใส่ Cup");
             return;
         }
 
@@ -88,8 +86,6 @@ public class CoffeeMachine : MonoBehaviour
     private IEnumerator MakeCoffeeProcess()
     {
         isMakingCoffee = true;
-
-        Debug.Log("Making coffee...");
 
         float duration = 2f;
         float elapsed = 0f;
@@ -119,23 +115,19 @@ public class CoffeeMachine : MonoBehaviour
                 portfilterOriginalPosition;
         }
 
-
-
-        Debug.Log("Coffee finished!");
-
         // เพิ่ม Coffee เข้า Cup
         bool success = currentCup.AddIngredient( IngredientType.Coffee );
 
         if (success)
         {
-            Debug.Log("Coffee added to Cup!");
+            GameLogger.DebugLog("CocCoffeeMachoa", "Coffee added to Cup!");
 
             // ลบ Coffee Ground ออกจาก Portfilter
             currentPortfilter.RemoveCoffeeGround();
         }
         else
         {
-            Debug.Log("ไม่สามารถใส่ Coffee ลง Cup ได้");
+            GameLogger.DebugLog("CoffeeMach", "ไม่สามารถใส่ Coffee ลง Cup ได้");
         }
 
         isMakingCoffee = false;

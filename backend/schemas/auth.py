@@ -16,3 +16,6 @@ class AuthResponse(BaseModel):
     is_new_user: bool
     has_profile: bool
     needs_email_confirmation: bool = False
+
+class RefreshRequest(BaseModel):
+    refresh_token: str

@@ -21,8 +21,7 @@ public class CupDispenser : MonoBehaviour
     private Cup rightCup;
 
 
-    private Dictionary<Cup, string> spawnSide =
-        new Dictionary<Cup, string>();
+    private Dictionary<Cup, string> spawnSide = new Dictionary<Cup, string>();
 
 
     private void OnMouseDown()
@@ -31,7 +30,7 @@ public class CupDispenser : MonoBehaviour
 
         if (spawnedCups.Count >= 2)
         {
-            Debug.Log("มี Cup ครบ 2 ใบแล้ว");
+            GameLogger.DebugLog("CupDis", "มี Cup ครบ 2 ใบแล้ว");
             return;
         }
 
@@ -83,21 +82,22 @@ public class CupDispenser : MonoBehaviour
                 return;
             }
         }
-        Debug.LogWarning("ไม่สามารถระบุ Slot ของ Cup เดิมได้");
+
+        GameLogger.Warn("CupDis", "ไม่สามารถระบุ Slot ของ Cup เดิมได้");
     }
 
     private void SpawnCup(Transform spawnPoint, string side)
     {
         if (cupPrefab == null)
         {
-            Debug.LogError("ยังไม่ได้ใส่ Cup Prefab");
+            GameLogger.Warn("CupDis", "ยังไม่ได้ใส่ Cup Prefab");
             return;
         }
 
 
         if (spawnPoint == null)
         {
-            Debug.LogError("ยังไม่ได้ใส่ Spawn Point");
+            GameLogger.Warn("CupDis", "ยังไม่ได้ใส่ Spawn Point");
             return;
         }
 
@@ -114,16 +114,13 @@ public class CupDispenser : MonoBehaviour
 
         if (cup == null)
         {
-            Debug.LogError("Cup Prefab ไม่มี Cup Component");
+            GameLogger.Warn("CupDis", "Cup Prefab ไม่มี Cup Component");
             Destroy(newCup);
             return;
         }
 
         spawnedCups.Add(cup);
         spawnSide[cup] = side;
-
-
-        Debug.Log("Spawn Cup: " + cup.name + " Spawn Side = " + side + " Total Cup = " + spawnedCups.Count );
     }
 
 
@@ -135,12 +132,10 @@ public class CupDispenser : MonoBehaviour
         if (slot == "L")
         {
             leftCup = cup;
-            Debug.Log("Dispenser: LEFT occupied by " + cup.name );
         }
         else if (slot == "R")
         {
             rightCup = cup;
-            Debug.Log( "Dispenser: RIGHT occupied by " + cup.name );
         }
     }
 
@@ -156,7 +151,6 @@ public class CupDispenser : MonoBehaviour
             if (leftCup == cup)
             {
                 leftCup = null;
-                Debug.Log("Dispenser: LEFT released");
             }
         }
         else if (slot == "R")
@@ -165,7 +159,6 @@ public class CupDispenser : MonoBehaviour
             if (rightCup == cup)
             {
                 rightCup = null;
-                Debug.Log("Dispenser: RIGHT released");
             }
         }
     }

@@ -25,7 +25,7 @@ public class CocoaCupSlot : MonoBehaviour
         // เช็ก Attach Point
         if (attachPoint == null)
         {
-            Debug.LogError("ยังไม่ได้ใส่ Attach Point");
+            GameLogger.Warn("Cocoa", "ยังไม่ได้ใส่ Attach Point");
             return;
         }
 
@@ -43,7 +43,7 @@ public class CocoaCupSlot : MonoBehaviour
         // บอก Cocoa ว่ามี Cup อยู่
         cocoa.AttachCup(cup);
 
-        Debug.Log("Cup attached to Cocoa");
+        GameLogger.DebugLog("Cocoa", "Cup attached to Cocoa");
     }
 
 
@@ -75,6 +75,6 @@ public class CocoaCupSlot : MonoBehaviour
             cocoa.RemoveCup(cup);
         }
 
-        Debug.Log("Cup removed from Cocoa");
+        GameLogger.DebugLog("Cocoa", "Cup removed from Cocoa");
     }
 }

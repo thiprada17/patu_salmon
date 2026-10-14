@@ -42,3 +42,4 @@ backend/__pycache__/
 /backend/api/v1/__pycache__
 /backend/controllers/__pycache__
 /backend/repositories/__pycache__
+backend/.env

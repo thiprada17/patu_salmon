@@ -30,7 +30,6 @@ public class PortfilterSlot : MonoBehaviour
         {
             grinder.AttachPortfilter(portfilter);
         }
-
-        Debug.Log("Portfilter attached to Grinder!");
+        GameLogger.DebugLog("Portfilter", "Portfilter attached to Grinder!");
     }
 }

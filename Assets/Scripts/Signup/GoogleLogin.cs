@@ -85,9 +85,11 @@ public class GoogleLogin : MonoBehaviour
 
         lastHandledUrl = url;
 
-        PlayerPrefs.SetString("access_token", accessToken);
+        PlayerPrefs.SetString("AccessToken", accessToken);
+
         if (!string.IsNullOrEmpty(refreshToken))
-            PlayerPrefs.SetString("refresh_token", refreshToken);
+            PlayerPrefs.SetString("RefreshToken", refreshToken);
+
         PlayerPrefs.Save();
 
         Debug.Log("Google Login Success! Token saved.");

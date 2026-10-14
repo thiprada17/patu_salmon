@@ -31,3 +31,15 @@ db_client = create_client(
 
 # กำหนด client หลักสำหรับโมดูลที่ import ไปใช้งาน
 supabase = auth_client
+
+
+print("SUPABASE_URL:", SUPABASE_URL)
+print("SUPABASE_KEY loaded:", bool(SUPABASE_KEY))
+print(
+    "SUPABASE_SERVICE_ROLE_KEY loaded:",
+    bool(SUPABASE_SERVICE_ROLE_KEY)
+)
+print(
+    "Keys are identical:",
+    SUPABASE_KEY == SUPABASE_SERVICE_ROLE_KEY
+)

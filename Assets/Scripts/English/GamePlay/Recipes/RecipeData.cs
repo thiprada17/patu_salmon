@@ -1,3 +1,4 @@
+
 using UnityEngine;
 
 [CreateAssetMenu(
@@ -7,6 +8,9 @@ using UnityEngine;
 public class RecipeData : ScriptableObject
 {
     public RecipeType recipeType;
+
+    [Header("Price")]
+    [Min(0)] public int price = 50;
 
     [Header("Finished Cup")]
     public Sprite finishedCupSprite;

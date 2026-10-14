@@ -45,7 +45,7 @@ public class Grinder : MonoBehaviour
         // จำตำแหน่งเดิมของ Portfilter
         portfilterOriginalPosition = portfilter.transform.localPosition;
 
-        Debug.Log("Portfilter attached to Grinder");
+        GameLogger.DebugLog("Grinder", "Portfilter attached to Grinder");
     }
 
 
@@ -53,23 +53,20 @@ public class Grinder : MonoBehaviour
     {
         if (currentPortfilter == null)
         {
-            Debug.Log("ยังไม่ได้ใส่ Portfilter");
+            GameLogger.Warn("Grinder", "ยังไม่ได้ใส่ Portfilter");
             return;
         }
 
         if (isGrinding)
         {
-            Debug.Log("เครื่องกำลังทำงานอยู่");
             return;
         }
 
         if (currentPortfilter.hasCoffeeGround)
         {
-            Debug.Log("Portfilter มี Coffee Ground อยู่แล้ว!");
+            GameLogger.Warn("Grinder", "Portfilter มี Coffee Ground อยู่แล้ว!");
             return;
         }
-
-        Debug.Log("เครื่องทำงานอยู่");
 
         StartCoroutine(Grind(currentPortfilter));
     }
@@ -89,9 +86,7 @@ public class Grinder : MonoBehaviour
 
             transform.localPosition = originalPosition + new Vector3(x, y, 0);
 
-
             currentPortfilter.transform.localPosition = portfilterOriginalPosition + new Vector3(x, y, 0);
-
 
             elapsed += Time.deltaTime;
 
@@ -121,7 +116,7 @@ public class Grinder : MonoBehaviour
             draggable.enabled = false;
         }
 
-        Debug.Log("Grinding coffee...");
+        GameLogger.DebugLog("Grinder", "Grinding coffee...");
 
         // เล่น Animation กาแฟ
         PlayCoffeeAnimation();
@@ -137,7 +132,7 @@ public class Grinder : MonoBehaviour
             coffeeRenderer.enabled = false;
         }
 
-        Debug.Log("Coffee Ground added!");
+        GameLogger.Info("Grinder", "Coffee Ground added!");
 
         if (draggable != null)
         {
