@@ -17,8 +17,7 @@ public class DayManager : MonoBehaviour
     {
         timeRemaining = dayDurationSeconds;
 
-        GameLogger.Info("DayManager",
-            $"เริ่มวันใหม่ ระยะเวลา {dayDurationSeconds} วินาที");
+        GameLogger.Info("DayManager", $"เริ่มวันใหม่ ระยะเวลา {dayDurationSeconds} วินาที");
 
         UpdateTimerText();
     }

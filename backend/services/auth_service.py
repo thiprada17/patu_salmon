@@ -96,6 +96,7 @@ class AuthService:
         # ตรวจว่ามีบัญชีอยู่แล้วหรือไม่
         try:
             existing_user = self._find_auth_user(email)
+            print(f"DEBUG: email={email}, existing_user={existing_user is not None}")
         except Exception:
             logger.exception("Failed to find auth user")
             raise HTTPException(
@@ -111,6 +112,7 @@ class AuthService:
                     "password": password,
                 })
             except Exception as exc:
+                print(f"LOGIN ERROR: {type(exc).__name__}: {exc}")
                 message = str(exc).lower()
                 code = str(getattr(exc, "code", "")).lower()
 

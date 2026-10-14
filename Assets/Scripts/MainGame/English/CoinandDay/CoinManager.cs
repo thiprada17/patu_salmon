@@ -34,19 +34,28 @@ public class CoinManager : MonoBehaviour
     [SerializeField] private OrderEarningPopup earningPopup;
 
     [Header("หน้าต่างสรุปกะ")]
-    [SerializeField] private GameObject shiftSummaryPopup;
-    [SerializeField] private TMP_Text shiftSummaryText;
+    [SerializeField] private ShiftEnd shiftEnd;
     [SerializeField, Min(1)] private int daysPerShift = 10;
 
-    // จำนวนเหรียญสะสมที่ได้รับจาก Backend
+    [Header("ค่าใช้จ่ายตอนจบกะ")]
+    [SerializeField, Min(0)] private int minTicketExpense = 10;
+    [SerializeField, Min(0)] private int maxTicketExpense = 50;
+    [SerializeField, Min(0)] private int minRentExpense = 20;
+    [SerializeField, Min(0)] private int maxRentExpense = 100;
+
+    // ค่าใช้จ่ายของกะล่าสุด
+    public int TicketExpense { get; private set; }
+    public int RentExpense { get; private set; }
+
+    // ยอดเงินที่บันทึกไว้ใน Backend
     public int SavedCoins { get; private set; }
 
-    // รายได้และค่าปรับของวันปัจจุบัน
+    // รายได้และค่าปรับสะสมตลอดกะ
     public int OrderCoins { get; private set; }
     public int TipCoins { get; private set; }
     public int PenaltyCoins { get; private set; }
 
-    // จำนวนลูกค้าสะสมที่ได้รับจาก Backend
+    // จำนวนลูกค้าสะสมที่บันทึกใน Backend
     public int CustomersServed { get; private set; }
 
     // จำนวนลูกค้าที่เสิร์ฟในวันปัจจุบัน
@@ -55,47 +64,63 @@ public class CoinManager : MonoBehaviour
     // จำนวนวันที่ทำงานสะสม
     public int WorkDays { get; private set; }
 
-    // รายได้สุทธิของวันปัจจุบัน
+    // ยอดรายได้สุทธิสะสมตลอดกะ
     public int ShiftCoins => OrderCoins + TipCoins - PenaltyCoins;
 
-    // จำนวนเหรียญทั้งหมด รวมรายได้สุทธิของวันปัจจุบัน
-    public int TotalCoins => Mathf.Max(0, SavedCoins + ShiftCoins);
+    // ยอดรายได้สุทธิหลังหักค่าใช้จ่ายเมื่อจบกะ
+    public int TotalShiftEarning =>
+        OrderCoins + TipCoins - PenaltyCoins
+        - TicketExpense - RentExpense;
+
+    // ยอดสุทธิของกะที่ถูกนับเข้า SavedCoins ไปแล้ว
+    // ใช้ป้องกันการบวกยอดสะสมซ้ำในวันถัดไป
+    private int savedShiftCoins;
 
     private bool isLoading;
     private bool isSaving;
+
+    // เงินรวม = เงินที่บันทึกแล้ว + ยอดกะที่ยังไม่ได้บันทึก
+    public int TotalCoins =>
+        Mathf.Max(0, SavedCoins + ShiftCoins - savedShiftCoins);
 
     private void Awake()
     {
         if (Instance != null && Instance != this)
         {
-            GameLogger.Warn("CoinManager", "พบ CoinManager ซ้ำ กำลังลบตัวที่ซ้ำ");
+            GameLogger.Warn(
+                "CoinManager",
+                "พบ CoinManager ซ้ำ กำลังลบตัวที่ซ้ำ"
+            );
+
             Destroy(gameObject);
             return;
         }
 
         Instance = this;
 
-        GameLogger.Info("CoinManager", "Awake ทำงานแล้ว ตั้งค่า Instance สำเร็จ");
+        GameLogger.Info(
+            "CoinManager",
+            "Awake ทำงานแล้ว ตั้งค่า Instance สำเร็จ"
+        );
     }
 
     private void Start()
     {
         GameLogger.Info("Economy", "CoinManager Start เริ่มทำงาน");
-        // แสดงค่าเริ่มต้นก่อนโหลดข้อมูลจาก Backend
-        UpdateNavbar();
 
-        // โหลดข้อมูลผู้เล่น
+        UpdateNavbar();
         StartCoroutine(LoadStats());
     }
 
-    // โหลดข้อมูลเหรียญ จำนวนวันที่ทำงาน และจำนวนลูกค้าสะสม
+    // โหลดข้อมูลผู้เล่นจาก Backend
     private IEnumerator LoadStats()
     {
         string userId = LoginManager.UserId;
 
         GameLogger.Info(
             "Economy",
-            $"เริ่ม LoadStats | UserID={userId} | URL={backendUrl}/player/stats/{userId}"
+            $"เริ่ม LoadStats | UserID={userId} | " +
+            $"URL={backendUrl}/player/stats/{userId}"
         );
 
         if (string.IsNullOrEmpty(userId))
@@ -117,7 +142,8 @@ public class CoinManager : MonoBehaviour
             {
                 GameLogger.Error(
                     "Economy",
-                    $"โหลดข้อมูลไม่สำเร็จ: {request.responseCode} {request.downloadHandler.text}"
+                    $"โหลดข้อมูลไม่สำเร็จ: HTTP {request.responseCode} " +
+                    $"{request.downloadHandler.text}"
                 );
 
                 isLoading = false;
@@ -131,16 +157,20 @@ public class CoinManager : MonoBehaviour
 
             if (data == null)
             {
-                GameLogger.Error("Economy", "ไม่สามารถอ่านข้อมูล Stats ได้");
+                GameLogger.Error(
+                    "Economy",
+                    "ไม่สามารถอ่านข้อมูล Stats ได้"
+                );
+
                 isLoading = false;
                 yield break;
             }
 
-            // เก็บยอดสะสมจาก Backend
             SavedCoins = data.coin;
             WorkDays = data.work_days;
             CustomersServed = data.total_customers_served;
 
+            // เริ่มนับลูกค้าของวันปัจจุบันใหม่
             TodayCustomersServed = 0;
 
             UpdateNavbar();
@@ -154,25 +184,6 @@ public class CoinManager : MonoBehaviour
                 "Economy",
                 $"GET Response: {request.downloadHandler.text}"
             );
-
-            if (request.result != UnityWebRequest.Result.Success)
-            {
-                GameLogger.Error(
-                    "Economy",
-                    $"Load stats failed | " +
-                    $"Result={request.result} | " +
-                    $"HTTP={request.responseCode} | " +
-                    $"Error={request.error} | " +
-                    $"URL={request.url} | " +
-                    $"Response={request.downloadHandler.text}"
-                );
-
-                // อัปเดตหน้าจอ แม้โหลดข้อมูลไม่สำเร็จ
-                UpdateNavbar();
-
-                isLoading = false;
-                yield break;
-            }
         }
 
         isLoading = false;
@@ -191,13 +202,16 @@ public class CoinManager : MonoBehaviour
 
         if (recipe == null)
         {
-            GameLogger.Warn("Order", $"ไม่พบ RecipeData: {recipeType}");
+            GameLogger.Warn(
+                "Order",
+                $"ไม่พบ RecipeData: {recipeType}"
+            );
+
             return;
         }
 
         int price = recipe.price;
 
-        // ยิ่งใช้เวลาน้อยเมื่อเทียบกับเวลาสูงสุด ยิ่งมีโอกาสได้ทิปสูง
         float speedRatio = maxWaitTime > 0f
             ? Mathf.Clamp01(1f - waitTime / maxWaitTime)
             : 0f;
@@ -208,17 +222,15 @@ public class CoinManager : MonoBehaviour
             ? 0
             : UnityEngine.Random.Range(0, tipLimit + 1);
 
-        // แสดงค่าปรับในหน้าต่างสรุป แต่ยังไม่บันทึกค่าปรับตรงนี้
         int penaltyForPopup = isAngry ? angryPenalty : 0;
 
-        // เพิ่มรายได้และนับจำนวนลูกค้าของวันปัจจุบัน
+        // รายได้สะสมตลอดกะ ไม่รีเซ็ตทุกวัน
         OrderCoins += price;
         TipCoins += tip;
         TodayCustomersServed++;
 
         UpdateNavbar();
 
-        // แสดงหน้าต่างสรุปรายได้ของออร์เดอร์
         if (earningPopup != null)
         {
             earningPopup.Show(price, tip, penaltyForPopup);
@@ -227,7 +239,9 @@ public class CoinManager : MonoBehaviour
         GameLogger.DebugLog(
             "Economy",
             $"Order={price}, Tip={tip}, " +
-            $"TodayCustomers={TodayCustomersServed}, TotalCoins={TotalCoins}"
+            $"TodayCustomers={TodayCustomersServed}, " +
+            $"ShiftOrder={OrderCoins}, ShiftTips={TipCoins}, " +
+            $"TotalCoins={TotalCoins}"
         );
     }
 
@@ -235,22 +249,36 @@ public class CoinManager : MonoBehaviour
     public void ApplyAngryPenalty()
     {
         PenaltyCoins += angryPenalty;
+
         UpdateNavbar();
+
+        GameLogger.Info(
+            "Economy",
+            $"เพิ่มค่าปรับ={angryPenalty} | PenaltyCoins={PenaltyCoins}"
+        );
     }
 
-    // บันทึกผลการทำงานของวันปัจจุบัน
+    // เริ่มบันทึกผลของวัน
     public void FinishWorkDay(Action<bool> onComplete)
     {
         if (isLoading || isSaving)
         {
-            GameLogger.Warn("Economy", "กำลังโหลดหรือบันทึกข้อมูลอยู่");
+            GameLogger.Warn(
+                "Economy",
+                "กำลังโหลดหรือบันทึกข้อมูลอยู่"
+            );
+
             onComplete?.Invoke(false);
             return;
         }
 
         if (string.IsNullOrEmpty(LoginManager.UserId))
         {
-            GameLogger.Error("Economy", "ไม่พบ UserID ไม่สามารถบันทึกข้อมูลได้");
+            GameLogger.Error(
+                "Economy",
+                "ไม่พบ UserID ไม่สามารถบันทึกข้อมูลได้"
+            );
+
             onComplete?.Invoke(false);
             return;
         }
@@ -258,31 +286,89 @@ public class CoinManager : MonoBehaviour
         StartCoroutine(SaveWorkDay(onComplete));
     }
 
-
     private IEnumerator SaveWorkDay(Action<bool> onComplete)
     {
         isSaving = true;
 
-        // ส่งยอดสะสมใหม่ให้ตรงกับ Schema ของ Backend
+        int nextWorkDays = WorkDays + 1;
+        bool isShiftEnd =
+            daysPerShift > 0 && nextWorkDays % daysPerShift == 0;
+
+        // สุ่มค่าใช้จ่ายเฉพาะวันสุดท้ายของกะ
+        TicketExpense = 0;
+        RentExpense = 0;
+
+        if (isShiftEnd)
+        {
+            TicketExpense = UnityEngine.Random.Range(
+                minTicketExpense,
+                maxTicketExpense + 1
+            );
+
+            RentExpense = UnityEngine.Random.Range(
+                minRentExpense,
+                maxRentExpense + 1
+            );
+        }
+
+        GameLogger.Info(
+            "Economy",
+            $"ตรวจเงินก่อนบันทึก | " +
+            $"SavedCoins={SavedCoins} | " +
+            $"OrderCoins={OrderCoins} | " +
+            $"TipCoins={TipCoins} | " +
+            $"PenaltyCoins={PenaltyCoins} | " +
+            $"ShiftCoins={ShiftCoins} | " +
+            $"SavedShiftCoins={savedShiftCoins} | " +
+            $"Ticket={TicketExpense} | Rent={RentExpense}"
+        );
+
+        // บวกเฉพาะยอดกะส่วนที่ยังไม่เคยบันทึก
+        int unSavedShiftCoins = ShiftCoins - savedShiftCoins;
+
+        int finalCoins = Mathf.Max(
+            0,
+            SavedCoins + unSavedShiftCoins
+            - TicketExpense - RentExpense
+        );
+
+        GameLogger.Info(
+            "Economy",
+            $"ยอดที่จะส่ง Backend = {finalCoins}"
+        );
+
+        GameLogger.Info(
+            "Economy",
+            $"จบกะ={isShiftEnd} | " +
+            $"CoinsBefore={TotalCoins} | CoinsAfter={finalCoins}"
+        );
+
         FinishWorkDayRequest data = new FinishWorkDayRequest
         {
             user_id = LoginManager.UserId,
-            coin = TotalCoins,
-            work_days = WorkDays + 1,
-            total_customers_served = CustomersServed + TodayCustomersServed
+            coin = finalCoins,
+            work_days = nextWorkDays,
+            total_customers_served =
+                CustomersServed + TodayCustomersServed
         };
 
         string json = JsonUtility.ToJson(data);
         byte[] body = Encoding.UTF8.GetBytes(json);
 
-        GameLogger.Info("Economy", $"กำลังบันทึกผลวัน: {json}");
+        GameLogger.Info(
+            "Economy",
+            $"กำลังบันทึกผลวัน: {json}"
+        );
 
         using (UnityWebRequest request = new UnityWebRequest(
             $"{backendUrl}/player/stats/day", "POST"))
         {
             request.uploadHandler = new UploadHandlerRaw(body);
             request.downloadHandler = new DownloadHandlerBuffer();
-            request.SetRequestHeader("Content-Type", "application/json");
+            request.SetRequestHeader(
+                "Content-Type",
+                "application/json"
+            );
 
             yield return request.SendWebRequest();
 
@@ -306,34 +392,53 @@ public class CoinManager : MonoBehaviour
 
             if (result == null)
             {
-                GameLogger.Error("Economy", "อ่านผลการบันทึกไม่สำเร็จ");
+                GameLogger.Error(
+                    "Economy",
+                    "อ่านผลการบันทึกไม่สำเร็จ"
+                );
+
                 isSaving = false;
                 onComplete?.Invoke(false);
                 yield break;
             }
 
-            // ใช้ยอดที่ Backend ตอบกลับมา
+            // อัปเดตยอดที่บันทึกสำเร็จแล้ว
             SavedCoins = result.coin;
             WorkDays = result.work_days;
             CustomersServed = result.total_customers_served;
 
-            // ล้างรายได้วันนี้หลังบันทึกสำเร็จเท่านั้น
-            OrderCoins = 0;
-            TipCoins = 0;
-            PenaltyCoins = 0;
+            if (isShiftEnd)
+            {
+                // ต้องแสดงสรุปก่อนรีเซ็ตยอดสะสม
+                ShowShiftSummary();
+
+                OrderCoins = 0;
+                TipCoins = 0;
+                PenaltyCoins = 0;
+
+                // เริ่มกะใหม่
+                savedShiftCoins = 0;
+
+                TicketExpense = 0;
+                RentExpense = 0;
+            }
+            else
+            {
+                // ยอดสะสมของกะถูกบันทึกใน SavedCoins แล้ว
+                // จึงจำยอดปัจจุบันไว้เพื่อไม่ให้บวกซ้ำในวันถัดไป
+                savedShiftCoins = ShiftCoins;
+            }
+
+            // รีเซ็ตเฉพาะจำนวนลูกค้าของวันปัจจุบัน
             TodayCustomersServed = 0;
 
             UpdateNavbar();
 
-            if (daysPerShift > 0 && WorkDays % daysPerShift == 0)
-            {
-                ShowShiftSummary();
-            }
-
             GameLogger.Info(
                 "Economy",
                 $"บันทึกสำเร็จ | วัน={WorkDays} | " +
-                $"เหรียญ={SavedCoins} | ลูกค้า={CustomersServed}"
+                $"เหรียญ={SavedCoins} | ลูกค้า={CustomersServed} | " +
+                $"จบกะ={isShiftEnd}"
             );
         }
 
@@ -341,51 +446,43 @@ public class CoinManager : MonoBehaviour
         onComplete?.Invoke(true);
     }
 
-
-    // แสดงสรุปผลการทำงานเมื่อครบจำนวนวันที่กำหนด
+    // แสดงสรุปกะเพียงครั้งเดียว
     private void ShowShiftSummary()
     {
-        if (shiftSummaryText != null)
+        if (shiftEnd != null)
         {
-            shiftSummaryText.text =
-                $"วันที่ทำงาน: {WorkDays}\n" +
-                $"เหรียญทั้งหมด: {SavedCoins}\n" +
-                $"ลูกค้าที่เสิร์ฟสะสม: {CustomersServed}";
+            shiftEnd.ShowSummary();
         }
-
-        if (shiftSummaryPopup != null)
+        else
         {
-            shiftSummaryPopup.SetActive(true);
-        }
-    }
-
-    // ปิดหน้าต่างสรุปกะ
-    public void CloseShiftSummary()
-    {
-        if (shiftSummaryPopup != null)
-        {
-            shiftSummaryPopup.SetActive(false);
+            GameLogger.Warn(
+                "CoinManager",
+                "ยังไม่ได้กำหนด ShiftEnd ใน Inspector"
+            );
         }
     }
+
+    // อัปเดต Navbar จากระบบอื่นได้
     public void RefreshNavbar()
     {
         UpdateNavbar();
+
         GameLogger.Info(
-    "Economy",
-    $"RefreshNavbar | Coins={TotalCoins} | Days={WorkDays} | " +
-    $"Customers={CustomersServed + TodayCustomersServed}"
-);
+            "Economy",
+            $"RefreshNavbar | Coins={TotalCoins} | " +
+            $"Days={WorkDays} | " +
+            $"Customers={CustomersServed + TodayCustomersServed}"
+        );
     }
-    // อัปเดตข้อมูลทั้งหมดบน Navbar
+
     private void UpdateNavbar()
     {
-        // แสดงเหรียญรวม รวมรายได้ของวันปัจจุบัน
         if (totalCoinsText != null)
         {
             totalCoinsText.text = TotalCoins.ToString();
         }
 
-        // แสดงรายได้จากการขายและทิปของวันนี้
+        // Order และ Tips แสดงยอดสะสมตลอดกะ
         if (orderCoinsText != null)
         {
             orderCoinsText.text = "Order " + OrderCoins;
@@ -396,21 +493,21 @@ public class CoinManager : MonoBehaviour
             tipCoinsText.text = "Tips " + TipCoins;
         }
 
-        // แสดงยอดลูกค้าสะสม รวมลูกค้าที่เสิร์ฟวันนี้
         if (totalcustomerservedText != null)
         {
-            int totalServed = CustomersServed + TodayCustomersServed;
-            totalcustomerservedText.text = "Served " + totalServed;
+            int totalServed =
+                CustomersServed + TodayCustomersServed;
+
+            totalcustomerservedText.text =
+                "Served " + totalServed;
         }
 
-        // แสดงจำนวนวันที่ทำงานสะสม
         if (daysText != null)
         {
             daysText.text = WorkDays.ToString();
         }
     }
 
-    // รูปแบบข้อมูลที่ได้รับจาก GET /player/stats/{user_id}
     [Serializable]
     private class PlayerStatsResponse
     {
@@ -422,8 +519,6 @@ public class CoinManager : MonoBehaviour
         public int total_customers_served;
     }
 
-    // รูปแบบข้อมูลที่ส่งไป POST /player/stats/day
-
     [Serializable]
     private class FinishWorkDayRequest
     {
@@ -433,8 +528,6 @@ public class CoinManager : MonoBehaviour
         public int total_customers_served;
     }
 
-
-    // รูปแบบข้อมูลที่ได้รับกลับจาก POST /player/stats/day
     [Serializable]
     private class FinishWorkDayResponse
     {
@@ -444,5 +537,4 @@ public class CoinManager : MonoBehaviour
         public int work_days;
         public int total_customers_served;
     }
-
 }

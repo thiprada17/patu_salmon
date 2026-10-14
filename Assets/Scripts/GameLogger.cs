@@ -10,7 +10,7 @@ public static class GameLogger
         Debug = 3
     }
 
-    public static LogLevel CurrentLevel = LogLevel.Info;
+    public static LogLevel CurrentLevel = LogLevel.Debug;
 
     public static void Error(string category, string message)
     {
