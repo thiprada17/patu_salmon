@@ -19,3 +19,4 @@ MonoBehaviour:
   milk: 0
   water: 0
   cocoa: 2
+  ingredientOrder: 01000000010000000300000003000000

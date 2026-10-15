@@ -27,6 +27,9 @@ public class Cup : MonoBehaviour
     [SerializeField] private GameObject prefinishVFX;
     [SerializeField] private Transform prevfxPoint;
 
+    private bool isFull = false;
+    public bool IsFull => isFull;
+
     [Header("Empty Cup")] 
     [SerializeField]
     private SpriteRenderer emptyCupRenderer;
@@ -103,16 +106,10 @@ public class Cup : MonoBehaviour
     public bool AddIngredient(IngredientType ingredient)
     {
         if (ingredients == null || ingredients.Length != MaxIngredients)
-        {
             ingredients = new IngredientType[MaxIngredients];
-        }
-
 
         if (hasIngredient == null || hasIngredient.Length != MaxIngredients)
-        {
             hasIngredient = new bool[MaxIngredients];
-        }
-
 
         for (int i = 0; i < MaxIngredients; i++)
         {
@@ -122,9 +119,24 @@ public class Cup : MonoBehaviour
                 hasIngredient[i] = true;
 
                 ShowIngredient(ingredient, i);
+
+                // เช็กว่าใส่ส่วนผสมครบทุกช่องหรือยัง
+                isFull = true;
+
+                for (int j = 0; j < MaxIngredients; j++)
+                {
+                    if (!hasIngredient[j])
+                    {
+                        isFull = false;
+                        break;
+                    }
+                }
+
                 return true;
             }
         }
+
+        isFull = true;
         return false;
     }
 

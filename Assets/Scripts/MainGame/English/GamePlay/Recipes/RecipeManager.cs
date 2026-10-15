@@ -29,7 +29,8 @@ public class RecipeManager : MonoBehaviour
     }
 
 
-    private bool IsCorrectRecipe( Cup cup, RecipeData recipe)
+
+    private bool IsCorrectRecipe(Cup cup, RecipeData recipe)
     {
         if (recipe == null)
             return false;
@@ -39,25 +40,33 @@ public class RecipeManager : MonoBehaviour
         int waterCount = Count(cup, IngredientType.Water);
         int cocoaCount = Count(cup, IngredientType.Cocoa);
 
+        // ตรวจจำนวนส่วนผสม
+        if (coffeeCount != recipe.coffee ||
+            milkCount != recipe.milk ||
+            waterCount != recipe.water ||
+            cocoaCount != recipe.cocoa)
+        {
+            return false;
+        }
 
-        //GameLogger.DebugLog("Recipe", "Checking Recipe: " + recipe.recipeType +
-        //    "\nCup = " +
-        //    "Coffee:" + coffeeCount +
-        //    " Milk:" + milkCount +
-        //    " Water:" + waterCount +
-        //    " Cocoa:" + cocoaCount +
-        //    "\nRecipe = " +
-        //    "Coffee:" + recipe.coffee +
-        //    " Milk:" + recipe.milk +
-        //    " Water:" + recipe.water +
-        //    " Cocoa:" + recipe.cocoa
-        //);
+        // ตรวจลำดับส่วนผสม
+        IngredientType[] actualOrder = cup.GetIngredients();
 
-        return coffeeCount == recipe.coffee
-            && milkCount == recipe.milk
-            && waterCount == recipe.water
-            && cocoaCount == recipe.cocoa;
+        if (recipe.ingredientOrder == null ||
+            actualOrder.Length != recipe.ingredientOrder.Length)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < actualOrder.Length; i++)
+        {
+            if (actualOrder[i] != recipe.ingredientOrder[i])
+                return false;
+        }
+
+        return true;
     }
+
 
 
     private int Count( Cup cup, IngredientType type)

@@ -72,10 +72,16 @@ public class CoffeeMachine : MonoBehaviour
             return;
         }
 
+
         // เช็ก Cup
         if (currentCup == null)
         {
             GameLogger.Warn("CoffeeMach", "ยังไม่ได้ใส่ Cup");
+            return;
+        }
+
+        if (currentCup.IsFull)
+        {
             return;
         }
 
