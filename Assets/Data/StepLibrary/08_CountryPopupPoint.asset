@@ -25,5 +25,5 @@ MonoBehaviour:
   handAnimation: 1
   waitForTargetClick: 0
   useCustomDialoguePosition: 1
-  dialoguePosition: {x: -0.000016212, y: -1198}
+  dialoguePosition: {x: -0.000016212, y: -1104}
   hideSpeaker: 1
