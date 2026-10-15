@@ -695,7 +695,6 @@ GameObject:
   - component: {fileID: 106737002}
   - component: {fileID: 106737005}
   - component: {fileID: 106737004}
-  - component: {fileID: 106737003}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -722,62 +721,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0.001953125, y: 0.00390625}
   m_SizeDelta: {x: 15654, y: 20984}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &106737003
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 106737001}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Navigation:
-    m_Mode: 3
-    m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
-  m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
-    m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
-  m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 0}
-    m_SelectedSprite: {fileID: 0}
-    m_DisabledSprite: {fileID: 0}
-  m_AnimationTriggers:
-    m_NormalTrigger: Normal
-    m_HighlightedTrigger: Highlighted
-    m_PressedTrigger: Pressed
-    m_SelectedTrigger: Selected
-    m_DisabledTrigger: Disabled
-  m_Interactable: 1
-  m_TargetGraphic: {fileID: 106737004}
-  m_OnClick:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 903597583}
-        m_TargetAssemblyTypeName: PopupClose, Assembly-CSharp
-        m_MethodName: ClosePopup
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &106737004
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1126,7 +1069,6 @@ MonoBehaviour:
   AmericaPopup: {fileID: 1673340732}
   textAmericaPopup: {fileID: 446949765}
   backgroundOverlay: {fileID: 1822603855}
-  dialogueController: {fileID: 734018130}
 --- !u!61 &160734060
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1173,6 +1115,39 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 9.400927, y: 8.26}
   m_EdgeRadius: 0
+--- !u!1 &182572468
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 182572469}
+  m_Layer: 0
+  m_Name: CountryUITemp
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &182572469
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 182572468}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.5131668, y: -2.2662344, z: 8.617575}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 428163563}
+  - {fileID: 274629964}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &190953860
 GameObject:
   m_ObjectHideFlags: 0
@@ -1821,11 +1796,11 @@ Transform:
   m_GameObject: {fileID: 274629963}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 6.695185, y: 15.183894, z: 11.260492}
+  m_LocalPosition: {x: 5.8248277, y: 14.16577, z: 12.901464}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 417624795}
+  m_Father: {fileID: 182572469}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &274629965
 MonoBehaviour:
@@ -2258,6 +2233,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 417624795}
+  - component: {fileID: 417624796}
   m_Layer: 0
   m_Name: TutorialController
   m_TagString: Untagged
@@ -2278,15 +2254,26 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 428163563}
   - {fileID: 487989450}
   - {fileID: 567850522}
   - {fileID: 1955209332}
   - {fileID: 145599628}
   - {fileID: 71261914}
-  - {fileID: 274629964}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &417624796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 417624794}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49d65d8a331fb23478fdcbc9dacb8ecf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dialogueController: {fileID: 734018130}
 --- !u!1 &420074894
 GameObject:
   m_ObjectHideFlags: 0
@@ -2458,7 +2445,7 @@ RectTransform:
   - {fileID: 951211224}
   - {fileID: 1495882252}
   - {fileID: 1728511167}
-  m_Father: {fileID: 417624795}
+  m_Father: {fileID: 182572469}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -2786,7 +2773,7 @@ GameObject:
   m_Component:
   - component: {fileID: 451816079}
   m_Layer: 5
-  m_Name: MapDialogueUI
+  m_Name: DialogueUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3878,7 +3865,7 @@ GameObject:
   - component: {fileID: 734018129}
   - component: {fileID: 734018130}
   m_Layer: 0
-  m_Name: MapDialogueManager
+  m_Name: DialogueManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3915,16 +3902,13 @@ MonoBehaviour:
   dialogueRoot: {fileID: 1503654885}
   dialogueBox: {fileID: 2055767604}
   dialogueText: {fileID: 190953862}
-  speakerText: {fileID: 1666992496}
-  speakerRoot: {fileID: 487989445}
   advanceButton: {fileID: 609878739}
+  speakerModel: {fileID: 487989445}
   autoButton: {fileID: 531939124}
   autoButtonText: {fileID: 970034793}
   autoButtonImage: {fileID: 531939125}
   autoOffSprite: {fileID: 1852599099772028583, guid: 8c511b4a33bb0b8428cff07a4969127f, type: 3}
   autoOnSprite: {fileID: -1307664305451782276, guid: b5a9445a2d8809541a661216e7ec0e8a, type: 3}
-  speakerNames:
-  - Mysterious <color=#F87400>FOX</color>
   dialogueLines:
   - "Hello, <color=#F87400>{player_name}</color>! you probably wonder why you\u2019re
     here."
@@ -5427,8 +5411,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 326.2, y: 166}
-  m_SizeDelta: {x: 652.4, y: 572.4}
+  m_AnchoredPosition: {x: 326.2, y: 140.7}
+  m_SizeDelta: {x: 652.4, y: 610}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &951211225
 MonoBehaviour:
@@ -5463,7 +5447,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 7590097944493757293, guid: c2899a5f52d2dda4f9c0464812387a97, type: 3}
+  m_Sprite: {fileID: 4927470695862778363, guid: 3292bd96841090e4faa70f08032816b3, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -10024,7 +10008,7 @@ SortingGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1963394233}
   m_Enabled: 1
-  m_SortingLayerID: 258595973
+  m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_SortAtRoot: 0
@@ -10454,9 +10438,10 @@ SceneRoots:
   m_Roots:
   - {fileID: 1627969184}
   - {fileID: 1155961655}
+  - {fileID: 896330024}
   - {fileID: 378702906}
   - {fileID: 1437227110}
   - {fileID: 1963394235}
-  - {fileID: 896330024}
   - {fileID: 1834425794}
+  - {fileID: 182572469}
   - {fileID: 417624795}

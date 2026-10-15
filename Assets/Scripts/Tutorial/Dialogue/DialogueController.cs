@@ -1,10 +1,11 @@
+
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
 using System.Collections;
 
-public class MapDialogueController : MonoBehaviour
+public class DialogueController : MonoBehaviour
 {
     public enum DialogueEntryType
     {
@@ -17,7 +18,7 @@ public class MapDialogueController : MonoBehaviour
     {
         [SerializeField] private DialogueEntryType entryType;
 
-        [Tooltip("Index in the existing speakerNames and dialogueLines arrays.")]
+        [Tooltip("Index in the existing dialogueLines array.")]
         [SerializeField] private int normalDialogueIndex;
 
         [Tooltip("Tutorial asset to display for this entry.")]
@@ -33,9 +34,10 @@ public class MapDialogueController : MonoBehaviour
     [SerializeField] private GameObject dialogueRoot;
     [SerializeField] private RectTransform dialogueBox;
     [SerializeField] private TMP_Text dialogueText;
-    [SerializeField] private TMP_Text speakerText;
-    [SerializeField] private GameObject speakerRoot;
     [SerializeField] private Button advanceButton;
+
+    [Header("Speaker Model")]
+    [SerializeField] private GameObject speakerModel;
 
     [Header("Auto Button")]
     [SerializeField] private Button autoButton;
@@ -45,8 +47,6 @@ public class MapDialogueController : MonoBehaviour
     [SerializeField] private Sprite autoOnSprite;
 
     [Header("Normal Dialogue Content")]
-    [SerializeField] private string[] speakerNames;
-
     [TextArea(2, 4)]
     [SerializeField] private string[] dialogueLines;
 
@@ -72,11 +72,7 @@ public class MapDialogueController : MonoBehaviour
     private bool autoMode;
     private bool isTyping;
     private bool dialogueStarted;
-
-    // True only while the current dialogue entry is a tutorial step.
     private bool isTutorial;
-
-    private string currentSpeakerName = "";
 
     private Vector2 originalDialoguePosition;
     private bool originalPositionSaved;
@@ -106,19 +102,16 @@ public class MapDialogueController : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("MapDialogueController Start() is running!");
+        Debug.Log("DialogueController Start() is running!");
 
         if (dialogueSequence == null || dialogueSequence.Length == 0)
         {
-            Debug.LogWarning(
-                "No entries assigned to Dialogue Sequence."
-            );
+            Debug.LogWarning("No entries assigned to Dialogue Sequence.");
             return;
         }
 
         currentLine = 0;
         autoMode = false;
-        currentSpeakerName = "";
         dialogueStarted = true;
         isTutorial = false;
 
@@ -134,12 +127,10 @@ public class MapDialogueController : MonoBehaviour
         ShowDialogue();
     }
 
-    // Called by map and country click-handler scripts.
+    // Locks map clicks while the dialogue sequence is active.
     public bool IsTutorialInputLocked()
     {
-        bool locked = dialogueStarted && isTutorial;
-
-        return locked;
+        return dialogueStarted;
     }
 
     public void NextDialogue()
@@ -189,7 +180,6 @@ public class MapDialogueController : MonoBehaviour
         if (entry == null)
         {
             isTutorial = false;
-
             Debug.LogWarning(
                 "Dialogue Sequence entry is empty at index " + currentLine
             );
@@ -198,17 +188,19 @@ public class MapDialogueController : MonoBehaviour
             return;
         }
 
-        // Update the shared tutorial-lock state for this entry.
         isTutorial = entry.EntryType == DialogueEntryType.Tutorial;
+
+        Debug.Log(
+            "Dialogue index: " + currentLine +
+            ", Entry Type: " + entry.EntryType
+        );
 
         TutorialStepData step = isTutorial
             ? entry.TutorialStep
             : null;
 
         string line;
-        string speaker;
 
-        // Keep the fox visible throughout the dialogue sequence.
         if (mysteriousFox != null)
             mysteriousFox.SetActive(true);
 
@@ -239,24 +231,13 @@ public class MapDialogueController : MonoBehaviour
             }
 
             line = dialogueLines[index] ?? "";
-
-            speaker = speakerNames != null &&
-                      index < speakerNames.Length
-                ? speakerNames[index] ?? ""
-                : "";
-
             RestoreDialoguePosition();
         }
         else
         {
             line = step.Dialogue ?? "";
-            speaker = step.SpeakerName ?? "";
-
             ApplyDialoguePosition(step);
         }
-
-        if (!string.IsNullOrWhiteSpace(speaker))
-            currentSpeakerName = speaker;
 
         // Update tutorial visuals and temporary country highlights.
         if (isTutorial)
@@ -300,22 +281,13 @@ public class MapDialogueController : MonoBehaviour
             HideTutorialObjects();
         }
 
-        // Apply Hide Speaker to the speaker UI.
-        bool hideSpeaker = isTutorial &&
-                           step != null &&
-                           step.HideSpeaker;
+        // Hide only the 2D speaker model when requested by a Tutorial entry.
+        bool hideSpeakerModel = isTutorial &&
+                                step != null &&
+                                step.HideSpeaker;
 
-        if (speakerText != null)
-            speakerText.text = hideSpeaker ? "" : currentSpeakerName;
-
-        if (speakerRoot != null)
-        {
-            speakerRoot.SetActive(!hideSpeaker);
-        }
-        else if (speakerText != null)
-        {
-            speakerText.gameObject.SetActive(!hideSpeaker);
-        }
+        if (speakerModel != null)
+            speakerModel.SetActive(!hideSpeakerModel);
 
         if (dialogueText == null)
         {
@@ -337,9 +309,6 @@ public class MapDialogueController : MonoBehaviour
 
         if (countryTempCanvas != null)
             countryTempCanvas.HideAll();
-
-        // Do not hide the fox here.
-        // It is hidden when the entire sequence ends.
     }
 
     private void ApplyDialoguePosition(TutorialStepData step)
@@ -430,9 +399,7 @@ public class MapDialogueController : MonoBehaviour
     {
         if (autoButtonText != null)
         {
-            autoButtonText.text = autoMode
-                ? "PLAYING"
-                : "AUTO";
+            autoButtonText.text = autoMode ? "PLAYING" : "AUTO";
         }
 
         if (autoButtonImage != null)
@@ -494,15 +461,6 @@ public class MapDialogueController : MonoBehaviour
 
         if (advanceButton != null)
             advanceButton.gameObject.SetActive(false);
-
-        if (speakerText != null)
-        {
-            speakerText.text = "";
-            speakerText.gameObject.SetActive(false);
-        }
-
-        if (speakerRoot != null)
-            speakerRoot.SetActive(false);
 
         if (mysteriousFox != null)
             mysteriousFox.SetActive(false);
