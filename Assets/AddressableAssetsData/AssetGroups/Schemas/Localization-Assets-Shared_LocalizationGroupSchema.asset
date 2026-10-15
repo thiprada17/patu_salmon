@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2a6cbe3350d4236a61c288cd10ec63e, type: 3}
   m_Name: Localization-Assets-Shared_LocalizationGroupSchema
   m_EditorClassIdentifier: 
-  m_Group: {fileID: 11400000, guid: 2cff887dd89f53c4596317ea53a3a89b, type: 2}
+  m_Group: {fileID: 11400000, guid: 51f0cd3a799efde4a868dd1a6072ea5d, type: 2}

@@ -11,7 +11,7 @@
             android:name="com.unity3d.player.UnityPlayerActivity"
             android:exported="true">
 
-            <!-- à»Ô´áÍ»µÒÁ»¡µÔ -->
+            <!-- ï¿½Ô´ï¿½Í»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ -->
             <intent-filter>
 
                 <action

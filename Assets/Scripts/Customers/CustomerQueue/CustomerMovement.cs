@@ -233,6 +233,11 @@ public class CustomerMovement : MonoBehaviour
     {
         isAngry = true;
 
+        if (CoinManager.Instance != null)
+        {
+            CoinManager.Instance.ApplyAngryPenalty();
+        }
+
         if (customerOrder != null)
         {
             customerOrder.SetTimeBarAngry();
@@ -396,5 +401,20 @@ public class CustomerMovement : MonoBehaviour
     public bool IsLeaving()
     {
         return isLeaving;
+    }
+
+    public float GetWaitTimer()
+    {
+        return waitTimer;
+    }
+
+    public bool IsAngryState()
+    {
+        return isAngry;
+    }
+
+    public float GetMaxWaitTime()
+    {
+        return maxWaitTime;
     }
 }

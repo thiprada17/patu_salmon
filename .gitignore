@@ -16,9 +16,30 @@
 *.user
 *.userprefs
 
+.env
+
 .DS_Store
 Thumbs.db
-Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Coiny-Regular SDF.asset
-Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Prompt-Light SDF.asset
-Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Prompt-Medium SDF.asset
-Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Prompt-Light SDF.asset
+Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/
+
+
+backend/services/__pycache__/
+
+               
+backend/__pycache__/
+/backend/services/__pycache__
+/.utmp
+/.utmp/RelWithDebInfo
+/Assets/AddressableAssetsData
+**/.utmp/
+
+**/.utmp/
+/backend/core/__pycache__
+/backend/infrastructure/__pycache__
+/backend/schemas/__pycache__
+/backend/utils/__pycache__
+/backend/api/__pycache__
+/backend/api/v1/__pycache__
+/backend/controllers/__pycache__
+/backend/repositories/__pycache__
+backend/.env

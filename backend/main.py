@@ -1,33 +1,14 @@
 from fastapi import FastAPI
 
-from routers.auth import router as login_router
+from api.v1.AuthRouter import router as auth_router
+from api.v1.PlayerRouter import router as player_router
 
+app = FastAPI(title="Platu Salmon หลังบ้าน")
 
-app = FastAPI(
-    title="Platu Salmon API"
-)
-
-
-app.include_router(
-    login_router
-)
+app.include_router(auth_router)
+app.include_router(player_router)
 
 
 @app.get("/")
-def root():
-
-    return {
-        "message": "Platu Salmon API is running"
-    }
-
-
-if __name__ == "__main__":
-
-    import uvicorn
-
-    uvicorn.run(
-        "test:app",
-        host="0.0.0.0",
-        port=8000,
-        reload=True
-    )
+def health_check():
+    return {"status": "ok"}

@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using static Unity.VisualScripting.Icons;
+using TMPro;
 
 public class CardSelect : MonoBehaviour
 {
     [SerializeField] GameObject glow;
-    [SerializeField] int characterId;
+    [SerializeField] string characterName;
     [SerializeField] string nextScene = "idcard";
     [SerializeField] float delay = 0.2f;
 
@@ -38,11 +40,14 @@ public class CardSelect : MonoBehaviour
 
     static bool locked = false;
 
+    private string backendUrl = "http://127.0.0.1:8000";
+
     void Start()
     {
         locked = false;
         if (glow != null) glow.SetActive(false);
     }
+
 
     void OnMouseDown()
     {
@@ -50,8 +55,11 @@ public class CardSelect : MonoBehaviour
         locked = true;
 
         if (glow != null) glow.SetActive(true);
-        PlayerPrefs.SetInt("SelectedCharacter", characterId);
+        PlayerPrefs.SetString("SelectedCharacter", characterName);
         PlayerPrefs.Save();
+
+
+        Debug.Log("Selected character: " + characterName);
 
         StartCoroutine(Punch(transform));
         StartCoroutine(GoNext());

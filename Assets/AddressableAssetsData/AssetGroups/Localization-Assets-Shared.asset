@@ -13,12 +13,17 @@ MonoBehaviour:
   m_Name: Localization-Assets-Shared
   m_EditorClassIdentifier: 
   m_GroupName: Localization-Assets-Shared
-  m_GUID: 33ab09d5605ea534181d5a8fb47ffe7c
-  m_SerializeEntries: []
+  m_GUID: d1f1219e0ef3bf94ea0dd8f01248f673
+  m_SerializeEntries:
+  - m_GUID: d4ec02a9264b3584f9057304f528f287
+    m_Address: Assets/Settings/GameText Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 1
-  m_Settings: {fileID: 11400000, guid: a3b0079f7334c6b45a84e31b11ca5986, type: 2}
+  m_Settings: {fileID: 11400000, guid: 4e672fdb841927a499beaeaa74c5a3f1, type: 2}
   m_SchemaSet:
     m_Schemas:
-    - {fileID: 11400000, guid: a3dce9b51b81efb44b269a4ec149e485, type: 2}
-    - {fileID: 11400000, guid: 9f2cbeeb5c33a694ea526a90502c1e9c, type: 2}
-    - {fileID: 11400000, guid: dff4b9af7cf5a1f45b8f3ccffd9754dd, type: 2}
+    - {fileID: 11400000, guid: 26efbf54490b1b345943abe0b66320a9, type: 2}
+    - {fileID: 11400000, guid: e4125592086d4844d83359a896b011da, type: 2}
+    - {fileID: 11400000, guid: d6480fa0d4174c04a9629b9a64b318a5, type: 2}

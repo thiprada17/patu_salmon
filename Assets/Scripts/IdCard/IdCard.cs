@@ -12,7 +12,7 @@ public class IdCard : MonoBehaviour
 
     [Header("card pop-in")]
     [SerializeField] Transform cardRoot;
-    [SerializeField] Transform[] followers;   
+    [SerializeField] Transform[] followers;
     [SerializeField] float popTime = 0.35f;
     [SerializeField] float startScale = 0.9f;
     [SerializeField] float riseDistance = 0.3f;
@@ -20,7 +20,7 @@ public class IdCard : MonoBehaviour
     [Header("enter")]
     [SerializeField] TMP_InputField input;
     [SerializeField] TextMeshProUGUI warning;
-    [SerializeField] string nextScene = "SetCharacter";
+    [SerializeField] string nextScene = "SelectCharacter";
     [SerializeField] float punchScale = 1.12f;
     [SerializeField] float punchTime = 0.18f;
 
@@ -93,13 +93,12 @@ public class IdCard : MonoBehaviour
         {
             Vector3 offset = basePos[i] - pivot;
             offset.x *= s;
-            offset.y *= s;          
+            offset.y *= s;
 
             roots[i].localScale = baseScale[i] * s;
             roots[i].localPosition = pivot + offset + rise;
         }
     }
-
 
     void OnMouseDown()
     {
@@ -117,9 +116,28 @@ public class IdCard : MonoBehaviour
         }
 
         isBusy = true;
+
+        Debug.Log("Username: " + name);
         PlayerPrefs.SetString("Username", name);
         PlayerPrefs.Save();
-        StartCoroutine(PunchThenGo());
+
+        string character = PlayerPrefs.GetString("SelectedCharacter", "salmon");
+        string language = PlayerPrefs.GetString("Language", "english");
+        LoginManager.Instance.SendStarterPlayer(
+            name,
+            character,
+            language,
+            onSuccess: () =>
+            {
+                Debug.Log("Player data sent successfully!");
+                StartCoroutine(PunchThenGo());
+            },
+            onError: err =>
+            {
+                Debug.LogError("Send player data failed: " + err);
+                isBusy = false;
+            });
+
     }
 
     IEnumerator PunchThenGo()

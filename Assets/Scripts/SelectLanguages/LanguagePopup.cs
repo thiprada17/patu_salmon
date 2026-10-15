@@ -1,221 +1,252 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class LanguagePopup : MonoBehaviour
 {
-    [System.Serializable]
-    public class LangButton
+    [SerializeField] private GameObject popup;
+    [SerializeField] private Button thaiButton;
+    [SerializeField] private Button englishButton;
+
+    [Header("Animation")]
+    [SerializeField] private Transform popupBox;
+    [SerializeField] private CanvasGroup popupGroup;
+    [SerializeField] private CanvasGroup dimGroup;
+
+    [SerializeField] private float openTime = 0.22f;
+    [SerializeField] private float closeTime = 0.14f;
+    [SerializeField] private float startScale = 0.8f;
+    [SerializeField] private float overshoot = 1.04f;
+    [SerializeField] private float dimAlpha = 0.55f;
+
+    [Header("Button Punch")]
+    [SerializeField] private float punchScale = 1.15f;
+    [SerializeField] private float punchTime = 0.18f;
+
+
+    private void Awake()
     {
-        public Button button;
-        public Sprite normal;      
-        public Sprite selected;    
-    }
+        popup.SetActive(false);
 
-    [Header("popup")]
-    [SerializeField] GameObject root;          
-    [SerializeField] Transform box;            
-    [SerializeField] CanvasGroup boxGroup;     
-    [SerializeField] CanvasGroup dimGroup;     
-
-    [Header("lang btn")]
-    [SerializeField] LangButton[] langButtons = new LangButton[3];
-
-    [Header("btn")]
-    [SerializeField] Button enterButton;
-    [SerializeField] Button closeButton;       
-
-    [Header("signup")]
-    [SerializeField] SignupUI signupUI;
-
-    [Header("next scene")]
-    [SerializeField] string nextScene = "SetCharacter";
-    [SerializeField] float delay = 0.25f;
-
-    [Header("punch")]
-    [SerializeField] float punchScale = 1.15f;
-    [SerializeField] float punchTime = 0.18f;
-
-    [Header("popup")]
-    [SerializeField] float openTime = 0.22f;
-    [SerializeField] float closeTime = 0.14f;
-    [SerializeField] float startScale = 0.80f;
-    [SerializeField] float overshoot = 1.04f;
-    [SerializeField] float dimAlpha = 0.55f;
-
-    [Header("default")]
-    [SerializeField] int defaultIndex = -1;     
-
-    int selected = -1;
-    bool busy = false;
-    bool ready = false;
-
-    void Setup()
-    {
-        if (ready) return;
-        ready = true;
-
-        for (int i = 0; i < langButtons.Length; i++)
+        thaiButton.onClick.AddListener(() =>
         {
-            int index = i;   
-            LangButton lb = langButtons[i];
-            if (lb == null || lb.button == null) continue;
+            StartCoroutine(Punch(thaiButton.transform));
+            SelectLanguage("thai");
+        });
 
-            lb.button.transition = Selectable.Transition.None;  
-            lb.button.onClick.AddListener(() =>
-            {
-                Debug.Log("กดปุ่มที่ " + index);
-                Select(index);
-                StartCoroutine(Punch(langButtons[index].button.transform));
-            });
-        }
-
-        if (enterButton != null) enterButton.onClick.AddListener(OnEnterClick);
-        if (closeButton != null) closeButton.onClick.AddListener(OnCloseClick);
+        englishButton.onClick.AddListener(() =>
+        {
+            StartCoroutine(Punch(englishButton.transform));
+            SelectLanguage("english");
+        });
     }
-
-
 
     public void Open()
     {
-        if (root == null) return;
+        Debug.Log("OPEN POPUP");
 
-        root.SetActive(true);
-        Setup();
+        if (popup == null)
+        {
+            Debug.LogError("popup เป็น NULL");
+            return;
+        }
+
+        popup.SetActive(true);
 
         StopAllCoroutines();
-        busy = false;
+        StartCoroutine(OpenAnimation());
 
-        Select(defaultIndex);
-        StartCoroutine(OpenAnim());
     }
 
-    void OnCloseClick()
+    public void Close()
     {
-        if (busy) return;
+        if (popup == null) return;
 
-        busy = true;
-        StartCoroutine(CloseAnim());
+        StopAllCoroutines();
+        StartCoroutine(CloseAnimation());
     }
 
-    void OnEnterClick()
+    private IEnumerator OpenAnimation()
     {
-        if (busy || selected < 0) return;
+        float time = 0f;
 
-        busy = true;
-        if (enterButton != null) StartCoroutine(Punch(enterButton.transform));
-        StartCoroutine(GoNext());
-    }
+        if (popupBox != null)
+            popupBox.localScale = Vector3.one * startScale;
 
+        if (popupGroup != null)
+            popupGroup.alpha = 0f;
 
+        if (dimGroup != null)
+            dimGroup.alpha = 0f;
 
-    void Select(int index)
-    {
-        selected = index;
-
-        for (int i = 0; i < langButtons.Length; i++)
+        while (time < openTime)
         {
-            LangButton lb = langButtons[i];
-            if (lb == null || lb.button == null) continue;
+            time += Time.unscaledDeltaTime;
 
-            Image img = lb.button.GetComponent<Image>();
-            if (img == null) continue;
+            float p = Mathf.Clamp01(time / openTime);
 
-            Sprite s = (i == index) ? lb.selected : lb.normal;
-            if (s != null) img.sprite = s;
-        }
-
-        if (enterButton != null) enterButton.interactable = (selected >= 0);
-    }
-
-
-
-    IEnumerator OpenAnim()
-    {
-        float e = 0f;
-
-        if (box != null) box.localScale = Vector3.one * startScale;
-        if (boxGroup != null) boxGroup.alpha = 0f;
-        if (dimGroup != null) dimGroup.alpha = 0f;
-
-        float phase1 = openTime * 0.65f;
-        while (e < phase1)
-        {
-            e += Time.unscaledDeltaTime;
-            float p = Mathf.Clamp01(e / phase1);
+            // Ease Out
             float ease = 1f - Mathf.Pow(1f - p, 3f);
 
-            if (box != null) box.localScale = Vector3.one * Mathf.Lerp(startScale, overshoot, ease);
-            if (boxGroup != null) boxGroup.alpha = ease;
-            if (dimGroup != null) dimGroup.alpha = ease * dimAlpha;
+            if (popupBox != null)
+            {
+                float scale = Mathf.Lerp(
+                    startScale,
+                    overshoot,
+                    ease
+                );
+
+                popupBox.localScale = Vector3.one * scale;
+            }
+
+            if (popupGroup != null)
+                popupGroup.alpha = ease;
+
+            if (dimGroup != null)
+                dimGroup.alpha = ease * dimAlpha;
+
             yield return null;
         }
 
-        e = 0f;
-        float phase2 = openTime * 0.35f;
-        while (e < phase2)
-        {
-            e += Time.unscaledDeltaTime;
-            float p = Mathf.Clamp01(e / phase2);
-            float ease = 1f - Mathf.Pow(1f - p, 3f);
+        // เด้งกลับมาที่ 1
+        time = 0f;
 
-            if (box != null) box.localScale = Vector3.one * Mathf.Lerp(overshoot, 1f, ease);
+        while (time < 0.08f)
+        {
+            time += Time.unscaledDeltaTime;
+
+            float p = Mathf.Clamp01(time / 0.08f);
+
+            if (popupBox != null)
+            {
+                float scale = Mathf.Lerp(
+                    overshoot,
+                    1f,
+                    p
+                );
+
+                popupBox.localScale = Vector3.one * scale;
+            }
+
             yield return null;
         }
 
-        if (box != null) box.localScale = Vector3.one;
-        if (boxGroup != null) boxGroup.alpha = 1f;
-        if (dimGroup != null) dimGroup.alpha = dimAlpha;
+        if (popupBox != null)
+            popupBox.localScale = Vector3.one;
+
+        if (popupGroup != null)
+            popupGroup.alpha = 1f;
+
+        if (dimGroup != null)
+            dimGroup.alpha = dimAlpha;
     }
 
-    IEnumerator CloseAnim()
+    private IEnumerator CloseAnimation()
     {
-        float e = 0f;
-        float from = box != null ? box.localScale.x : 1f;
+        float time = 0f;
 
-        while (e < closeTime)
+        Vector3 start =
+            popupBox != null
+            ? popupBox.localScale
+            : Vector3.one;
+
+        while (time < closeTime)
         {
-            e += Time.unscaledDeltaTime;
-            float p = Mathf.Clamp01(e / closeTime);
+            time += Time.unscaledDeltaTime;
 
-            if (box != null) box.localScale = Vector3.one * Mathf.Lerp(from, startScale, p);
-            if (boxGroup != null) boxGroup.alpha = 1f - p;
-            if (dimGroup != null) dimGroup.alpha = dimAlpha * (1f - p);
+            float p = Mathf.Clamp01(time / closeTime);
+
+            if (popupBox != null)
+            {
+                popupBox.localScale =
+                    Vector3.Lerp(
+                        start,
+                        Vector3.one * startScale,
+                        p
+                    );
+            }
+
+            if (popupGroup != null)
+                popupGroup.alpha = 1f - p;
+
+            if (dimGroup != null)
+                dimGroup.alpha = dimAlpha * (1f - p);
+
             yield return null;
         }
 
-        if (root != null) root.SetActive(false);
-        if (signupUI != null) signupUI.Unlock();
-        busy = false;
+        popup.SetActive(false);
     }
 
-    IEnumerator GoNext()
+    private string selectedLanguage;
+
+    private void SelectLanguage(string language)
     {
-        yield return new WaitForSecondsRealtime(delay);
-        SceneManager.LoadScene(nextScene);
+        selectedLanguage = language;
+
+        Debug.Log("Selected language: " + language);
+
+        PlayerPrefs.SetString("Language", language);
+        PlayerPrefs.Save();
     }
 
-    IEnumerator Punch(Transform t)
+    public void OnEnterClick()
     {
-        Vector3 baseScale = Vector3.one;
-        Vector3 bigScale = baseScale * punchScale;
-        yield return ScaleTo(t, baseScale, bigScale, punchTime * 0.4f);
-        yield return ScaleTo(t, bigScale, baseScale, punchTime * 0.6f);
-        t.localScale = baseScale;
-    }
-
-    IEnumerator ScaleTo(Transform t, Vector3 from, Vector3 to, float time)
-    {
-        float e = 0f;
-        while (e < time)
+        if (string.IsNullOrEmpty(selectedLanguage))
         {
-            e += Time.unscaledDeltaTime;
-            float p = e / time;
+            Debug.Log("Please select language first");
+            return;
+        }
+
+        Close();
+        SceneManager.LoadScene("SelectCharacter");
+    }
+
+    private IEnumerator Punch(Transform target)
+    {
+        Vector3 normal = target.localScale;
+        Vector3 big = normal * punchScale;
+
+        yield return Scale(
+            target,
+            normal,
+            big,
+            punchTime * 0.4f
+        );
+
+        yield return Scale(
+            target,
+            big,
+            normal,
+            punchTime * 0.6f
+        );
+
+        target.localScale = normal;
+    }
+
+    private IEnumerator Scale(
+        Transform target,
+        Vector3 from,
+        Vector3 to,
+        float duration)
+    {
+        float time = 0f;
+
+        while (time < duration)
+        {
+            time += Time.unscaledDeltaTime;
+
+            float p = Mathf.Clamp01(time / duration);
+
             p = 1f - Mathf.Pow(1f - p, 3f);
-            t.localScale = Vector3.Lerp(from, to, p);
+
+            target.localScale =
+                Vector3.Lerp(from, to, p);
+
             yield return null;
         }
-        t.localScale = to;
+
+        target.localScale = to;
     }
 }
