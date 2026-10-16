@@ -7,14 +7,12 @@ app = FastAPI(title="Platu Salmon หลังบ้าน")
 
 app.include_router(auth_router)
 app.include_router(player_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://thiprada17.itch.io/platu-salmon",
-        "http://localhost:3000",
-        "http://127.0.0.1:8000",
     ],
-    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
