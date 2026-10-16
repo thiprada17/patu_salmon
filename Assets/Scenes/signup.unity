@@ -1345,6 +1345,7 @@ MonoBehaviour:
   googleButton: {fileID: 1036876197}
   languagePopup: {fileID: 1117477446}
   nextScene: SelectCharacter
+  existingPlayerScene: MainMenu
   delay: 0.25
   punchScale: 1.15
   punchTime: 0.18
@@ -1775,7 +1776,6 @@ GameObject:
   - component: {fileID: 640072339}
   - component: {fileID: 640072338}
   - component: {fileID: 640072337}
-  - component: {fileID: 640072336}
   m_Layer: 5
   m_Name: lang popup
   m_TagString: Untagged
@@ -1783,18 +1783,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &640072336
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 640072335}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 141ada00551b7ae47872407c134cbd95, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &640072337
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3224,6 +3212,7 @@ MonoBehaviour:
   googleButton: {fileID: 1036876197}
   languagePopup: {fileID: 1117477446}
   nextScene: SelectCharacter
+  existingPlayerScene: MainMenu
   delay: 0.25
   punchScale: 1.15
   punchTime: 0.18

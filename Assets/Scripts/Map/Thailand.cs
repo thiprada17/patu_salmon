@@ -19,8 +19,15 @@ public class Thailand : MonoBehaviour
         OpenPopup();
     }
 
+
     public void OpenPopup()
     {
+        if (MapInputController.Instance == null ||
+            !MapInputController.Instance.CanClickMap())
+        {
+            return;
+        }
+
         if (thailandPopup != null)
             thailandPopup.SetActive(true);
 
@@ -30,6 +37,7 @@ public class Thailand : MonoBehaviour
         if (backgroundOverlay != null)
             backgroundOverlay.SetActive(true);
     }
+
 
     public void ClosePopup()
     {
