@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.Audio;
 
 public class CoffeeMachine : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class CoffeeMachine : MonoBehaviour
     private Vector3 originalPosition;
     private Vector3 portfilterOriginalPosition;
     private Vector3 cupOriginalPosition;
+
+    [SerializeField] private AudioSource audioSource;
 
     // เช็กว่าเครื่องกำลังทำงานอยู่หรือไม่
     private bool isMakingCoffee = false;
@@ -83,6 +86,11 @@ public class CoffeeMachine : MonoBehaviour
         if (currentCup.IsFull)
         {
             return;
+        }
+
+        if (audioSource != null)
+        {
+            audioSource.PlayOneShot(audioSource.clip);
         }
 
         // เริ่มทำกาแฟ
