@@ -11,7 +11,7 @@ app.include_router(player_router)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://thiprada17.itch.io/platu-salmon",
+        "https://thiprada17.itch.io",
     ],
     allow_methods=["*"],
     allow_headers=["*"],
