@@ -7,7 +7,7 @@ using UnityEngine.Networking;
 
 public class ResourceLoading : MonoBehaviour
 {
-    [SerializeField] private string backendUrl = "http://127.0.0.1:8000";
+    [SerializeField] private string backendUrl = "https://patu-salmon.onrender.com";
 
     public bool IsCheckDone { get; private set; }
     public bool IsSessionValid { get; private set; }

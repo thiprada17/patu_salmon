@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
-using static Unity.VisualScripting.Icons;
-using TMPro;
 
 public class CardSelect : MonoBehaviour
 {
@@ -40,7 +38,7 @@ public class CardSelect : MonoBehaviour
 
     static bool locked = false;
 
-    private string backendUrl = "http://127.0.0.1:8000";
+    private string backendUrl = "https://patu-salmon.onrender.com";
 
     void Start()
     {

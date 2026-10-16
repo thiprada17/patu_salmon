@@ -12,7 +12,7 @@ public class CoinManager : MonoBehaviour
     public static CoinManager Instance { get; private set; }
 
     [Header("Backend")]
-    [SerializeField] private string backendUrl = "http://127.0.0.1:8000";
+    [SerializeField] private string backendUrl = "https://patu-salmon.onrender.com";
 
     [Header("Recipes")]
     [SerializeField] private List<RecipeData> recipes;

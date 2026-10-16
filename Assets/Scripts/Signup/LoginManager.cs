@@ -8,7 +8,7 @@ using UnityEngine.Networking;
 /// สร้างตัวเองอัตโนมัติและอยู่ข้ามซีน ไม่ต้องวางใน Scene
 public class LoginManager : MonoBehaviour
 {
-    const string backendUrl = "http://127.0.0.1:8000";
+    const string backendUrl = "https://patu-salmon.onrender.com";
 
     static LoginManager instance;
     public static LoginManager Instance

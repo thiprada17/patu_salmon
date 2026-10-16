@@ -13,7 +13,7 @@ public class GoogleLogin : MonoBehaviour
 {
     [SerializeField] private LanguagePopup languagePopup;
 
-    private string backendUrl = "http://127.0.0.1:8000";
+    private string backendUrl = "https://patu-salmon.onrender.com";
     private string lastHandledUrl = null;
 
     private void Awake()
