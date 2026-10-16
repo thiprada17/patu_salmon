@@ -12,6 +12,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://thiprada17.itch.io",
+        "https://html-classic.itch.zone",
     ],
     allow_methods=["*"],
     allow_headers=["*"],
