@@ -32,6 +32,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/bulb.unity
     guid: 1b63ab2e326488f4fb5c92771bc58dc5
+  - enabled: 1
+    path: Assets/Scenes/loading.unity
+    guid: 2eb154db8166a2145b978039bfb26f3f
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: d2a7949c2b48ae14a91086c7562b6185, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}

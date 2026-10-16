@@ -24,6 +24,7 @@ public class LanguagePopup : MonoBehaviour
     [SerializeField] private float punchScale = 1.15f;
     [SerializeField] private float punchTime = 0.18f;
 
+
     private void Awake()
     {
         popup.SetActive(false);
@@ -55,6 +56,7 @@ public class LanguagePopup : MonoBehaviour
 
         StopAllCoroutines();
         StartCoroutine(OpenAnimation());
+
     }
 
     public void Close()

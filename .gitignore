@@ -34,6 +34,15 @@ backend/__pycache__/
 **/.utmp/
 
 **/.utmp/
+/backend/core/__pycache__
+/backend/infrastructure/__pycache__
+/backend/schemas/__pycache__
+/backend/utils/__pycache__
+/backend/api/__pycache__
+/backend/api/v1/__pycache__
+/backend/controllers/__pycache__
+/backend/repositories/__pycache__
+backend/.env
 backend/api/__pycache__/__init__.cpython-314.pyc
 backend/api/v1/__pycache__/__init__.cpython-314.pyc
 backend/api/v1/__pycache__/AuthRouter.cpython-314.pyc

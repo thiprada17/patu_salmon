@@ -202,19 +202,26 @@ public class CustomerOrder : MonoBehaviour
     {
         Debug.Log(name + " received CORRECT order!");
 
-        // ซ่อนกล่องข้อความ
         HideDialogue();
 
-        // ให้ลูกค้าเดินออกแบบ Happy
         CustomerMovement movement =
             GetComponent<CustomerMovement>();
+
+        if (CoinManager.Instance != null && movement != null)
+        {
+            CoinManager.Instance.EarnCoins(
+              order,
+              movement.GetWaitTimer(),
+              movement.GetMaxWaitTime(),
+              movement.IsAngryState()
+            );
+        }
 
         if (movement != null)
         {
             movement.LeaveHappy();
         }
 
-        // ทำลายแก้วที่เสิร์ฟแล้ว
         Destroy(cup.gameObject);
     }
 

@@ -411,7 +411,7 @@ MonoBehaviour:
   riseDistance: 0.9
   input: {fileID: 1432350080}
   warning: {fileID: 0}
-  nextScene: map
+  nextScene: loading
   punchScale: 1.12
   punchTime: 0.18
 --- !u!1 &447680726

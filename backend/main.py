@@ -1,19 +1,14 @@
 from fastapi import FastAPI
 
-from routers.LoginRouter import router as login_router
+from api.v1.AuthRouter import router as auth_router
+from api.v1.PlayerRouter import router as player_router
 
+app = FastAPI(title="Platu Salmon หลังบ้าน")
 
-app = FastAPI(
-    title="Platu Salmon API",
-    version="1.0.0"
-)
-
-
-app.include_router(login_router)
+app.include_router(auth_router)
+app.include_router(player_router)
 
 
 @app.get("/")
-def root():
-    return {
-        "message": "Platu Salmon Backend is running"
-    }
+def health_check():
+    return {"status": "ok"}
