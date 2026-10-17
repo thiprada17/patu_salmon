@@ -1,22 +1,29 @@
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
 public class BackButtonTemp : MonoBehaviour
 {
-    [SerializeField] private string sceneName = "signup"; // ชื่อ Scene ที่จะย้อนกลับไป
+    [SerializeField] private string sceneName = "signup";
 
-    // ผูกกับ OnClick ของปุ่ม
     public void GoBack()
     {
         SceneManager.LoadScene(sceneName);
     }
 
-    // รองรับปุ่ม Back ของ Android (ใช้กับ Input Manager แบบเก่า)
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Keyboard.current != null &&
+            Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             GoBack();
+        }
+
+        if (Keyboard.current != null &&
+            Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            return;
         }
     }
 }

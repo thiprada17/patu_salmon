@@ -2814,6 +2814,7 @@ GameObject:
   - component: {fileID: 581367827}
   - component: {fileID: 581367826}
   - component: {fileID: 581367828}
+  - component: {fileID: 581367829}
   m_Layer: 0
   m_Name: cupdispender
   m_TagString: Untagged
@@ -2906,8 +2907,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cupPrefab: {fileID: 9197666827386634498, guid: a07b5bc6b1c98db4aa9cc49bc096a8cb, type: 3}
-  LspawnPoint: {fileID: 685608985}
-  RspawnPoint: {fileID: 256475277}
+  LspawnPoint: {fileID: 1082464063}
+  RspawnPoint: {fileID: 992127881}
 --- !u!114 &581367827
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3010,6 +3011,18 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 2.0302305, y: 5.09}
   m_EdgeRadius: 0
+--- !u!114 &581367829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 581367823}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f05ae60ceff7bc040be7d95d9a5413a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &583794481
 GameObject:
   m_ObjectHideFlags: 0
@@ -5103,6 +5116,7 @@ GameObject:
   - component: {fileID: 814097942}
   - component: {fileID: 814097943}
   - component: {fileID: 814097944}
+  - component: {fileID: 814097945}
   m_Layer: 0
   m_Name: grinder
   m_TagString: Untagged
@@ -5242,6 +5256,18 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 2.4902825, y: 5.71}
   m_EdgeRadius: 0
+--- !u!114 &814097945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 814097940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f05ae60ceff7bc040be7d95d9a5413a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &814470945
 GameObject:
   m_ObjectHideFlags: 0
@@ -7197,6 +7223,7 @@ GameObject:
   - component: {fileID: 1328226055}
   - component: {fileID: 1328226057}
   - component: {fileID: 1328226056}
+  - component: {fileID: 1328226058}
   m_Layer: 0
   m_Name: cocoa
   m_TagString: Untagged
@@ -7339,6 +7366,18 @@ MonoBehaviour:
   pumpPressed: {fileID: 1424967044}
   cocoaAnimator: {fileID: 576298902}
   cocoaAnimation: {fileID: 576298903}
+--- !u!114 &1328226058
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1328226053}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f05ae60ceff7bc040be7d95d9a5413a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1336734730
 GameObject:
   m_ObjectHideFlags: 0
@@ -8877,6 +8916,7 @@ GameObject:
   - component: {fileID: 1654308365}
   - component: {fileID: 1654308364}
   - component: {fileID: 1654308366}
+  - component: {fileID: 1654308367}
   m_Layer: 0
   m_Name: coffee machine
   m_TagString: Untagged
@@ -9112,6 +9152,18 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1654308367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1654308361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f05ae60ceff7bc040be7d95d9a5413a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1701556769
 GameObject:
   m_ObjectHideFlags: 0
@@ -10311,6 +10363,7 @@ GameObject:
   - component: {fileID: 1967186394}
   - component: {fileID: 1967186393}
   - component: {fileID: 1967186395}
+  - component: {fileID: 1967186396}
   m_Layer: 0
   m_Name: sink
   m_TagString: Untagged
@@ -10616,6 +10669,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1967186396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1967186388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f05ae60ceff7bc040be7d95d9a5413a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1979729159
 GameObject:
   m_ObjectHideFlags: 0
@@ -10659,6 +10724,7 @@ GameObject:
   - component: {fileID: 2011776637}
   - component: {fileID: 2011776638}
   - component: {fileID: 2011776639}
+  - component: {fileID: 2011776640}
   m_Layer: 0
   m_Name: milk
   m_TagString: Untagged
@@ -10801,6 +10867,18 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 2.070235, y: 3.3589492}
   m_EdgeRadius: 0
+--- !u!114 &2011776640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2011776635}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f05ae60ceff7bc040be7d95d9a5413a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2036097165
 GameObject:
   m_ObjectHideFlags: 0
