@@ -62,8 +62,8 @@ public class DialogueController : MonoBehaviour
     [Header("Tutorial Visuals")]
     [SerializeField] private TutorialVisualController tutorialVisuals;
 
-    [Header("Temporary Country Highlights")]
-    [SerializeField] private CountryTempCanvasController countryTempCanvas;
+    [Header("Temporary UI Highlights")]
+    [SerializeField] private TempCanvasController tempCanvas;
 
     [Header("Tutorial Character")]
     [SerializeField] private GameObject mysteriousFox;
@@ -79,6 +79,8 @@ public class DialogueController : MonoBehaviour
 
     private Coroutine typingCoroutine;
     private Coroutine autoCoroutine;
+
+    private string PlayerUsername;
 
     private void Awake()
     {
@@ -114,6 +116,8 @@ public class DialogueController : MonoBehaviour
         autoMode = false;
         dialogueStarted = true;
         isTutorial = false;
+
+        PlayerUsername = PlayerPrefs.GetString("Username", "Player");
 
         if (tutorialOverlay != null)
             tutorialOverlay.SetActive(true);
@@ -239,7 +243,7 @@ public class DialogueController : MonoBehaviour
             ApplyDialoguePosition(step);
         }
 
-        // Update tutorial visuals and temporary country highlights.
+        // Update tutorial visuals and temporary UI highlights.
         if (isTutorial)
         {
             Debug.Log("Tutorial dialogue reached: " + currentLine);
@@ -248,31 +252,45 @@ public class DialogueController : MonoBehaviour
             if (tutorialVisuals != null)
                 tutorialVisuals.ShowStep(step);
 
-            if (countryTempCanvas != null)
+            if (tempCanvas != null)
             {
                 switch (step.TargetID)
                 {
+                    //Country ICON
                     case global::TutorialTargetID.CountryIcon:
-                        countryTempCanvas.ShowCountryIcon();
+                        tempCanvas.ShowCountryIcon();
                         break;
 
+                    //Country Popup
                     case global::TutorialTargetID.CountryWindow:
-                        countryTempCanvas.ShowCountryPopup();
+                        tempCanvas.ShowCountryPopup();
                         break;
 
+
+                    //Country Glow Popup
                     case global::TutorialTargetID.StartShift:
-                        countryTempCanvas.ShowCountryPopupGlow();
+                        tempCanvas.ShowCountryPopupGlow();
+                        break;
+
+                    //Coin Navbar
+                    case global::TutorialTargetID.Wallet:
+                        tempCanvas.ShowCoin();
+                        break;
+
+                    //Day Navbar
+                    case global::TutorialTargetID.Calendar:
+                        tempCanvas.ShowDay();
                         break;
 
                     default:
-                        countryTempCanvas.HideAll();
+                        tempCanvas.HideAll();
                         break;
                 }
             }
             else
             {
                 Debug.LogWarning(
-                    "CountryTempCanvas is NOT assigned!"
+                    "TempCanvas is NOT assigned!"
                 );
             }
         }
@@ -295,6 +313,8 @@ public class DialogueController : MonoBehaviour
             return;
         }
 
+        line = line.Replace("{player_name}", PlayerUsername);
+
         dialogueText.text = line;
         dialogueText.maxVisibleCharacters = 0;
         dialogueText.ForceMeshUpdate();
@@ -307,8 +327,8 @@ public class DialogueController : MonoBehaviour
         if (tutorialVisuals != null)
             tutorialVisuals.HideAll();
 
-        if (countryTempCanvas != null)
-            countryTempCanvas.HideAll();
+        if (tempCanvas != null)
+            tempCanvas.HideAll();
     }
 
     private void ApplyDialoguePosition(TutorialStepData step)
