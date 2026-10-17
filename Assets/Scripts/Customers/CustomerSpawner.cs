@@ -14,7 +14,9 @@ public class CustomerSpawner : MonoBehaviour
 
     [Header("Spawn Settings")]
     [SerializeField] private int customerCount = 5;
-    [SerializeField] private float spawnInterval = 1.5f;
+
+    [SerializeField] private float minSpawnTime = 2f;
+    [SerializeField] private float maxSpawnTime = 5f;
 
     private int spawnedCount = 0;
 
@@ -29,6 +31,7 @@ public class CustomerSpawner : MonoBehaviour
     {
         while (spawnedCount < customerCount)
         {
+            // ถ้าคิวเต็ม ให้รอจนกว่าจะมีช่อง
             if (customerQueue.IsFull())
             {
                 yield return null;
@@ -39,7 +42,17 @@ public class CustomerSpawner : MonoBehaviour
 
             spawnedCount++;
 
-            yield return new WaitForSeconds(spawnInterval);
+            // สุ่มเวลาสำหรับ Customer คนต่อไป
+            float randomSpawnTime =
+                Random.Range(minSpawnTime, maxSpawnTime);
+
+            Debug.Log(
+                "Next customer will spawn in " +
+                randomSpawnTime.ToString("F1") +
+                " seconds."
+            );
+
+            yield return new WaitForSeconds(randomSpawnTime);
         }
     }
 

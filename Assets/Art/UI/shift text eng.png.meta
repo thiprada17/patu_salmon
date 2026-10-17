@@ -1,0 +1,2821 @@
+fileFormatVersion: 2
+guid: 5bdd1c05a61bc654c9d6b1cbb3362c0b
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -7260748437503423944
+    second: shift text eng_0
+  - first:
+      213: -3260487936648332808
+    second: shift text eng_1
+  - first:
+      213: 4332737323310659099
+    second: shift text eng_2
+  - first:
+      213: 1429428011906523971
+    second: shift text eng_3
+  - first:
+      213: -4242702651908171997
+    second: shift text eng_4
+  - first:
+      213: 8949295070836549687
+    second: shift text eng_5
+  - first:
+      213: -2845602987485753501
+    second: shift text eng_6
+  - first:
+      213: -5571600335706581032
+    second: shift text eng_7
+  - first:
+      213: -2704633001928632344
+    second: shift text eng_8
+  - first:
+      213: -7107471462431023946
+    second: shift text eng_9
+  - first:
+      213: 6501693607873373608
+    second: shift text eng_10
+  - first:
+      213: -3311738182570139473
+    second: shift text eng_11
+  - first:
+      213: -356617382368542976
+    second: shift text eng_12
+  - first:
+      213: -1851984345036075093
+    second: shift text eng_13
+  - first:
+      213: -4451648892540034790
+    second: shift text eng_14
+  - first:
+      213: 7538772558918759219
+    second: shift text eng_15
+  - first:
+      213: -3672150544518741089
+    second: shift text eng_16
+  - first:
+      213: 8020322815388244423
+    second: shift text eng_17
+  - first:
+      213: -7925454486291650172
+    second: shift text eng_18
+  - first:
+      213: 7409369101604414912
+    second: shift text eng_19
+  - first:
+      213: -5739895743326032869
+    second: shift text eng_20
+  - first:
+      213: 5318202343453867681
+    second: shift text eng_21
+  - first:
+      213: -6169915861976491777
+    second: shift text eng_22
+  - first:
+      213: 3921221891146240389
+    second: shift text eng_23
+  - first:
+      213: -872493171393530380
+    second: shift text eng_24
+  - first:
+      213: -1556168930324980343
+    second: shift text eng_25
+  - first:
+      213: -11231736347914657
+    second: shift text eng_26
+  - first:
+      213: -1217805103744978094
+    second: shift text eng_27
+  - first:
+      213: -6400164379548699654
+    second: shift text eng_28
+  - first:
+      213: -76802322891673527
+    second: shift text eng_29
+  - first:
+      213: -7872798946891086264
+    second: shift text eng_30
+  - first:
+      213: 1097403113931497634
+    second: shift text eng_31
+  - first:
+      213: -4103037297330223971
+    second: shift text eng_32
+  - first:
+      213: -4577984369277926895
+    second: shift text eng_33
+  - first:
+      213: -1136682339838573786
+    second: shift text eng_34
+  - first:
+      213: 8740120525915262029
+    second: shift text eng_35
+  - first:
+      213: 5731249492567807526
+    second: shift text eng_36
+  - first:
+      213: -4965865875150580398
+    second: shift text eng_37
+  - first:
+      213: -3248685674514912540
+    second: shift text eng_38
+  - first:
+      213: 1846964063002782947
+    second: shift text eng_39
+  - first:
+      213: 3236912336247761446
+    second: shift text eng_40
+  - first:
+      213: -489600743158773525
+    second: shift text eng_41
+  - first:
+      213: -3435406338962425927
+    second: shift text eng_42
+  - first:
+      213: 2031336983165823535
+    second: shift text eng_43
+  - first:
+      213: -8742285856020554801
+    second: shift text eng_44
+  - first:
+      213: -9028334381227642062
+    second: shift text eng_45
+  - first:
+      213: -6034998360126113803
+    second: shift text eng_46
+  - first:
+      213: -8614808713459005026
+    second: shift text eng_47
+  - first:
+      213: 6271422707152000750
+    second: shift text eng_48
+  - first:
+      213: -7674022511277695234
+    second: shift text eng_49
+  - first:
+      213: 7454618550566738449
+    second: shift text eng_50
+  - first:
+      213: -6144873637615958974
+    second: shift text eng_51
+  - first:
+      213: -5977357287505103262
+    second: shift text eng_52
+  - first:
+      213: -3135430725953025600
+    second: shift text eng_53
+  - first:
+      213: 8646504055367710819
+    second: shift text eng_54
+  - first:
+      213: 702027485356345773
+    second: shift text eng_55
+  - first:
+      213: -1506404420586985584
+    second: shift text eng_56
+  - first:
+      213: 3351383227939523980
+    second: shift text eng_57
+  - first:
+      213: -8682170735871258937
+    second: shift text eng_58
+  - first:
+      213: 2602566218144607816
+    second: shift text eng_59
+  - first:
+      213: -4267068164841485288
+    second: shift text eng_60
+  - first:
+      213: -8082220248310604486
+    second: shift text eng_61
+  - first:
+      213: -5144492300237985692
+    second: shift text eng_62
+  - first:
+      213: 6584608658246837264
+    second: shift text eng_63
+  - first:
+      213: -2304887651155317925
+    second: shift text eng_64
+  - first:
+      213: -2970270709543751230
+    second: shift text eng_65
+  - first:
+      213: 895565459989922237
+    second: shift text eng_66
+  - first:
+      213: -4579623869280416830
+    second: shift text eng_67
+  - first:
+      213: 3965361554783014481
+    second: shift text eng_68
+  - first:
+      213: 6018209752783737957
+    second: shift text eng_69
+  - first:
+      213: -3538074110634995249
+    second: shift text eng_70
+  - first:
+      213: 6189304613713520269
+    second: shift text eng_71
+  - first:
+      213: -8993261191561309650
+    second: shift text eng_72
+  - first:
+      213: 1317425834193422266
+    second: shift text eng_73
+  - first:
+      213: 8540189575799779189
+    second: shift text eng_74
+  - first:
+      213: -2251037130084981043
+    second: shift text eng_75
+  - first:
+      213: -1024978970064155016
+    second: shift text eng_76
+  - first:
+      213: 2092931590572168826
+    second: shift text eng_77
+  - first:
+      213: -6575379035148686744
+    second: shift text eng_78
+  - first:
+      213: 1441651102079216875
+    second: shift text eng_79
+  - first:
+      213: -569039206896740498
+    second: shift text eng_80
+  - first:
+      213: 1338298402756935409
+    second: shift text eng_81
+  - first:
+      213: -2283473740626547855
+    second: shift text eng_82
+  - first:
+      213: 5894041366644565630
+    second: shift text eng_83
+  - first:
+      213: -2800845605208558637
+    second: shift text eng_84
+  - first:
+      213: -5210033897591926259
+    second: shift text eng_85
+  - first:
+      213: 2504521253866024171
+    second: shift text eng_86
+  - first:
+      213: 6460581387814400146
+    second: shift text eng_87
+  - first:
+      213: -2230155625436739728
+    second: shift text eng_88
+  - first:
+      213: -106909521450436124
+    second: shift text eng_89
+  - first:
+      213: -7445721206133159259
+    second: shift text eng_90
+  - first:
+      213: 3333643448159717466
+    second: shift text eng_91
+  - first:
+      213: -5280154332547779595
+    second: shift text eng_92
+  - first:
+      213: -3882542934076180631
+    second: shift text eng_93
+  - first:
+      213: 6077491218325005314
+    second: shift text eng_94
+  - first:
+      213: 4995031934821249387
+    second: shift text eng_95
+  - first:
+      213: -8975266630550517496
+    second: shift text eng_96
+  - first:
+      213: 7471043980997704894
+    second: shift text eng_97
+  - first:
+      213: -3990154033365070210
+    second: shift text eng_98
+  - first:
+      213: -1863608637650845150
+    second: shift text eng_99
+  - first:
+      213: -1679941801243155691
+    second: shift text eng_100
+  - first:
+      213: -8089544944827662287
+    second: shift text eng_101
+  - first:
+      213: 7772026312636931019
+    second: shift text eng_102
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: shift text eng_0
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 1175
+        width: 68
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 83ac223e3c3ac3b90800000000000000
+      internalID: -7260748437503423944
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_1
+      rect:
+        serializedVersion: 2
+        x: 78
+        y: 1190
+        width: 74
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8f931a51f7b60c2d0800000000000000
+      internalID: -3260487936648332808
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_2
+      rect:
+        serializedVersion: 2
+        x: 157
+        y: 1205
+        width: 42
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b163205c3a9f02c30800000000000000
+      internalID: 4332737323310659099
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_3
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 1211
+        width: 57
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3436ea1143956d310800000000000000
+      internalID: 1429428011906523971
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_4
+      rect:
+        serializedVersion: 2
+        x: 274
+        y: 1216
+        width: 63
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 327d769ba64ee15c0800000000000000
+      internalID: -4242702651908171997
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_5
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 1222
+        width: 57
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 738ed579378423c70800000000000000
+      internalID: 8949295070836549687
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_6
+      rect:
+        serializedVersion: 2
+        x: 472
+        y: 1217
+        width: 64
+        height: 67
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 36f0f17d8236288d0800000000000000
+      internalID: -2845602987485753501
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_7
+      rect:
+        serializedVersion: 2
+        x: 554
+        y: 1209
+        width: 63
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8d713c7a303bda2b0800000000000000
+      internalID: -5571600335706581032
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_8
+      rect:
+        serializedVersion: 2
+        x: 624
+        y: 1195
+        width: 42
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e7de305d96377ad0800000000000000
+      internalID: -2704633001928632344
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_9
+      rect:
+        serializedVersion: 2
+        x: 672
+        y: 1181
+        width: 71
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6bc9296ac503d5d90800000000000000
+      internalID: -7107471462431023946
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_10
+      rect:
+        serializedVersion: 2
+        x: 746
+        y: 1162
+        width: 68
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a568bf83e7aa3a50800000000000000
+      internalID: 6501693607873373608
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_11
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 1011
+        width: 27
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa02fc65ba75a02d0800000000000000
+      internalID: -3311738182570139473
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_12
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 1010
+        width: 22
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 00f7133516a0d0bf0800000000000000
+      internalID: -356617382368542976
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_13
+      rect:
+        serializedVersion: 2
+        x: 89
+        y: 1003
+        width: 24
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: baf4a88ec0e6c46e0800000000000000
+      internalID: -1851984345036075093
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_14
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 1010
+        width: 19
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a11e3670be09832c0800000000000000
+      internalID: -4451648892540034790
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_15
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 901
+        width: 13
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 333b0d043b91f9860800000000000000
+      internalID: 7538772558918759219
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_16
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 901
+        width: 27
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f9304302986e90dc0800000000000000
+      internalID: -3672150544518741089
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_17
+      rect:
+        serializedVersion: 2
+        x: 70
+        y: 900
+        width: 90
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7c95d2b6b19ed4f60800000000000000
+      internalID: 8020322815388244423
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_18
+      rect:
+        serializedVersion: 2
+        x: 159
+        y: 900
+        width: 28
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4896f05b221230290800000000000000
+      internalID: -7925454486291650172
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_19
+      rect:
+        serializedVersion: 2
+        x: 657
+        y: 892
+        width: 62
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0c5e2eef0fd53d660800000000000000
+      internalID: 7409369101604414912
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_20
+      rect:
+        serializedVersion: 2
+        x: 718
+        y: 900
+        width: 52
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b1c66439b3bc750b0800000000000000
+      internalID: -5739895743326032869
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_21
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 826
+        width: 20
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1aeb735badc0ec940800000000000000
+      internalID: 5318202343453867681
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_22
+      rect:
+        serializedVersion: 2
+        x: 58
+        y: 826
+        width: 24
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff8d7d0963e006aa0800000000000000
+      internalID: -6169915861976491777
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_23
+      rect:
+        serializedVersion: 2
+        x: 85
+        y: 827
+        width: 16
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 581d143d88afa6630800000000000000
+      internalID: 3921221891146240389
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_24
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 827
+        width: 23
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f57222551844e3f0800000000000000
+      internalID: -872493171393530380
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_25
+      rect:
+        serializedVersion: 2
+        x: 129
+        y: 849
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 98dda715a90676ae0800000000000000
+      internalID: -1556168930324980343
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_26
+      rect:
+        serializedVersion: 2
+        x: 129
+        y: 827
+        width: 8
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f5e85c89bc818dff0800000000000000
+      internalID: -11231736347914657
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_27
+      rect:
+        serializedVersion: 2
+        x: 142
+        y: 827
+        width: 22
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2537f99d5bc791fe0800000000000000
+      internalID: -1217805103744978094
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_28
+      rect:
+        serializedVersion: 2
+        x: 167
+        y: 817
+        width: 26
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af334e4086c0e27a0800000000000000
+      internalID: -6400164379548699654
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_29
+      rect:
+        serializedVersion: 2
+        x: 212
+        y: 826
+        width: 26
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 940fd1ab1b42feef0800000000000000
+      internalID: -76802322891673527
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_30
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 827
+        width: 16
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 846cc76d1133eb290800000000000000
+      internalID: -7872798946891086264
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_31
+      rect:
+        serializedVersion: 2
+        x: 258
+        y: 826
+        width: 25
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a06b4d5152ca3f00800000000000000
+      internalID: 1097403113931497634
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_32
+      rect:
+        serializedVersion: 2
+        x: 286
+        y: 826
+        width: 24
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d94047021551f07c0800000000000000
+      internalID: -4103037297330223971
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_33
+      rect:
+        serializedVersion: 2
+        x: 313
+        y: 827
+        width: 16
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 11206e9a87bb770c0800000000000000
+      internalID: -4577984369277926895
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_34
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 754
+        width: 17
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 623467f2f61b930f0800000000000000
+      internalID: -1136682339838573786
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_35
+      rect:
+        serializedVersion: 2
+        x: 54
+        y: 777
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d4c8749af452b4970800000000000000
+      internalID: 8740120525915262029
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_36
+      rect:
+        serializedVersion: 2
+        x: 55
+        y: 755
+        width: 8
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62654ab4c0d798f40800000000000000
+      internalID: 5731249492567807526
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_37
+      rect:
+        serializedVersion: 2
+        x: 67
+        y: 746
+        width: 25
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2555a6dfb43b51bb0800000000000000
+      internalID: -4965865875150580398
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_38
+      rect:
+        serializedVersion: 2
+        x: 94
+        y: 754
+        width: 20
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ea63af57995ae2d0800000000000000
+      internalID: -3248685674514912540
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_39
+      rect:
+        serializedVersion: 2
+        x: 30
+        y: 588
+        width: 30
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3ec6138970cb1a910800000000000000
+      internalID: 1846964063002782947
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_40
+      rect:
+        serializedVersion: 2
+        x: 59
+        y: 588
+        width: 97
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62aa023be92dbec20800000000000000
+      internalID: 3236912336247761446
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_41
+      rect:
+        serializedVersion: 2
+        x: 155
+        y: 589
+        width: 38
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: be80146d7b69439f0800000000000000
+      internalID: -489600743158773525
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_42
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 588
+        width: 28
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9b7f403e22cf250d0800000000000000
+      internalID: -3435406338962425927
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_43
+      rect:
+        serializedVersion: 2
+        x: 657
+        y: 580
+        width: 62
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f2a66b44932c03c10800000000000000
+      internalID: 2031336983165823535
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_44
+      rect:
+        serializedVersion: 2
+        x: 718
+        y: 588
+        width: 52
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fcb19f225592da680800000000000000
+      internalID: -8742285856020554801
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_45
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 514
+        width: 17
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 233fa75e6b9e4b280800000000000000
+      internalID: -9028334381227642062
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_46
+      rect:
+        serializedVersion: 2
+        x: 54
+        y: 537
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5f73e9c57f06f3ca0800000000000000
+      internalID: -6034998360126113803
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_47
+      rect:
+        serializedVersion: 2
+        x: 55
+        y: 515
+        width: 8
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e99065a4e1d027880800000000000000
+      internalID: -8614808713459005026
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_48
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 514
+        width: 22
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee61d1889b1980750800000000000000
+      internalID: 6271422707152000750
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_49
+      rect:
+        serializedVersion: 2
+        x: 91
+        y: 515
+        width: 22
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: efe11f84f25608590800000000000000
+      internalID: -7674022511277695234
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_50
+      rect:
+        serializedVersion: 2
+        x: 116
+        y: 514
+        width: 24
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 11a51925310247760800000000000000
+      internalID: 7454618550566738449
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_51
+      rect:
+        serializedVersion: 2
+        x: 141
+        y: 514
+        width: 17
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2440d38cbf509baa0800000000000000
+      internalID: -6144873637615958974
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_52
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 443
+        width: 16
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2667aa667392c0da0800000000000000
+      internalID: -5977357287505103262
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_53
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 442
+        width: 24
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0c989b1fd56bc74d0800000000000000
+      internalID: -3135430725953025600
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_54
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 443
+        width: 23
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 368ba2190ad8ef770800000000000000
+      internalID: 8646504055367710819
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_55
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 442
+        width: 17
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da9c937474a1eb900800000000000000
+      internalID: 702027485356345773
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_56
+      rect:
+        serializedVersion: 2
+        x: 123
+        y: 283
+        width: 26
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 097a5d6292d281be0800000000000000
+      internalID: -1506404420586985584
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_57
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 282
+        width: 26
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c8d89871a41828e20800000000000000
+      internalID: 3351383227939523980
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_58
+      rect:
+        serializedVersion: 2
+        x: 171
+        y: 282
+        width: 18
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ce0a1147bbb28780800000000000000
+      internalID: -8682170735871258937
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_59
+      rect:
+        serializedVersion: 2
+        x: 189
+        y: 282
+        width: 24
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 84ee0f8bf2c2e1420800000000000000
+      internalID: 2602566218144607816
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_60
+      rect:
+        serializedVersion: 2
+        x: 215
+        y: 283
+        width: 10
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 81cce3aac1458c4c0800000000000000
+      internalID: -4267068164841485288
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_61
+      rect:
+        serializedVersion: 2
+        x: 243
+        y: 283
+        width: 23
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a3d1afe618f26df80800000000000000
+      internalID: -8082220248310604486
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_62
+      rect:
+        serializedVersion: 2
+        x: 267
+        y: 282
+        width: 24
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 468259672871b98b0800000000000000
+      internalID: -5144492300237985692
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_63
+      rect:
+        serializedVersion: 2
+        x: 293
+        y: 283
+        width: 17
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 014a3cb10ba316b50800000000000000
+      internalID: 6584608658246837264
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_64
+      rect:
+        serializedVersion: 2
+        x: 312
+        y: 283
+        width: 24
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b5be3b1a4e46300e0800000000000000
+      internalID: -2304887651155317925
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_65
+      rect:
+        serializedVersion: 2
+        x: 338
+        y: 304
+        width: 11
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c1b5eed68a77c6d0800000000000000
+      internalID: -2970270709543751230
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_66
+      rect:
+        serializedVersion: 2
+        x: 339
+        y: 283
+        width: 10
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: db10fcb7a00bd6c00800000000000000
+      internalID: 895565459989922237
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_67
+      rect:
+        serializedVersion: 2
+        x: 351
+        y: 283
+        width: 25
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2cb04a2da58e170c0800000000000000
+      internalID: -4579623869280416830
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_68
+      rect:
+        serializedVersion: 2
+        x: 377
+        y: 273
+        width: 27
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 15e05de135bc70730800000000000000
+      internalID: 3965361554783014481
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_69
+      rect:
+        serializedVersion: 2
+        x: 406
+        y: 282
+        width: 21
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 564577262e9f48350800000000000000
+      internalID: 6018209752783737957
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_70
+      rect:
+        serializedVersion: 2
+        x: 289
+        y: 95
+        width: 18
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc15896875c36eec0800000000000000
+      internalID: -3538074110634995249
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_71
+      rect:
+        serializedVersion: 2
+        x: 308
+        y: 95
+        width: 17
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d86a41bf0c3d4e550800000000000000
+      internalID: 6189304613713520269
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_72
+      rect:
+        serializedVersion: 2
+        x: 325
+        y: 94
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e229ea83894813380800000000000000
+      internalID: -8993261191561309650
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_73
+      rect:
+        serializedVersion: 2
+        x: 344
+        y: 95
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ab78501f0df684210800000000000000
+      internalID: 1317425834193422266
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_74
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 95
+        width: 16
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 57f2a0cdb29d48670800000000000000
+      internalID: 8540189575799779189
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_75
+      rect:
+        serializedVersion: 2
+        x: 391
+        y: 89
+        width: 18
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dc6e11d18a5b2c0e0800000000000000
+      internalID: -2251037130084981043
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_76
+      rect:
+        serializedVersion: 2
+        x: 407
+        y: 94
+        width: 19
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 87e841bae0b86c1f0800000000000000
+      internalID: -1024978970064155016
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_77
+      rect:
+        serializedVersion: 2
+        x: 427
+        y: 94
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a765f3b51369b0d10800000000000000
+      internalID: 2092931590572168826
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_78
+      rect:
+        serializedVersion: 2
+        x: 456
+        y: 95
+        width: 13
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 86a696afa9f8fb4a0800000000000000
+      internalID: -6575379035148686744
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_79
+      rect:
+        serializedVersion: 2
+        x: 467
+        y: 94
+        width: 19
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bec6b750a06c10410800000000000000
+      internalID: 1441651102079216875
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_80
+      rect:
+        serializedVersion: 2
+        x: 487
+        y: 95
+        width: 12
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e6756a13bdd5a18f0800000000000000
+      internalID: -569039206896740498
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_81
+      rect:
+        serializedVersion: 2
+        x: 511
+        y: 89
+        width: 18
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1febcc38e47929210800000000000000
+      internalID: 1338298402756935409
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_82
+      rect:
+        serializedVersion: 2
+        x: 527
+        y: 94
+        width: 19
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17ba5043bb87f40e0800000000000000
+      internalID: -2283473740626547855
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_83
+      rect:
+        serializedVersion: 2
+        x: 547
+        y: 94
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e76ae4e1567dbc150800000000000000
+      internalID: 5894041366644565630
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_84
+      rect:
+        serializedVersion: 2
+        x: 566
+        y: 95
+        width: 12
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3d374d6f2c56129d0800000000000000
+      internalID: -2800845605208558637
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_85
+      rect:
+        serializedVersion: 2
+        x: 285
+        y: 51
+        width: 17
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d021a4a26cd32b7b0800000000000000
+      internalID: -5210033897591926259
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_86
+      rect:
+        serializedVersion: 2
+        x: 303
+        y: 50
+        width: 16
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: beca9159fc8d1c220800000000000000
+      internalID: 2504521253866024171
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_87
+      rect:
+        serializedVersion: 2
+        x: 321
+        y: 51
+        width: 12
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2907d27ea8898a950800000000000000
+      internalID: 6460581387814400146
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_88
+      rect:
+        serializedVersion: 2
+        x: 333
+        y: 50
+        width: 18
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07701084645ec01e0800000000000000
+      internalID: -2230155625436739728
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_89
+      rect:
+        serializedVersion: 2
+        x: 364
+        y: 51
+        width: 24
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e9f6de4b5e248ef0800000000000000
+      internalID: -106909521450436124
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_90
+      rect:
+        serializedVersion: 2
+        x: 387
+        y: 50
+        width: 19
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5aa07db130c7ba890800000000000000
+      internalID: -7445721206133159259
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_91
+      rect:
+        serializedVersion: 2
+        x: 407
+        y: 51
+        width: 12
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a584e5fbd0b734e20800000000000000
+      internalID: 3333643448159717466
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_92
+      rect:
+        serializedVersion: 2
+        x: 420
+        y: 51
+        width: 16
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5f3ff392c9f19b6b0800000000000000
+      internalID: -5280154332547779595
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_93
+      rect:
+        serializedVersion: 2
+        x: 449
+        y: 51
+        width: 7
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 967bf25a5cf6e1ac0800000000000000
+      internalID: -3882542934076180631
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_94
+      rect:
+        serializedVersion: 2
+        x: 457
+        y: 66
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20461d92016975450800000000000000
+      internalID: 6077491218325005314
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_95
+      rect:
+        serializedVersion: 2
+        x: 458
+        y: 51
+        width: 6
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b61b0c4741be15540800000000000000
+      internalID: 4995031934821249387
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_96
+      rect:
+        serializedVersion: 2
+        x: 465
+        y: 50
+        width: 12
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8098e917d82717380800000000000000
+      internalID: -8975266630550517496
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_97
+      rect:
+        serializedVersion: 2
+        x: 477
+        y: 50
+        width: 12
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ebc30bcdaea7ea760800000000000000
+      internalID: 7471043980997704894
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_98
+      rect:
+        serializedVersion: 2
+        x: 490
+        y: 51
+        width: 6
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e7ece222c0020a8c0800000000000000
+      internalID: -3990154033365070210
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_99
+      rect:
+        serializedVersion: 2
+        x: 498
+        y: 50
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 222c87061d12326e0800000000000000
+      internalID: -1863608637650845150
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_100
+      rect:
+        serializedVersion: 2
+        x: 528
+        y: 50
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 513629d15d5afa8e0800000000000000
+      internalID: -1679941801243155691
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_101
+      rect:
+        serializedVersion: 2
+        x: 548
+        y: 51
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1308df0abb92cbf80800000000000000
+      internalID: -8089544944827662287
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: shift text eng_102
+      rect:
+        serializedVersion: 2
+        x: 566
+        y: 50
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bcb96bdd0c8cbdb60800000000000000
+      internalID: 7772026312636931019
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      shift text eng_0: -7260748437503423944
+      shift text eng_1: -3260487936648332808
+      shift text eng_10: 6501693607873373608
+      shift text eng_100: -1679941801243155691
+      shift text eng_101: -8089544944827662287
+      shift text eng_102: 7772026312636931019
+      shift text eng_11: -3311738182570139473
+      shift text eng_12: -356617382368542976
+      shift text eng_13: -1851984345036075093
+      shift text eng_14: -4451648892540034790
+      shift text eng_15: 7538772558918759219
+      shift text eng_16: -3672150544518741089
+      shift text eng_17: 8020322815388244423
+      shift text eng_18: -7925454486291650172
+      shift text eng_19: 7409369101604414912
+      shift text eng_2: 4332737323310659099
+      shift text eng_20: -5739895743326032869
+      shift text eng_21: 5318202343453867681
+      shift text eng_22: -6169915861976491777
+      shift text eng_23: 3921221891146240389
+      shift text eng_24: -872493171393530380
+      shift text eng_25: -1556168930324980343
+      shift text eng_26: -11231736347914657
+      shift text eng_27: -1217805103744978094
+      shift text eng_28: -6400164379548699654
+      shift text eng_29: -76802322891673527
+      shift text eng_3: 1429428011906523971
+      shift text eng_30: -7872798946891086264
+      shift text eng_31: 1097403113931497634
+      shift text eng_32: -4103037297330223971
+      shift text eng_33: -4577984369277926895
+      shift text eng_34: -1136682339838573786
+      shift text eng_35: 8740120525915262029
+      shift text eng_36: 5731249492567807526
+      shift text eng_37: -4965865875150580398
+      shift text eng_38: -3248685674514912540
+      shift text eng_39: 1846964063002782947
+      shift text eng_4: -4242702651908171997
+      shift text eng_40: 3236912336247761446
+      shift text eng_41: -489600743158773525
+      shift text eng_42: -3435406338962425927
+      shift text eng_43: 2031336983165823535
+      shift text eng_44: -8742285856020554801
+      shift text eng_45: -9028334381227642062
+      shift text eng_46: -6034998360126113803
+      shift text eng_47: -8614808713459005026
+      shift text eng_48: 6271422707152000750
+      shift text eng_49: -7674022511277695234
+      shift text eng_5: 8949295070836549687
+      shift text eng_50: 7454618550566738449
+      shift text eng_51: -6144873637615958974
+      shift text eng_52: -5977357287505103262
+      shift text eng_53: -3135430725953025600
+      shift text eng_54: 8646504055367710819
+      shift text eng_55: 702027485356345773
+      shift text eng_56: -1506404420586985584
+      shift text eng_57: 3351383227939523980
+      shift text eng_58: -8682170735871258937
+      shift text eng_59: 2602566218144607816
+      shift text eng_6: -2845602987485753501
+      shift text eng_60: -4267068164841485288
+      shift text eng_61: -8082220248310604486
+      shift text eng_62: -5144492300237985692
+      shift text eng_63: 6584608658246837264
+      shift text eng_64: -2304887651155317925
+      shift text eng_65: -2970270709543751230
+      shift text eng_66: 895565459989922237
+      shift text eng_67: -4579623869280416830
+      shift text eng_68: 3965361554783014481
+      shift text eng_69: 6018209752783737957
+      shift text eng_7: -5571600335706581032
+      shift text eng_70: -3538074110634995249
+      shift text eng_71: 6189304613713520269
+      shift text eng_72: -8993261191561309650
+      shift text eng_73: 1317425834193422266
+      shift text eng_74: 8540189575799779189
+      shift text eng_75: -2251037130084981043
+      shift text eng_76: -1024978970064155016
+      shift text eng_77: 2092931590572168826
+      shift text eng_78: -6575379035148686744
+      shift text eng_79: 1441651102079216875
+      shift text eng_8: -2704633001928632344
+      shift text eng_80: -569039206896740498
+      shift text eng_81: 1338298402756935409
+      shift text eng_82: -2283473740626547855
+      shift text eng_83: 5894041366644565630
+      shift text eng_84: -2800845605208558637
+      shift text eng_85: -5210033897591926259
+      shift text eng_86: 2504521253866024171
+      shift text eng_87: 6460581387814400146
+      shift text eng_88: -2230155625436739728
+      shift text eng_89: -106909521450436124
+      shift text eng_9: -7107471462431023946
+      shift text eng_90: -7445721206133159259
+      shift text eng_91: 3333643448159717466
+      shift text eng_92: -5280154332547779595
+      shift text eng_93: -3882542934076180631
+      shift text eng_94: 6077491218325005314
+      shift text eng_95: 4995031934821249387
+      shift text eng_96: -8975266630550517496
+      shift text eng_97: 7471043980997704894
+      shift text eng_98: -3990154033365070210
+      shift text eng_99: -1863608637650845150
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
