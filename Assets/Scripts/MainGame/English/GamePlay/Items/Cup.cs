@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System;
+using UnityEngine.UIElements;
 
 public class Cup : MonoBehaviour
 {
@@ -29,6 +30,8 @@ public class Cup : MonoBehaviour
 
     private bool isFull = false;
     public bool IsFull => isFull;
+
+
 
     [Header("Empty Cup")] 
     [SerializeField]
@@ -69,10 +72,17 @@ public class Cup : MonoBehaviour
         DisableAllIngredientObjects();
         servingCup = GetComponent<ServingCup>();
 
+        if (emptyCupRenderer != null)
+        {
+            emptyCupRenderer.gameObject.SetActive(true);
+            emptyCupRenderer.enabled = true;
+        }
+
         if (servingCup == null)
         {
             GameLogger.Error("CUP", name + " cannot find ServingCup");
         }
+
         if (finishedCupRenderer != null)
         {
             finishedCupRenderer.gameObject.SetActive(false);
