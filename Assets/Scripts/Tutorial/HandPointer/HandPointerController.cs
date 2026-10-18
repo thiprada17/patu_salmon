@@ -40,6 +40,7 @@ public class HandPointerController : MonoBehaviour
         Hide();
     }
 
+
     private void LateUpdate()
     {
         if (currentTarget == null ||
@@ -47,29 +48,49 @@ public class HandPointerController : MonoBehaviour
             pointerParent == null)
             return;
 
+        Vector3 targetWorldPosition;
+
+        // UI target: use its RectTransform position.
         RectTransform targetRect =
             currentTarget as RectTransform;
 
-        if (targetRect == null)
-            return;
+        if (targetRect != null)
+        {
+            targetWorldPosition = targetRect.position;
+        }
+        else
+        {
+            // World-space target: use its Transform position.
+            targetWorldPosition = currentTarget.position;
+        }
 
-        Canvas targetCanvas =
-            targetRect.GetComponentInParent<Canvas>();
-
+        // Convert the target's position to screen coordinates.
         Camera targetCamera = null;
 
-        if (targetCanvas != null &&
-            targetCanvas.renderMode != RenderMode.ScreenSpaceOverlay)
+        if (targetRect != null)
         {
-            targetCamera = targetCanvas.worldCamera;
+            Canvas targetCanvas =
+                targetRect.GetComponentInParent<Canvas>();
+
+            if (targetCanvas != null &&
+                targetCanvas.renderMode != RenderMode.ScreenSpaceOverlay)
+            {
+                targetCamera = targetCanvas.worldCamera;
+            }
+        }
+        else
+        {
+            // World objects must use the camera that renders the scene.
+            targetCamera = Camera.main;
         }
 
         Vector2 screenPosition =
             RectTransformUtility.WorldToScreenPoint(
                 targetCamera,
-                targetRect.position
+                targetWorldPosition
             );
 
+        // Convert screen coordinates into the pointer parent's UI space.
         Camera pointerCamera = null;
 
         if (pointerCanvas != null &&
@@ -87,6 +108,7 @@ public class HandPointerController : MonoBehaviour
             return;
         }
 
+        // Preserve the existing bounce animation.
         float bounce = 0f;
 
         if (handAnimation == TutorialHandAnimation.Bounce)
@@ -100,13 +122,14 @@ public class HandPointerController : MonoBehaviour
             localPosition + pointerOffset +
             new Vector2(0f, bounce);
 
-        // Apply the hand's tilt angle.
+        // Preserve the hand's tilt.
         handPointer.localRotation =
             Quaternion.Euler(0f, 0f, tiltAngle);
 
         if (!handPointer.gameObject.activeSelf)
             handPointer.gameObject.SetActive(true);
     }
+
 
     public void SetTarget(Transform target)
     {
