@@ -10,6 +10,13 @@ public class TutorialVisualController : MonoBehaviour
     [Tooltip("The Canvas containing the tutorial overlay.")]
     [SerializeField] private Canvas overlayCanvas;
 
+    [Header("Highlight Settings")]
+    [Tooltip("Minimum sorting order for a highlighted SpriteRenderer.")]
+    [SerializeField] private int highlightedSpriteOrder = 15;
+
+    [Tooltip("Minimum sorting order for a highlighted UI Canvas.")]
+    [SerializeField] private int highlightedCanvasOrder = 15;
+
     private Transform currentHighlightedTarget;
 
     // SpriteRenderer target settings
@@ -37,6 +44,7 @@ public class TutorialVisualController : MonoBehaviour
 
     public void ShowStep(TutorialStepData step)
     {
+        // Restore the previous target before highlighting another one.
         RestoreTargetOrder();
 
         if (step == null)
@@ -78,6 +86,7 @@ public class TutorialVisualController : MonoBehaviour
                 step.HandAnimation
             );
 
+            // The pointer tracks the target independently of sorting.
             handPointer.SetTarget(target);
         }
         else
@@ -96,7 +105,7 @@ public class TutorialVisualController : MonoBehaviour
         if (overlayCanvas == null)
         {
             Debug.LogWarning(
-                "Overlay Canvas is not assigned."
+                "TutorialVisualController: Overlay Canvas is not assigned."
             );
 
             return;
@@ -104,7 +113,7 @@ public class TutorialVisualController : MonoBehaviour
 
         currentHighlightedTarget = target;
 
-        // CASE 1: The target is a SpriteRenderer.
+        // CASE 1: The target uses a SpriteRenderer.
         targetSpriteRenderer = target.GetComponent<SpriteRenderer>();
 
         if (targetSpriteRenderer != null)
@@ -118,17 +127,28 @@ public class TutorialVisualController : MonoBehaviour
             originalSpriteSortingOrder =
                 targetSpriteRenderer.sortingOrder;
 
-            // Temporarily render it above the overlay.
+            // Move the sprite to the overlay's Sorting Layer.
             targetSpriteRenderer.sortingLayerID =
                 overlayCanvas.sortingLayerID;
 
+            // Place it above the overlay and normal CoffeeBar UI order.
             targetSpriteRenderer.sortingOrder =
-                overlayCanvas.sortingOrder + 1;
+                Mathf.Max(
+                    overlayCanvas.sortingOrder + 1,
+                    highlightedSpriteOrder
+                );
+
+            Debug.Log(
+                $"Tutorial highlight: {target.name} | " +
+                $"Sorting Layer: {targetSpriteRenderer.sortingLayerName} | " +
+                $"Order: {targetSpriteRenderer.sortingOrder}"
+            );
 
             return;
         }
 
-        // CASE 2: The target is a UI element with its own Canvas.
+        // CASE 2: The target is a UI element.
+        // Reuse its Canvas, or temporarily add one if needed.
         targetCanvas = target.GetComponent<Canvas>();
         addedCanvas = targetCanvas == null;
 
@@ -142,26 +162,31 @@ public class TutorialVisualController : MonoBehaviour
         // Save the original Canvas settings.
         originalOverrideSorting = targetCanvas.overrideSorting;
         originalCanvasEnabled = targetCanvas.enabled;
+        originalCanvasSortingOrder = targetCanvas.sortingOrder;
+        originalCanvasSortingLayerID = targetCanvas.sortingLayerID;
 
-        originalCanvasSortingOrder =
-            targetCanvas.sortingOrder;
-
-        originalCanvasSortingLayerID =
-            targetCanvas.sortingLayerID;
-
-        // Temporarily render it above the overlay Canvas.
+        // Temporarily place the target Canvas above the overlay.
         targetCanvas.overrideSorting = true;
-        targetCanvas.sortingLayerID =
-            overlayCanvas.sortingLayerID;
+        targetCanvas.sortingLayerID = overlayCanvas.sortingLayerID;
 
         targetCanvas.sortingOrder =
-            overlayCanvas.sortingOrder + 1;
+            Mathf.Max(
+                overlayCanvas.sortingOrder + 1,
+                highlightedCanvasOrder
+            );
 
         targetCanvas.enabled = true;
+
+        Debug.Log(
+            $"Tutorial highlight: {target.name} | " +
+            $"Canvas Sorting Layer: {targetCanvas.sortingLayerName} | " +
+            $"Order: {targetCanvas.sortingOrder}"
+        );
     }
 
     private void RestoreTargetOrder()
     {
+        // Restore a SpriteRenderer target.
         if (currentRenderType == TargetRenderType.SpriteRenderer)
         {
             if (targetSpriteRenderer != null)
@@ -173,12 +198,14 @@ public class TutorialVisualController : MonoBehaviour
                     originalSpriteSortingOrder;
             }
         }
+        // Restore a UI Canvas target.
         else if (currentRenderType == TargetRenderType.Canvas)
         {
             if (targetCanvas != null)
             {
                 if (addedCanvas)
                 {
+                    // Remove only the Canvas added by this script.
                     Destroy(targetCanvas);
                 }
                 else
@@ -186,14 +213,14 @@ public class TutorialVisualController : MonoBehaviour
                     targetCanvas.overrideSorting =
                         originalOverrideSorting;
 
-                    targetCanvas.enabled =
-                        originalCanvasEnabled;
-
                     targetCanvas.sortingOrder =
                         originalCanvasSortingOrder;
 
                     targetCanvas.sortingLayerID =
                         originalCanvasSortingLayerID;
+
+                    targetCanvas.enabled =
+                        originalCanvasEnabled;
                 }
             }
         }

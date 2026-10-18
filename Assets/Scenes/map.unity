@@ -3179,7 +3179,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: f12692e7edef41b4295e3a37b3e6c71a, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -4522,6 +4522,7 @@ MonoBehaviour:
   tutorialVisuals: {fileID: 71261913}
   tempCanvas: {fileID: 274629965}
   mysteriousFox: {fileID: 487989445}
+  pauseGameDuringDialogue: 1
 --- !u!1 &742951807
 GameObject:
   m_ObjectHideFlags: 0

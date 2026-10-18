@@ -290,6 +290,11 @@ public class DialogueController : MonoBehaviour
                         tempCanvas.ShowDay();
                         break;
 
+                    //Coffee Grinder
+                    case global::TutorialTargetID.CoffeeGrinder:
+                        tempCanvas.ShowCoffeeGrinder();
+                        break;
+
                     default:
                         tempCanvas.HideAll();
                         break;

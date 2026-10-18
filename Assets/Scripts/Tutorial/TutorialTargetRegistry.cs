@@ -26,7 +26,10 @@ public class TutorialTargetRegistry : MonoBehaviour
         targets.Clear();
 
         TutorialTarget[] sceneTargets =
-            Resources.FindObjectsOfTypeAll<TutorialTarget>();
+            FindObjectsByType<TutorialTarget>(
+                FindObjectsInactive.Exclude,
+                FindObjectsSortMode.None
+            );
 
         foreach (TutorialTarget target in sceneTargets)
         {
