@@ -68,6 +68,9 @@ public class DialogueController : MonoBehaviour
     [Header("Tutorial Character")]
     [SerializeField] private GameObject mysteriousFox;
 
+    [Header("Tutorial Pause")]
+    [SerializeField] private bool pauseGameDuringDialogue = true;
+
     private int currentLine;
     private bool autoMode;
     private bool isTyping;
@@ -81,6 +84,8 @@ public class DialogueController : MonoBehaviour
     private Coroutine autoCoroutine;
 
     private string PlayerUsername;
+
+    private bool wasGamePausedByDialogue = false;
 
     private void Awake()
     {
@@ -119,6 +124,8 @@ public class DialogueController : MonoBehaviour
 
         PlayerUsername = PlayerPrefs.GetString("Username", "Player");
 
+        PauseGameForDialogue();
+
         if (tutorialOverlay != null)
             tutorialOverlay.SetActive(true);
 
@@ -130,6 +137,7 @@ public class DialogueController : MonoBehaviour
 
         ShowDialogue();
     }
+
 
     // Locks map clicks while the dialogue sequence is active.
     public bool IsTutorialInputLocked()
@@ -484,6 +492,8 @@ public class DialogueController : MonoBehaviour
 
         if (mysteriousFox != null)
             mysteriousFox.SetActive(false);
+
+        ResumeGameAfterDialogue();
     }
 
     private void OnDestroy()
@@ -496,5 +506,33 @@ public class DialogueController : MonoBehaviour
 
         if (autoButton != null)
             autoButton.onClick.RemoveListener(ToggleAutoMode);
+    }
+
+
+    private void PauseGameForDialogue()
+    {
+        if (!pauseGameDuringDialogue)
+        {
+            Debug.LogWarning("Pause disabled in Inspector!");
+            return;
+        }
+
+        if (Time.timeScale > 0f)
+        {
+            Time.timeScale = 0f;
+            wasGamePausedByDialogue = true;
+        }
+
+        Debug.Log("Dialogue pause called. Time scale = " + Time.timeScale);
+    }
+
+
+    private void ResumeGameAfterDialogue()
+    {
+        if (wasGamePausedByDialogue)
+        {
+            Time.timeScale = 1f;
+            wasGamePausedByDialogue = false;
+        }
     }
 }
