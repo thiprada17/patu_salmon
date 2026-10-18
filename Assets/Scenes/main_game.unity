@@ -3248,7 +3248,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -60, y: -31}
+  m_AnchoredPosition: {x: -155, y: 171}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &634660166
@@ -3774,7 +3774,7 @@ Transform:
   m_GameObject: {fileID: 667076318}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.52, y: -2.324, z: 9.958865}
+  m_LocalPosition: {x: 2.52, y: -2.96, z: 9.958865}
   m_LocalScale: {x: 0.41351947, y: 0.45598453, z: 0.3817402}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3824,7 +3824,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 6658041851113694755, guid: 4232b85f88c9d2944947f37fb7b9b6b1, type: 3}
+  m_Sprite: {fileID: -148293692409766823, guid: 11f8a0bf90f447d48b148b786060c05f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -4254,7 +4254,7 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: -955217349
+  m_SortingLayerID: 1392824109
   m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!1 &767833126
@@ -9201,7 +9201,7 @@ SpriteRenderer:
   m_SortingLayerID: 1422213727
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 4927828894267167096, guid: 297444fdf589c764b93b5badd6c04e77, type: 3}
+  m_Sprite: {fileID: -748236006077077526, guid: c324171e779ee9345b31e230690cea94, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
