@@ -8044,6 +8044,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hasCoffeeGround: 0
+  coffeeGroundStatus: {fileID: 0}
 --- !u!50 &1408859717
 Rigidbody2D:
   serializedVersion: 5
@@ -11552,6 +11553,22 @@ PrefabInstance:
     - target: {fileID: 6019521774802634382, guid: abc072d4e99bc474fa3f694521990322, type: 3}
       propertyPath: maxWaitTime
       value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 7149685488655375537, guid: abc072d4e99bc474fa3f694521990322, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 6.4297943
+      objectReference: {fileID: 0}
+    - target: {fileID: 7149685488655375537, guid: abc072d4e99bc474fa3f694521990322, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 6.4297943
+      objectReference: {fileID: 0}
+    - target: {fileID: 7149685488655375537, guid: abc072d4e99bc474fa3f694521990322, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 6.4297943
+      objectReference: {fileID: 0}
+    - target: {fileID: 7149685488655375537, guid: abc072d4e99bc474fa3f694521990322, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 60.535
       objectReference: {fileID: 0}
     - target: {fileID: 9128676664928562361, guid: abc072d4e99bc474fa3f694521990322, type: 3}
       propertyPath: m_SortingOrder
