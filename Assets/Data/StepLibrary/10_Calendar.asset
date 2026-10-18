@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc7ca869f96bd4944ac18d47467e154d, type: 3}
+  m_Name: 10_Calendar
+  m_EditorClassIdentifier: 
+  stepID: NAV_010
+  order: 10
+  speakerName: Mysterious <color=#F87400>FOX</color>
+  dialogue: "Then there is a <color=#F87400>calendar</color>. It\u2019ll tell you
+    how many days have passed since you started working here."
+  targetID: 6
+  targetPreviewSprite: {fileID: -6283089434254858812, guid: f9e9a75a34627264fbaeba7023f296df, type: 3}
+  handPointerSprite: {fileID: -3128333450448496134, guid: df1291d40e0e374438b6dd3bd5970b6a, type: 3}
+  handOffset: {x: -165, y: -150}
+  handTilt: 1
+  handAnimation: 1
+  waitForTargetClick: 0
+  useCustomDialoguePosition: 0
+  dialoguePosition: {x: 0, y: 0}
+  hideSpeaker: 0
