@@ -1,11 +1,13 @@
 using UnityEngine;
 
-public class CountryTempCanvasController : MonoBehaviour
+public class TempCanvasController : MonoBehaviour
 {
-    [Header("Temporary Country Elements")]
+    [Header("Temporary Elements")]
     [SerializeField] private GameObject usaIcon;
     [SerializeField] private GameObject usaPopup;
     [SerializeField] private GameObject usaPopupGlow;
+    [SerializeField] private GameObject Coin;
+    [SerializeField] private GameObject Day;
 
     private void Awake()
     {
@@ -22,6 +24,12 @@ public class CountryTempCanvasController : MonoBehaviour
 
         if (usaPopup != null)
             usaPopupGlow.SetActive(false);
+
+        if (Coin != null)
+            Coin.SetActive(false);
+
+        if (Day != null)
+            Day.SetActive(false);
     }
 
     public void ShowCountryIcon()
@@ -57,5 +65,25 @@ public class CountryTempCanvasController : MonoBehaviour
             usaPopupGlow.SetActive(true);
         else
             Debug.LogWarning("USA Popup Glow is not assigned.");
+    }
+
+    public void ShowCoin()
+    {
+        HideAll();
+
+        if (Coin != null)
+            Coin.SetActive(true);
+        else
+            Debug.LogWarning("Coin Bar is not assigned.");
+    }
+
+    public void ShowDay()
+    {
+        HideAll();
+
+        if (Day != null)
+            Day.SetActive(true);
+        else
+            Debug.LogWarning("Day Bar is not assigned.");
     }
 }

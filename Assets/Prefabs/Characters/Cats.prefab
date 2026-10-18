@@ -321,8 +321,8 @@ Transform:
   m_GameObject: {fileID: 5245365963842119899}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -96, y: 60.46875, z: 0}
-  m_LocalScale: {x: 6.3897753, y: 6.3897753, z: 6.3897753}
+  m_LocalPosition: {x: -96.479996, y: 59.536, z: 0}
+  m_LocalScale: {x: 5.8083057, y: 5.8083057, z: 5.8083057}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 4168065633708361543}
@@ -571,8 +571,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 10, y: -6.2}
-  m_SizeDelta: {x: 460.3, y: 306.6}
+  m_AnchoredPosition: {x: 31, y: -31.02}
+  m_SizeDelta: {x: 343.6, y: 274.65}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &352516436968969809
 CanvasRenderer:
@@ -602,7 +602,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: tetstttsttstststststststststststststststststs
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -629,8 +629,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 60
-  m_fontSizeBase: 60
+  m_fontSize: 55
+  m_fontSizeBase: 55
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -701,8 +701,8 @@ Transform:
   m_GameObject: {fileID: 8471563669385260478}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 5180.6, y: -1454.0001, z: 0}
-  m_LocalScale: {x: 1929.3752, y: 1929.3752, z: 1929.3752}
+  m_LocalPosition: {x: -190.49998, y: -29.6, z: 0}
+  m_LocalScale: {x: 92.1116, y: 92.1116, z: 92.1116}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2718233680391537220}
@@ -1185,8 +1185,8 @@ MonoBehaviour:
   animator: {fileID: 7242022904778184736}
   bobHeight: 0.06
   bobSpeed: 8
-  maxWaitTime: 30
-  angryTime: 20
+  maxWaitTime: 45
+  angryTime: 30
   exitPoint: {fileID: 0}
 --- !u!114 &1420449113316906600
 MonoBehaviour:
@@ -1208,7 +1208,7 @@ MonoBehaviour:
   mouth: {fileID: 2889809889527778870}
   armL: {fileID: 2990101348200899133}
   armR: {fileID: 3466478597295693875}
-  variantCount: 4
+  variantCount: 20
 --- !u!114 &5353556417972288387
 MonoBehaviour:
   m_ObjectHideFlags: 0
