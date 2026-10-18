@@ -9,9 +9,6 @@ public class TempCanvasController : MonoBehaviour
     [SerializeField] private GameObject Coin;
     [SerializeField] private GameObject Day;
 
-    //Main_game Element
-    [SerializeField] private GameObject CoffeeGrinder;
-
     private void Awake()
     {
         HideAll();
@@ -33,9 +30,6 @@ public class TempCanvasController : MonoBehaviour
 
         if (Day != null)
             Day.SetActive(false);
-
-        if(CoffeeGrinder != null)
-            CoffeeGrinder.SetActive(false);
     }
 
     public void ShowCountryIcon()
@@ -91,15 +85,5 @@ public class TempCanvasController : MonoBehaviour
             Day.SetActive(true);
         else
             Debug.LogWarning("Day Bar is not assigned.");
-    }
-
-    public void ShowCoffeeGrinder()
-    {
-        HideAll();
-
-        if (CoffeeGrinder != null)
-            CoffeeGrinder.SetActive(true);
-        else
-            Debug.LogWarning("Coffee Grinder is not assigned.");
     }
 }
