@@ -1903,7 +1903,7 @@ GameObject:
   - component: {fileID: 401899328}
   - component: {fileID: 401899327}
   m_Layer: 0
-  m_Name: TutorialController (1)
+  m_Name: TutorialController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2693,7 +2693,7 @@ Canvas:
   m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 1
-  m_Camera: {fileID: 0}
+  m_Camera: {fileID: 519420031}
   m_PlaneDistance: 75
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -2703,7 +2703,7 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: 619361283
   m_SortingOrder: 5
   m_TargetDisplay: 0
 --- !u!114 &443520680
@@ -3871,6 +3871,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Mysterious_Fox
       objectReference: {fileID: 0}
+    - target: {fileID: -8653719598885068355, guid: b95be452fa05b43478c7011ac17b68b1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: b95be452fa05b43478c7011ac17b68b1, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.064
@@ -4968,30 +4972,9 @@ MonoBehaviour:
   autoOffSprite: {fileID: 1852599099772028583, guid: 8c511b4a33bb0b8428cff07a4969127f, type: 3}
   autoOnSprite: {fileID: -1307664305451782276, guid: b5a9445a2d8809541a661216e7ec0e8a, type: 3}
   dialogueLines:
-  - "Hello, <color=#F87400>{player_name}</color>! you probably wonder why you\u2019re
-    here."
-  - "You\u2019ve owed me money for traveling here."
-  - "Welcome to our <color=#F87400>Floating Island</color>! The place where ya\u2019ll
-    work from now on."
-  - To pay your debts of course.
-  - "Let\u2019s start with basics shall we?"
-  - Firstly, this is your <color=#F87400>wallet</color>. It'll tell you how much
-    money you have at the moment.
-  - "Then there is a <color=#F87400>calendar</color>. It\u2019ll tell you how many
-    days have passed since you started working here."
-  - This is your profile where you can see your <color=#F87400>ID card</color>.
-  - Oh! And communication is very important! you might want to <color=#F87400>remember</color>
-    the name of each tool, ingredients and menu.
-  - you can view all your <color=#F87400>vocabulary collection</color> here.
-  - To start working you simply have to tap on the <color=#F87400>Country Icon</color>.
-  - The window will appear and show all the information about this place.
-  - Then click the <color=#F87400>start shift</color> right here to begin your start
-    <color=#F87400>shift</color>!
-  - Sometimes we might want to keep track of our customers in <color=#F87400>customer
-    collections</color>. Who knows? They could be our regular in the future.
-  - Task
-  - Gacha
-  - Mail
+  - test
+  - test2
+  - test3
   dialogueSequence:
   - entryType: 0
     normalDialogueIndex: 0
@@ -5002,53 +4985,12 @@ MonoBehaviour:
   - entryType: 0
     normalDialogueIndex: 2
     tutorialStep: {fileID: 0}
-  - entryType: 0
-    normalDialogueIndex: 3
-    tutorialStep: {fileID: 0}
-  - entryType: 0
-    normalDialogueIndex: 4
-    tutorialStep: {fileID: 0}
-  - entryType: 1
-    normalDialogueIndex: 5
-    tutorialStep: {fileID: 11400000, guid: cfa18ed1e77085d4dab1c6b3e7f7c9c2, type: 2}
-  - entryType: 1
-    normalDialogueIndex: 6
-    tutorialStep: {fileID: 11400000, guid: c1bdf1c72d558ae4e9d5434659143018, type: 2}
-  - entryType: 0
-    normalDialogueIndex: 7
-    tutorialStep: {fileID: 0}
-  - entryType: 0
-    normalDialogueIndex: 8
-    tutorialStep: {fileID: 0}
-  - entryType: 1
-    normalDialogueIndex: 9
-    tutorialStep: {fileID: 11400000, guid: c37f6ffae9a652d48b4bd7edec04d4c5, type: 2}
-  - entryType: 1
-    normalDialogueIndex: 10
-    tutorialStep: {fileID: 11400000, guid: e51c43f1cbbc47448ba1ec1c2daab48f, type: 2}
-  - entryType: 1
-    normalDialogueIndex: 11
-    tutorialStep: {fileID: 11400000, guid: 2da31b078ef15bb4a9af534ccdb34133, type: 2}
-  - entryType: 1
-    normalDialogueIndex: 12
-    tutorialStep: {fileID: 11400000, guid: 293ed6d319c2b8b4ab5167780b757b22, type: 2}
-  - entryType: 1
-    normalDialogueIndex: 13
-    tutorialStep: {fileID: 11400000, guid: 36833509ee3010e4bb7cafcf58e6975b, type: 2}
-  - entryType: 1
-    normalDialogueIndex: 14
-    tutorialStep: {fileID: 11400000, guid: 28aa9fc2dbfbe714db02c15c94f204a8, type: 2}
-  - entryType: 1
-    normalDialogueIndex: 15
-    tutorialStep: {fileID: 11400000, guid: d9f3280feb368124f8393711595df995, type: 2}
-  - entryType: 1
-    normalDialogueIndex: 16
-    tutorialStep: {fileID: 11400000, guid: bd3fd77e13e71554b9ff3caaf5992960, type: 2}
   typingSpeed: 0.025
   autoAdvanceDelay: 2.5
   tutorialVisuals: {fileID: 594821748}
   tempCanvas: {fileID: 0}
   mysteriousFox: {fileID: 585810532}
+  pauseGameDuringDialogue: 1
 --- !u!4 &666931722
 Transform:
   m_ObjectHideFlags: 0
@@ -9849,7 +9791,7 @@ Canvas:
   serializedVersion: 3
   m_RenderMode: 1
   m_Camera: {fileID: 519420031}
-  m_PlaneDistance: 100
+  m_PlaneDistance: 30
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
@@ -10071,7 +10013,7 @@ Canvas:
   m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 1
-  m_Camera: {fileID: 0}
+  m_Camera: {fileID: 519420031}
   m_PlaneDistance: 50
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -10081,7 +10023,7 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: -1
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: 619361283
   m_SortingOrder: 20
   m_TargetDisplay: 0
 --- !u!1 &1511509604
