@@ -4764,7 +4764,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &780540229
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6130,7 +6130,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &919988830
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7236,7 +7236,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1225602651
 Transform:
   m_ObjectHideFlags: 0
@@ -8261,7 +8261,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hasCoffeeGround: 0
-  coffeeGroundStatus: {fileID: 0}
   coffeeGroundStatus: {fileID: 1225602650}
 --- !u!50 &1408859717
 Rigidbody2D:
@@ -11670,19 +11669,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7149685488655375537, guid: abc072d4e99bc474fa3f694521990322, type: 3}
       propertyPath: m_LocalScale.x
-      value: 6.4297943
+      value: 5.8318233
       objectReference: {fileID: 0}
     - target: {fileID: 7149685488655375537, guid: abc072d4e99bc474fa3f694521990322, type: 3}
       propertyPath: m_LocalScale.y
-      value: 6.4297943
+      value: 5.8318233
       objectReference: {fileID: 0}
     - target: {fileID: 7149685488655375537, guid: abc072d4e99bc474fa3f694521990322, type: 3}
       propertyPath: m_LocalScale.z
-      value: 6.4297943
+      value: 5.8318233
       objectReference: {fileID: 0}
     - target: {fileID: 7149685488655375537, guid: abc072d4e99bc474fa3f694521990322, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 60.535
+      value: 59.574
       objectReference: {fileID: 0}
     - target: {fileID: 9128676664928562361, guid: abc072d4e99bc474fa3f694521990322, type: 3}
       propertyPath: m_SortingOrder
