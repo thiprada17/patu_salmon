@@ -110,7 +110,6 @@ public class CupDispenser : MonoBehaviour
 
         newCup.SetActive(true);
         newCup.transform.SetParent(transform.parent, true);
-
         Cup cup = newCup.GetComponent<Cup>();
 
 

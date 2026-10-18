@@ -41,65 +41,98 @@ public class MapDragPan : MonoBehaviour
             return;
 
         // Touch input
-        if (Touchscreen.current != null &&
-            Touchscreen.current.primaryTouch.press.isPressed)
+        if (Touchscreen.current != null)
         {
-            var touch0 = Touchscreen.current.primaryTouch;
-            Vector2 touchPosition = touch0.position.ReadValue();
+            var touches = Touchscreen.current.touches;
+            bool hasActiveTouch = false;
 
-            if (IsTouchOverUI())
+            foreach (var touch in touches)
             {
-                EndDrag();
-                return;
+                if (touch.press.isPressed)
+                {
+                    hasActiveTouch = true;
+                    break;
+                }
             }
 
-            // Two-finger pinch zoom
-            if (TryGetPinch(out Vector2 midpoint, out float difference))
+            // ถ้ามี Touch อยู่ ให้จัดการ Touch เท่านั้น
+            // ป้องกัน Touch และ Mouse รับ Input ซ้ำกัน
+            if (hasActiveTouch)
             {
-                isDragging = false;
-                dragStarted = false;
+                var touch0 = Touchscreen.current.primaryTouch;
 
-                if (Mathf.Abs(difference) > 0.01f)
-                    Zoom(difference * zoomSpeed * 0.01f, midpoint);
+                if (!touch0.press.isPressed)
+                {
+                    EndDrag();
+                    return;
+                }
 
-                return;
-            }
+                // ไม่ลากแผนที่เมื่อแตะ UI
+                if (IsTouchOverUI())
+                {
+                    EndDrag();
+                    return;
+                }
 
-            if (touch0.press.wasPressedThisFrame)
-                BeginDrag(touchPosition);
-            else
-                ContinueDrag(touchPosition);
+                // Two-finger pinch zoom
+                if (TryGetPinch(out Vector2 midpoint, out float difference))
+                {
+                    isDragging = false;
+                    dragStarted = false;
 
-            return;
-        }
+                    if (Mathf.Abs(difference) > 0.01f)
+                        Zoom(difference * zoomSpeed * 0.01f, midpoint);
 
-        // Mouse input
-        if (Mouse.current != null)
-        {
-            Vector2 mousePosition = Mouse.current.position.ReadValue();
+                    return;
+                }
 
-            if (EventSystem.current != null &&
-                EventSystem.current.IsPointerOverGameObject())
-            {
-                if (Mouse.current.leftButton.wasReleasedThisFrame)
+                Vector2 touchPosition = touch0.position.ReadValue();
+
+                if (touch0.press.wasPressedThisFrame)
+                    BeginDrag(touchPosition);
+                else
+                    ContinueDrag(touchPosition);
+
+                if (touch0.press.wasReleasedThisFrame)
                     EndDrag();
 
                 return;
             }
+        }
 
-            if (Mouse.current.leftButton.wasPressedThisFrame)
-            {
-                BeginDrag(mousePosition);
-            }
-            else if (Mouse.current.leftButton.isPressed && isDragging)
-            {
-                ContinueDrag(mousePosition);
-            }
-            else if (Mouse.current.leftButton.wasReleasedThisFrame)
-            {
-                EndDrag();
-            }
+        // Mouse input (Unity Editor / PC)
+        if (Mouse.current == null)
+            return;
 
+        Vector2 mousePosition = Mouse.current.position.ReadValue();
+
+        bool pointerOverUI = EventSystem.current != null &&
+            EventSystem.current.IsPointerOverGameObject();
+
+        // ไม่ลากหรือซูมขณะเมาส์อยู่บน UI
+        if (pointerOverUI)
+        {
+            EndDrag();
+            return;
+        }
+
+        if (Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            BeginDrag(mousePosition);
+        }
+        else if (Mouse.current.leftButton.isPressed && isDragging)
+        {
+            ContinueDrag(mousePosition);
+        }
+
+        if (Mouse.current.leftButton.wasReleasedThisFrame)
+        {
+            EndDrag();
+        }
+
+        // Scroll Zoom เฉพาะตอนเมาส์ไม่ได้กดปุ่มซ้าย
+        if (!Mouse.current.leftButton.isPressed)
+        {
             float scroll = Mouse.current.scroll.ReadValue().y;
 
             if (Mathf.Abs(scroll) > 0.01f)
@@ -113,12 +146,15 @@ public class MapDragPan : MonoBehaviour
             Touchscreen.current == null)
             return false;
 
-        int touchId = Touchscreen.current.primaryTouch.touchId.ReadValue();
+        int touchId =
+            Touchscreen.current.primaryTouch.touchId.ReadValue();
 
         return EventSystem.current.IsPointerOverGameObject(touchId);
     }
 
-    private bool TryGetPinch(out Vector2 midpoint, out float difference)
+    private bool TryGetPinch(
+        out Vector2 midpoint,
+        out float difference)
     {
         midpoint = Vector2.zero;
         difference = 0f;
@@ -139,8 +175,11 @@ public class MapDragPan : MonoBehaviour
         Vector2 prev0 = pos0 - touches[0].delta.ReadValue();
         Vector2 prev1 = pos1 - touches[1].delta.ReadValue();
 
-        float previousDistance = Vector2.Distance(prev0, prev1);
-        float currentDistance = Vector2.Distance(pos0, pos1);
+        float previousDistance =
+            Vector2.Distance(prev0, prev1);
+
+        float currentDistance =
+            Vector2.Distance(pos0, pos1);
 
         difference = currentDistance - previousDistance;
         midpoint = (pos0 + pos1) * 0.5f;
@@ -151,8 +190,13 @@ public class MapDragPan : MonoBehaviour
     private void BeginDrag(Vector2 screenPos)
     {
         pointerDownScreenPos = screenPos;
+
         dragOrigin = cam.ScreenToWorldPoint(
-            new Vector3(screenPos.x, screenPos.y, -cam.transform.position.z)
+            new Vector3(
+                screenPos.x,
+                screenPos.y,
+                -cam.transform.position.z
+            )
         );
 
         isDragging = true;
@@ -164,7 +208,8 @@ public class MapDragPan : MonoBehaviour
         if (!isDragging)
             return;
 
-        float screenDist = Vector2.Distance(pointerDownScreenPos, screenPos);
+        float screenDist =
+            Vector2.Distance(pointerDownScreenPos, screenPos);
 
         if (!dragStarted)
         {
@@ -175,7 +220,11 @@ public class MapDragPan : MonoBehaviour
         }
 
         Vector3 currentWorld = cam.ScreenToWorldPoint(
-            new Vector3(screenPos.x, screenPos.y, -cam.transform.position.z)
+            new Vector3(
+                screenPos.x,
+                screenPos.y,
+                -cam.transform.position.z
+            )
         );
 
         Vector3 delta = dragOrigin - currentWorld;
@@ -183,7 +232,11 @@ public class MapDragPan : MonoBehaviour
         MoveCamera(delta);
 
         dragOrigin = cam.ScreenToWorldPoint(
-            new Vector3(screenPos.x, screenPos.y, -cam.transform.position.z)
+            new Vector3(
+                screenPos.x,
+                screenPos.y,
+                -cam.transform.position.z
+            )
         );
     }
 
@@ -213,7 +266,8 @@ public class MapDragPan : MonoBehaviour
             -cam.transform.position.z
         );
 
-        Vector3 worldBefore = cam.ScreenToWorldPoint(screenPoint);
+        Vector3 worldBefore =
+            cam.ScreenToWorldPoint(screenPoint);
 
         float newZoom = Mathf.Clamp(
             oldZoom - amount,
@@ -226,7 +280,8 @@ public class MapDragPan : MonoBehaviour
             Bounds bounds = mapBoundsReference.bounds;
 
             float maxZoomByHeight = bounds.size.y * 0.5f;
-            float maxZoomByWidth = bounds.size.x / (2f * cam.aspect);
+            float maxZoomByWidth =
+                bounds.size.x / (2f * cam.aspect);
 
             float maxZoomByMap = Mathf.Min(
                 maxZoomByHeight,
@@ -242,11 +297,16 @@ public class MapDragPan : MonoBehaviour
 
         cam.orthographicSize = newZoom;
 
-        Vector3 worldAfter = cam.ScreenToWorldPoint(screenPoint);
+        Vector3 worldAfter =
+            cam.ScreenToWorldPoint(screenPoint);
+
         transform.position += worldBefore - worldAfter;
 
         if (clampToBounds && mapBoundsReference != null)
-            transform.position = ClampToMapBounds(transform.position);
+        {
+            transform.position =
+                ClampToMapBounds(transform.position);
+        }
     }
 
     private Vector3 ClampToMapBounds(Vector3 pos)

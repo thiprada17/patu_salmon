@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-
+using UnityEngine.InputSystem;
 [RequireComponent(typeof(CanvasGroup))]
 public class PopupRecipe : MonoBehaviour
 {
@@ -47,7 +47,10 @@ public class PopupRecipe : MonoBehaviour
 
     void Update()
     {
-        if (closeWithEscape && isOpen && Input.GetKeyDown(KeyCode.Escape)) Close();
+        if (!closeWithEscape || !isOpen) return;
+
+        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+            Close();
     }
 
     public void Open()
