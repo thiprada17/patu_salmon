@@ -13,8 +13,8 @@ public class LoadingManager : MonoBehaviour
 
     [Header("Session")]
     [SerializeField] ResourceLoading resourceLoading;
-    [SerializeField] private string loginSceneName = "signup";
-    [SerializeField] private string menuSceneName = "loading";
+    //[SerializeField] private string loginSceneName = "signup";
+    //[SerializeField] private string menuSceneName = "loading";
 
     [Header("Behavior")]
     [SerializeField] float loadSpeed = 0.6f;

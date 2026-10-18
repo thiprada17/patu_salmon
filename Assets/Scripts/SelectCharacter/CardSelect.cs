@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 
 public class CardSelect : MonoBehaviour
 {
@@ -38,26 +40,60 @@ public class CardSelect : MonoBehaviour
 
     static bool locked = false;
 
-    private string backendUrl = "https://patu-salmon.onrender.com";
-
     void Start()
     {
         locked = false;
         if (glow != null) glow.SetActive(false);
     }
 
-
-    void OnMouseDown()
+    void Update()
     {
+        if (locked) return;
+
+        // คลิกด้วยเมาส์
+        if (Mouse.current != null &&
+            Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            TrySelect(Mouse.current.position.ReadValue());
+        }
+
+        // แตะหน้าจอมือถือ
+        if (Touchscreen.current != null &&
+            Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
+        {
+            TrySelect(
+                Touchscreen.current.primaryTouch.position.ReadValue()
+            );
+        }
+    }
+
+    void TrySelect(Vector2 screenPosition)
+    {
+        // ไม่เลือกการ์ดเมื่อแตะ UI
+        if (EventSystem.current != null &&
+            EventSystem.current.IsPointerOverGameObject())
+            return;
+
+        Camera cam = Camera.main;
+        if (cam == null) return;
+
+        Vector2 worldPosition = cam.ScreenToWorldPoint(screenPosition);
+
+        Collider2D hit = Physics2D.OverlapPoint(worldPosition);
+
+        if (hit == null || !hit.transform.IsChildOf(transform) &&
+            hit.transform != transform)
+            return;
+
         if (locked) return;
         locked = true;
 
         if (glow != null) glow.SetActive(true);
+
         PlayerPrefs.SetString("SelectedCharacter", characterName);
         PlayerPrefs.Save();
 
-
-        Debug.Log("Selected character: " + characterName);
+        GameLogger.Info("CardSelect", "Selected character: " + characterName);
 
         StartCoroutine(Punch(transform));
         StartCoroutine(GoNext());

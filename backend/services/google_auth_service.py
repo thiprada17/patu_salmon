@@ -6,7 +6,7 @@ def create_google_login_url():
     response = supabase.auth.sign_in_with_oauth({
         "provider": "google",
         "options": {
-            "redirect_to": "http://10.0.2.2:8000/auth/callback",
+            "redirect_to": "https://patu-salmon.onrender.com/auth/callback",
         },
     })
     return response.url

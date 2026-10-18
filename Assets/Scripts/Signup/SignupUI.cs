@@ -26,9 +26,9 @@ public class SignupUI : MonoBehaviour
     [SerializeField] LanguagePopup languagePopup;
 
     [Header("next scene")]
-    [SerializeField] string nextScene = "SelectCharacter";
-    [SerializeField] string existingPlayerScene = "MainMenu"; // ซีนที่บัญชีเก่าเข้าตรง ๆ (แก้ให้ตรงของคุณ)
-    [SerializeField] float delay = 0.25f;
+    //[SerializeField] string nextScene = "SelectCharacter";
+    //[SerializeField] string existingPlayerScene = "loading";
+    //[SerializeField] float delay = 0.25f;
 
     [Header("punch")]
     [SerializeField] float punchScale = 1.15f;

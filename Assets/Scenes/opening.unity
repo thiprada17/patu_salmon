@@ -1405,7 +1405,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c52f0328d3b95c42a8703caa5cfad47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  backendUrl: http://127.0.0.1:8000
+  backendUrl: https://patu-salmon.onrender.com
 --- !u!4 &1228624892
 Transform:
   m_ObjectHideFlags: 0

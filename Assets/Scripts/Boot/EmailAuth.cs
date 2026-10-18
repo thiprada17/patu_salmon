@@ -34,7 +34,7 @@ public class EmailAuth : MonoBehaviour
 
     [Header("Server")]
     [SerializeField]
-    private string apiUrl = "http://127.0.0.1:3000";
+    private string apiUrl = "https://patu-salmon.onrender.com";
 
 
     private void Start()
