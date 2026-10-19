@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class LanguagePopup : MonoBehaviour
 {
     [SerializeField] private GameObject popup;
-    [SerializeField] private Button thaiButton;
+    //[SerializeField] private Button thaiButton;
     [SerializeField] private Button englishButton;
 
     [Header("Animation")]
@@ -24,16 +25,18 @@ public class LanguagePopup : MonoBehaviour
     [SerializeField] private float punchScale = 1.15f;
     [SerializeField] private float punchTime = 0.18f;
 
-
+    [Header("Selected Button Color")]
+    [SerializeField] private Color normalColor = Color.white;
+    [SerializeField] private Color selectedColor = Color.yellow;
     private void Awake()
     {
         popup.SetActive(false);
 
-        thaiButton.onClick.AddListener(() =>
-        {
-            StartCoroutine(Punch(thaiButton.transform));
-            SelectLanguage("thai");
-        });
+        //thaiButton.onClick.AddListener(() =>
+        //{
+        //    StartCoroutine(Punch(thaiButton.transform));
+        //    SelectLanguage("thai");
+        //});
 
         englishButton.onClick.AddListener(() =>
         {
@@ -185,10 +188,25 @@ public class LanguagePopup : MonoBehaviour
     {
         selectedLanguage = language;
 
-        Debug.Log("Selected language: " + language);
-
         PlayerPrefs.SetString("Language", language);
         PlayerPrefs.Save();
+
+        //SetButtonColor(thaiButton, language == "thai");
+        SetButtonColor(englishButton, language == "english");
+
+        Debug.Log("Selected language: " + language);
+    }
+
+    private void SetButtonColor(Button button, bool selected)
+    {
+        if (button == null) return;
+
+        Image image = button.targetGraphic as Image;
+
+        if (image != null)
+        {
+            image.color = selected ? selectedColor : normalColor;
+        }
     }
 
     public void OnEnterClick()

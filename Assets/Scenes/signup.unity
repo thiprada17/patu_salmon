@@ -137,7 +137,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &58208417
 RectTransform:
   m_ObjectHideFlags: 0
@@ -302,7 +302,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.7735849, g: 0.7735849, b: 0.7735849, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2999,7 +2999,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.7764706, g: 0.7764706, b: 0.7764706, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -4075,7 +4075,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1117477445
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4110,7 +4110,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   popup: {fileID: 1117477444}
-  thaiButton: {fileID: 127416512}
   englishButton: {fileID: 1710145363}
   popupBox: {fileID: 372152149}
   popupGroup: {fileID: 372152146}
@@ -4122,6 +4121,8 @@ MonoBehaviour:
   dimAlpha: 0.55
   punchScale: 1.15
   punchTime: 0.18
+  normalColor: {r: 1, g: 1, b: 1, a: 1}
+  selectedColor: {r: 0.6509804, g: 0.69411767, b: 0.8666667, a: 1}
 --- !u!1 &1138868528
 GameObject:
   m_ObjectHideFlags: 0
