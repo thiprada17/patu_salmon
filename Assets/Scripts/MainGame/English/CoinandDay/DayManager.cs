@@ -6,7 +6,7 @@ using TMPro;
 public class DayManager : MonoBehaviour
 {
     [Header("Day Settings")]
-    [SerializeField, Min(1)] private int dayDurationSeconds = 60;
+    [SerializeField, Min(1)] private int dayDurationSeconds = 30;
     [SerializeField] private TMP_Text timerText;
 
     // ป้องกันการจบวันซ้ำ

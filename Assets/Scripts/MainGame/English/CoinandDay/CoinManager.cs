@@ -30,8 +30,8 @@ public class CoinManager : MonoBehaviour
     [SerializeField] private TMP_Text tipCoinsText;
     [SerializeField] private TMP_Text totalcustomerservedText;
 
-    [Header("หน้าต่างสรุปรายได้")]
-    [SerializeField] private OrderEarningPopup earningPopup;
+    //[Header("หน้าต่างสรุปรายได้")]
+    //[SerializeField] private OrderEarningPopup earningPopup;
 
     [Header("หน้าต่างสรุปกะ")]
     [SerializeField] private ShiftEnd shiftEnd;
@@ -231,10 +231,10 @@ public class CoinManager : MonoBehaviour
 
         UpdateNavbar();
 
-        if (earningPopup != null)
-        {
-            earningPopup.Show(price, tip, penaltyForPopup);
-        }
+        //if (earningPopup != null)
+        //{
+        //    earningPopup.Show(price, tip, penaltyForPopup);
+        //}
 
         GameLogger.DebugLog(
             "Economy",
