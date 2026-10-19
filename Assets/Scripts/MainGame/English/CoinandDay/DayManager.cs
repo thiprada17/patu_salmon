@@ -6,46 +6,26 @@ using TMPro;
 public class DayManager : MonoBehaviour
 {
     [Header("Day Settings")]
-    [SerializeField, Min(1)] private int dayDurationSeconds = 60;
+    [SerializeField, Min(1)] private int dayDurationSeconds = 30;
     [SerializeField] private TMP_Text timerText;
 
+    // ป้องกันการจบวันซ้ำ
     private bool isDayEnding;
     private float timeRemaining;
 
     private void Start()
     {
-        StartCoroutine(WaitForStats());
-    }
-
-    private IEnumerator WaitForStats()
-    {
-        while (CoinManager.Instance == null)
-            yield return null;
-
-        while (!CoinManager.Instance.StatsLoaded &&
-               !CoinManager.Instance.StatsLoadFailed)
-        {
-            yield return null;
-        }
-
-        if (CoinManager.Instance.StatsLoadFailed)
-        {
-            GameLogger.Error(
-                "DayManager",
-                "โหลดข้อมูลผู้เล่นไม่สำเร็จ จึงยังไม่เริ่มวัน"
-            );
-            yield break;
-        }
-
         timeRemaining = dayDurationSeconds;
-        UpdateTimerText();
 
-        GameLogger.Info("DayManager", "โหลดข้อมูลแล้ว เริ่มวันใหม่");
+        GameLogger.Info("DayManager", $"เริ่มวันใหม่ ระยะเวลา {dayDurationSeconds} วินาที");
+
+        UpdateTimerText();
     }
 
     private void Update()
     {
-        if (isDayEnding || timeRemaining <= 0f)
+        // หยุดนับเมื่อกำลังจบวัน
+        if (isDayEnding)
             return;
 
         timeRemaining -= Time.deltaTime;
@@ -54,8 +34,8 @@ public class DayManager : MonoBehaviour
         {
             timeRemaining = 0f;
             UpdateTimerText();
-
             GameLogger.Info("DayManager", "หมดเวลา เริ่ม EndDay()");
+            // จบวันอัตโนมัติเมื่อหมดเวลา
             StartCoroutine(EndDay());
             return;
         }
@@ -75,12 +55,13 @@ public class DayManager : MonoBehaviour
         timerText.text = $"{minutes:00}:{seconds:00}";
     }
 
-    private IEnumerator EndDay()
+        private IEnumerator EndDay()
     {
         if (isDayEnding)
             yield break;
 
         isDayEnding = true;
+        GameLogger.Info("DayManager", "กำลังเรียก FinishWorkDay()");
 
         if (CoinManager.Instance == null)
         {
@@ -95,7 +76,6 @@ public class DayManager : MonoBehaviour
         {
             saveSucceeded = success;
             saveFinished = true;
-
             GameLogger.Info("DayManager", $"ผลบันทึกวัน: {success}");
         });
 
@@ -107,7 +87,9 @@ public class DayManager : MonoBehaviour
             GameLogger.Error("DayManager", "บันทึกวันไม่สำเร็จ");
             yield break;
         }
+        GameLogger.Info("DayManager", "บันทึกวันสำเร็จ");
 
+        // อัปเดต Navbar หลังรับค่าล่าสุดจาก Backend
         CoinManager.Instance.RefreshNavbar();
 
         timeRemaining = dayDurationSeconds;

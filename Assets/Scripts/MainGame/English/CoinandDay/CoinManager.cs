@@ -30,8 +30,8 @@ public class CoinManager : MonoBehaviour
     [SerializeField] private TMP_Text tipCoinsText;
     [SerializeField] private TMP_Text totalcustomerservedText;
 
-    [Header("หน้าต่างสรุปรายได้")]
-    [SerializeField] private OrderEarningPopup earningPopup;
+    //[Header("หน้าต่างสรุปรายได้")]
+    //[SerializeField] private OrderEarningPopup earningPopup;
 
     [Header("หน้าต่างสรุปกะ")]
     [SerializeField] private ShiftEnd shiftEnd;
@@ -78,8 +78,6 @@ public class CoinManager : MonoBehaviour
 
     private bool isLoading;
     private bool isSaving;
-    public bool StatsLoaded { get; private set; }
-    public bool StatsLoadFailed { get; private set; }
 
     // เงินรวม = เงินที่บันทึกแล้ว + ยอดกะที่ยังไม่ได้บันทึก
     public int TotalCoins =>
@@ -143,11 +141,10 @@ public class CoinManager : MonoBehaviour
             if (request.result != UnityWebRequest.Result.Success)
             {
                 GameLogger.Error(
-                "Economy",
-                $"โหลดข้อมูลไม่สำเร็จ | Result: {request.result} | " +
-                $"Error: {request.error} | URL: {request.url} | " +
-                $"HTTP: {request.responseCode}"
-            );
+                    "Economy",
+                    $"โหลดข้อมูลไม่สำเร็จ: HTTP {request.responseCode} " +
+                    $"{request.downloadHandler.text}"
+                );
 
                 isLoading = false;
                 yield break;
@@ -173,17 +170,10 @@ public class CoinManager : MonoBehaviour
             WorkDays = data.work_days;
             CustomersServed = data.total_customers_served;
 
-            UpdateNavbar();
-
-            StatsLoaded = true;
-
-            GameLogger.Info(
-                "Economy",
-                $"อัปเดต Navbar: Coins={SavedCoins}, Days={WorkDays}, Served={CustomersServed}"
-            );
-
             // เริ่มนับลูกค้าของวันปัจจุบันใหม่
             TodayCustomersServed = 0;
+
+            UpdateNavbar();
 
             GameLogger.Info(
                 "Economy",
@@ -241,10 +231,10 @@ public class CoinManager : MonoBehaviour
 
         UpdateNavbar();
 
-        if (earningPopup != null)
-        {
-            earningPopup.Show(price, tip, penaltyForPopup);
-        }
+        //if (earningPopup != null)
+        //{
+        //    earningPopup.Show(price, tip, penaltyForPopup);
+        //}
 
         GameLogger.DebugLog(
             "Economy",
@@ -353,8 +343,6 @@ public class CoinManager : MonoBehaviour
             $"CoinsBefore={TotalCoins} | CoinsAfter={finalCoins}"
         );
 
-
-
         FinishWorkDayRequest data = new FinishWorkDayRequest
         {
             user_id = LoginManager.UserId,
@@ -388,12 +376,10 @@ public class CoinManager : MonoBehaviour
             {
                 GameLogger.Error(
                     "Economy",
-                    $"บันทึกไม่สำเร็จ | Result={request.result} | " +
-                    $"HTTP={request.responseCode} | " +
-                    $"Error={request.error} | " +
-                    $"URL={request.url} | " +
-                    $"Body={request.downloadHandler.text}"
+                    $"บันทึกข้อมูลไม่สำเร็จ: HTTP {request.responseCode} " +
+                    $"{request.downloadHandler.text}"
                 );
+
                 isSaving = false;
                 onComplete?.Invoke(false);
                 yield break;
@@ -429,6 +415,8 @@ public class CoinManager : MonoBehaviour
                 OrderCoins = 0;
                 TipCoins = 0;
                 PenaltyCoins = 0;
+
+                // เริ่มกะใหม่
                 savedShiftCoins = 0;
 
                 TicketExpense = 0;
@@ -495,34 +483,29 @@ public class CoinManager : MonoBehaviour
         }
 
         // Order และ Tips แสดงยอดสะสมตลอดกะ
-        //if (orderCoinsText != null)
-        //{
-        //    orderCoinsText.text = "Order " + OrderCoins;
-        //}
+        if (orderCoinsText != null)
+        {
+            orderCoinsText.text = "Order " + OrderCoins;
+        }
 
-        //if (tipCoinsText != null)
-        //{
-        //    tipCoinsText.text = "Tips " + TipCoins;
-        //}
+        if (tipCoinsText != null)
+        {
+            tipCoinsText.text = "Tips " + TipCoins;
+        }
 
-        //if (totalcustomerservedText != null)
-        //{
-        //    int totalServed =
-        //        CustomersServed + TodayCustomersServed;
+        if (totalcustomerservedText != null)
+        {
+            int totalServed =
+                CustomersServed + TodayCustomersServed;
 
-        //    totalcustomerservedText.text =
-        //        "Served " + totalServed;
-        //}
+            totalcustomerservedText.text =
+                "Served " + totalServed;
+        }
 
         if (daysText != null)
         {
             daysText.text = WorkDays.ToString();
         }
-
-        GameLogger.Info(
-            "Economy",
-            $"Navbar Text: {totalCoinsText.text} | {daysText.text}"
-        );
     }
 
     [Serializable]
