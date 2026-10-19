@@ -15,6 +15,8 @@ public class Milk : MonoBehaviour
     [SerializeField] private Animator milkAnimator;
     [SerializeField] private SpriteRenderer milkAnimation;
 
+    [SerializeField] private AudioSource audioSource;
+
     private void Start()
     {
         if (pumpNormal != null)
@@ -57,6 +59,11 @@ public class Milk : MonoBehaviour
             GameLogger.DebugLog("Milk", "pls wait milk");
             return;
         }
+        if (audioSource != null)
+        {
+            audioSource.PlayOneShot(audioSource.clip);
+        }
+
 
         StartCoroutine(PumpMilk());
     }

@@ -15,6 +15,7 @@ public class Cocoa : MonoBehaviour
     [SerializeField] private Animator cocoaAnimator;
     [SerializeField] private SpriteRenderer cocoaAnimation;
 
+    [SerializeField] private AudioSource audioSource;
     private void Start()
     {
         if (pumpNormal != null)
@@ -56,6 +57,11 @@ public class Cocoa : MonoBehaviour
         {
             GameLogger.DebugLog("Cocoa", "cocoa waiting");
             return;
+        }
+
+        if (audioSource != null)
+        {
+            audioSource.PlayOneShot(audioSource.clip);
         }
 
         StartCoroutine(PumpCocoa());

@@ -12,6 +12,9 @@ public class Grinder : MonoBehaviour
     [SerializeField] private Animator coffeeAnimator;
     [SerializeField] private SpriteRenderer coffeeRenderer;
 
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioSource inputaudioSource;
+    [SerializeField] private AudioSource outputaudioSource;
     private bool isGrinding = false;
 
 
@@ -44,11 +47,25 @@ public class Grinder : MonoBehaviour
 
         // จำตำแหน่งเดิมของ Portfilter
         portfilterOriginalPosition = portfilter.transform.localPosition;
-
+        if (inputaudioSource != null)
+        {
+            inputaudioSource.PlayOneShot(inputaudioSource.clip);
+        }
         GameLogger.DebugLog("Grinder", "Portfilter attached to Grinder");
     }
 
-
+    public void RemovePortfilter(Portfilter portfilter)
+    {
+        if (currentPortfilter == portfilter)
+        {
+            currentPortfilter = null;
+            if (outputaudioSource != null)
+            {
+                outputaudioSource.PlayOneShot(outputaudioSource.clip);
+            }
+            GameLogger.DebugLog("Grinder", "Portfilter removed from Coffee Machine");
+        }
+    }
     private void OnMouseDown()
     {
         if (currentPortfilter == null)
@@ -66,6 +83,11 @@ public class Grinder : MonoBehaviour
         {
             GameLogger.Warn("Grinder", "Portfilter มี Coffee Ground อยู่แล้ว!");
             return;
+        }
+
+        if (audioSource != null)
+        {
+            audioSource.PlayOneShot(audioSource.clip);
         }
 
         StartCoroutine(Grind(currentPortfilter));

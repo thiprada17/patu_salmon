@@ -27,6 +27,7 @@ public class DraggableItem : MonoBehaviour,
 
     private Coroutine rejectRoutine;
 
+    [SerializeField] private AudioSource audioSource;
     private void Awake()
     {
         mainCamera = Camera.main;
@@ -48,6 +49,14 @@ public class DraggableItem : MonoBehaviour,
         {
             isAttached = false;
             GameLogger.DebugLog("Dragable",gameObject.name + " detached!");
+        }
+
+        if (gameObject.name == "Cup(Clone)")
+        {
+            if (audioSource != null)
+            {
+                audioSource.PlayOneShot(audioSource.clip);
+            }
         }
     }
 

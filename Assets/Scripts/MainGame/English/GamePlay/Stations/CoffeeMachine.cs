@@ -13,6 +13,9 @@ public class CoffeeMachine : MonoBehaviour
 
     [SerializeField] private AudioSource audioSource;
 
+    [SerializeField] private AudioSource inputaudioSource;
+    [SerializeField] private AudioSource outputaudioSource;
+
     // เช็กว่าเครื่องกำลังทำงานอยู่หรือไม่
     private bool isMakingCoffee = false;
 
@@ -25,6 +28,10 @@ public class CoffeeMachine : MonoBehaviour
     {
         currentPortfilter = portfilter;
         portfilterOriginalPosition = portfilter.transform.localPosition;
+        if (inputaudioSource != null)
+        {
+            inputaudioSource.PlayOneShot(inputaudioSource.clip);
+        }
         GameLogger.DebugLog("CoffeeMach", "Portfilter attached to Coffee Machine");
     }
 
@@ -33,6 +40,10 @@ public class CoffeeMachine : MonoBehaviour
         if (currentPortfilter == portfilter)
         {
             currentPortfilter = null;
+            if (outputaudioSource != null)
+            {
+                outputaudioSource.PlayOneShot(outputaudioSource.clip);
+            }
             GameLogger.DebugLog("CoffeeMach", "Portfilter removed from Coffee Machine");
         }
     }
