@@ -1,4 +1,4 @@
-
+ï»¿
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -47,34 +47,41 @@ public class LoadingManager : MonoBehaviour
         StartCoroutine(CycleTips());
     }
 
+
     IEnumerator FakeLoading()
-    {
-        while (loadingSlider != null && loadingSlider.value < 1f)
         {
-            loadingSlider.value = Mathf.Clamp01(
-                loadingSlider.value + loadSpeed * Time.deltaTime);
+            while (loadingSlider != null && loadingSlider.value < 1f)
+            {
+                loadingSlider.value = Mathf.Clamp01(
+                    loadingSlider.value + loadSpeed * Time.deltaTime
+                );
 
-            yield return null;
+                yield return null;
+            }
+
+            while (resourceLoading == null)
+            {
+                resourceLoading = FindFirstObjectByType<ResourceLoading>();
+                yield return null;
+            }
+
+            while (!resourceLoading.IsCheckDone)
+                yield return null;
+
+            isLoadingDone = true;
+
+            if (resourceLoading.IsSessionValid)
+            {
+                Debug.Log("[LoadingManager] Fake Loading à¹€à¸ªà¸£à¹‡à¸ˆ â†’ loading");
+                SceneManager.LoadScene("loading");
+            }
+            else
+            {
+                Debug.Log("[LoadingManager] Fake Loading à¹€à¸ªà¸£à¹‡à¸ˆ â†’ signup");
+                SceneManager.LoadScene("signup");
+            }
         }
 
-        // ÃÍãËéµÃÇ¨ Session àÊÃç¨´éÇÂ
-        while (resourceLoading != null &&
-               !resourceLoading.IsCheckDone)
-        {
-            yield return null;
-        }
-
-        isLoadingDone = true;
-
-        if (resourceLoading.IsSessionValid)
-        {
-            SceneManager.LoadScene("loading");
-        }
-        else
-        {
-            SceneManager.LoadScene("signup");
-        }
-    }
 
     IEnumerator CycleTips()
     {

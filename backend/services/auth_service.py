@@ -107,9 +107,12 @@ class AuthService:
         if existing_user:
             # บัญชีเดิม: Login เท่านั้น
             try:
-                result = supabase.auth.sign_in_with_password({
+                result = supabase.auth.sign_up({
                     "email": email,
                     "password": password,
+                    "options": {
+                        "email_redirect_to": "https://thiprada17.itch.io/platu-salmon"
+                    }
                 })
             except Exception as exc:
                 print(f"LOGIN ERROR: {type(exc).__name__}: {exc}")
