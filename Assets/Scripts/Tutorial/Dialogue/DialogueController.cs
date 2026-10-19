@@ -264,6 +264,7 @@ public class DialogueController : MonoBehaviour
             {
                 switch (step.TargetID)
                 {
+                    //============ MAP =============
                     //Country ICON
                     case global::TutorialTargetID.CountryIcon:
                         tempCanvas.ShowCountryIcon();
@@ -288,6 +289,52 @@ public class DialogueController : MonoBehaviour
                     //Day Navbar
                     case global::TutorialTargetID.Calendar:
                         tempCanvas.ShowDay();
+                        break;
+
+                    //============ USA - MAIN GAME =============
+                    //Coffee Grinder
+                    case global::TutorialTargetID.CoffeeGrinder:
+                        tempCanvas.ShowCoffeeGrinder();
+                        break;
+
+                    //Espresso Machine
+                    case global::TutorialTargetID.EspressoMachine:
+                        tempCanvas.ShowEspressoMachine();
+                        break;
+
+                    //Milk
+                    case global::TutorialTargetID.Milk:
+                        tempCanvas.ShowMilk();
+                        break;
+
+                    //Cocoa
+                    case global::TutorialTargetID.Cocoa:
+                        tempCanvas.ShowCocoa();
+                        break;
+
+                    //Coffee Portfilter
+                    case global::TutorialTargetID.CoffeePortfilter:
+                        tempCanvas.ShowCoffeePortfilter();
+                        break;
+
+                    //Cup
+                    case global::TutorialTargetID.Cup:
+                        tempCanvas.ShowCup();
+                        break;
+
+                    //Mat
+                    case global::TutorialTargetID.Mat:
+                        tempCanvas.ShowMat();
+                        break;
+
+                    //Sink
+                    case global::TutorialTargetID.Sink:
+                        tempCanvas.ShowSink();
+                        break;
+
+                    //Trash Bin
+                    case global::TutorialTargetID.TrashBin:
+                        tempCanvas.ShowTrashBin();
                         break;
 
                     default:
