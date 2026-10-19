@@ -5,10 +5,15 @@ using UnityEngine;
 
 public class OrderEarningPopup : MonoBehaviour
 {
+    [Header("Popup Panel")]
     [SerializeField] private GameObject panel;
+
+    [Header("Text References")]
     [SerializeField] private TMP_Text priceText;
     [SerializeField] private TMP_Text tipText;
     [SerializeField] private TMP_Text penaltyText;
+
+    [Header("Settings")]
     [SerializeField] private float displayDuration = 3f;
 
     private Coroutine hideCoroutine;
@@ -21,7 +26,15 @@ public class OrderEarningPopup : MonoBehaviour
 
     public void Show(int price, int tip, int penalty)
     {
-        int net = price + tip - penalty;
+        // This component must live on an active GameObject.
+        if (!isActiveAndEnabled)
+        {
+            Debug.LogWarning(
+                "OrderEarningPopup is inactive. " +
+                "Move this component to an active GameObject."
+            );
+            return;
+        }
 
         if (priceText != null)
             priceText.text = $"Price: {price}";
@@ -32,12 +45,16 @@ public class OrderEarningPopup : MonoBehaviour
         if (penaltyText != null)
             penaltyText.text = $"Pen: -{penalty}";
 
-
         if (panel != null)
             panel.SetActive(true);
+        else
+            Debug.LogWarning("OrderEarningPopup: Panel is not assigned.");
 
         if (hideCoroutine != null)
+        {
             StopCoroutine(hideCoroutine);
+            hideCoroutine = null;
+        }
 
         hideCoroutine = StartCoroutine(HideAfterDelay());
     }
@@ -50,5 +67,14 @@ public class OrderEarningPopup : MonoBehaviour
             panel.SetActive(false);
 
         hideCoroutine = null;
+    }
+
+    private void OnDisable()
+    {
+        if (hideCoroutine != null)
+        {
+            StopCoroutine(hideCoroutine);
+            hideCoroutine = null;
+        }
     }
 }

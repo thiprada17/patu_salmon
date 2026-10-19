@@ -337,6 +337,11 @@ public class DialogueController : MonoBehaviour
                         tempCanvas.ShowTrashBin();
                         break;
 
+                    //Recipe Popup
+                    case global::TutorialTargetID.RecipePopup:
+                        tempCanvas.ShowRecipePopup();
+                        break;
+
                     default:
                         tempCanvas.HideAll();
                         break;

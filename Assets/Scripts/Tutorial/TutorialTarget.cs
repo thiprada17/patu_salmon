@@ -28,9 +28,10 @@ public enum TutorialTargetID
     Mat,
     Sink,
     TrashBin,
+    RecipePopup,
 
 
-    //Tab Bar
+    //Main Game Tab Bar
     Map,
     Setting,
     RecipeBook,

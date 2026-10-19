@@ -498,6 +498,7 @@ GameObject:
   - component: {fileID: 132248844}
   - component: {fileID: 132248843}
   - component: {fileID: 132248842}
+  - component: {fileID: 132248845}
   m_Layer: 5
   m_Name: MapButton
   m_TagString: Untagged
@@ -618,6 +619,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 132248840}
   m_CullTransparentMesh: 1
+--- !u!114 &132248845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 132248840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5124da06bbbdf4d4db4519b22defd09a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetID: 21
 --- !u!1 &144742369
 GameObject:
   m_ObjectHideFlags: 0
@@ -2221,6 +2235,7 @@ GameObject:
   - component: {fileID: 406941672}
   - component: {fileID: 406941671}
   - component: {fileID: 406941670}
+  - component: {fileID: 406941673}
   m_Layer: 5
   m_Name: BulbButton
   m_TagString: Untagged
@@ -2341,6 +2356,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 406941668}
   m_CullTransparentMesh: 1
+--- !u!114 &406941673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 406941668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5124da06bbbdf4d4db4519b22defd09a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetID: 24
 --- !u!1 &412543782
 GameObject:
   m_ObjectHideFlags: 0
@@ -5284,6 +5312,11 @@ MonoBehaviour:
   - Mat
   - Sink
   - Trash Bin
+  - Map
+  - Setting
+  - Recipe Book
+  - Recipe Popup
+  - Light Bulb
   dialogueSequence:
   - entryType: 0
     normalDialogueIndex: 0
@@ -5321,6 +5354,21 @@ MonoBehaviour:
   - entryType: 1
     normalDialogueIndex: 11
     tutorialStep: {fileID: 11400000, guid: 4fa2d08fb14d26e4eaa7b161630f2d15, type: 2}
+  - entryType: 1
+    normalDialogueIndex: 12
+    tutorialStep: {fileID: 11400000, guid: 5130d918c8f1c704fb10f60bd94123dd, type: 2}
+  - entryType: 1
+    normalDialogueIndex: 13
+    tutorialStep: {fileID: 11400000, guid: 308844c343e4b264988a77af68ee2126, type: 2}
+  - entryType: 1
+    normalDialogueIndex: 14
+    tutorialStep: {fileID: 11400000, guid: 29894d8e6880c0f42b940f8f50ffb1f2, type: 2}
+  - entryType: 1
+    normalDialogueIndex: 15
+    tutorialStep: {fileID: 11400000, guid: 7ec6eca379910384ea9d6f62c5d7e072, type: 2}
+  - entryType: 1
+    normalDialogueIndex: 16
+    tutorialStep: {fileID: 11400000, guid: 6e56f91398d1fba46ac6f3e30b2604cb, type: 2}
   typingSpeed: 0.025
   autoAdvanceDelay: 2.5
   tutorialVisuals: {fileID: 594821748}
@@ -5476,6 +5524,7 @@ GameObject:
   - component: {fileID: 680128323}
   - component: {fileID: 680128322}
   - component: {fileID: 680128321}
+  - component: {fileID: 680128324}
   m_Layer: 5
   m_Name: recipe book
   m_TagString: Untagged
@@ -5596,6 +5645,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 680128319}
   m_CullTransparentMesh: 1
+--- !u!114 &680128324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 680128319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5124da06bbbdf4d4db4519b22defd09a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetID: 23
 --- !u!1 &682437505
 GameObject:
   m_ObjectHideFlags: 0
@@ -6438,6 +6500,7 @@ GameObject:
   - component: {fileID: 793073746}
   - component: {fileID: 793073745}
   - component: {fileID: 793073744}
+  - component: {fileID: 793073747}
   m_Layer: 5
   m_Name: SettingButton
   m_TagString: Untagged
@@ -6558,6 +6621,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 793073742}
   m_CullTransparentMesh: 1
+--- !u!114 &793073747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 793073742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5124da06bbbdf4d4db4519b22defd09a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetID: 22
 --- !u!1 &807658077
 GameObject:
   m_ObjectHideFlags: 0
@@ -8074,6 +8150,7 @@ RectTransform:
   - {fileID: 383943911}
   - {fileID: 761139902}
   - {fileID: 1691078993}
+  - {fileID: 1057515670}
   m_Father: {fileID: 592556040}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -8463,6 +8540,95 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &1057515669
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1057515670}
+  - component: {fileID: 1057515672}
+  - component: {fileID: 1057515671}
+  - component: {fileID: 1057515673}
+  m_Layer: 0
+  m_Name: RecipePopup
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &1057515670
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1057515669}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 995540029}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 2.3, y: 82.6}
+  m_SizeDelta: {x: 1151, y: 1531.8}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1057515671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1057515669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 0cc663abf2a4bde4dbf7cf3b00c47b00, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1057515672
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1057515669}
+  m_CullTransparentMesh: 1
+--- !u!114 &1057515673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1057515669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5124da06bbbdf4d4db4519b22defd09a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetID: 20
 --- !u!1 &1066380177
 GameObject:
   m_ObjectHideFlags: 0
@@ -11876,6 +12042,7 @@ MonoBehaviour:
   Mat: {fileID: 383943910}
   Sink: {fileID: 761139901}
   TrashBin: {fileID: 1691078992}
+  RecipePopup: {fileID: 1057515669}
 --- !u!4 &1734783837
 Transform:
   m_ObjectHideFlags: 0

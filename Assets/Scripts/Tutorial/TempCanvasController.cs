@@ -21,6 +21,8 @@ public class TempCanvasController : MonoBehaviour
     [SerializeField] private GameObject Sink;
     [SerializeField] private GameObject TrashBin;
 
+    [SerializeField] private GameObject RecipePopup;
+
     private void Awake()
     {
         HideAll();
@@ -69,6 +71,9 @@ public class TempCanvasController : MonoBehaviour
 
         if(TrashBin != null)
             TrashBin.SetActive(false);
+
+        if (RecipePopup != null)
+            RecipePopup.SetActive(false);
     }
 
     //Map Element
@@ -216,5 +221,15 @@ public class TempCanvasController : MonoBehaviour
             TrashBin.SetActive(true);
         else
             Debug.LogWarning("Trash Bin is not assigned.");
+    }
+
+    public void ShowRecipePopup()
+    {
+        HideAll();
+
+        if (RecipePopup != null)
+            RecipePopup.SetActive(true);
+        else
+            Debug.LogWarning("Recipe Popup is not assigned.");
     }
 }
