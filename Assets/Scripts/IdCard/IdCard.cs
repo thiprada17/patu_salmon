@@ -131,6 +131,7 @@ public class IdCard : MonoBehaviour
             {
                 Debug.Log("Player data sent successfully!");
                 StartCoroutine(PunchThenGo());
+                SceneFader.LoadScene(nextScene);
             },
             onError: err =>
             {
@@ -146,7 +147,7 @@ public class IdCard : MonoBehaviour
         Vector3 big = b * punchScale;
         yield return ScaleTo(b, big, punchTime * 0.4f);
         yield return ScaleTo(big, b, punchTime * 0.6f);
-        SceneFader.LoadScene(nextScene);
+  
     }
 
     IEnumerator ScaleTo(Vector3 from, Vector3 to, float time)
