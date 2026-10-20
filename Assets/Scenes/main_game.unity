@@ -13999,6 +13999,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2018560226}
     m_Modifications:
+    - target: {fileID: 1420449113316906600, guid: abc072d4e99bc474fa3f694521990322, type: 3}
+      propertyPath: variantCount
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 2470295912544540385, guid: abc072d4e99bc474fa3f694521990322, type: 3}
       propertyPath: m_Name
       value: Cats
