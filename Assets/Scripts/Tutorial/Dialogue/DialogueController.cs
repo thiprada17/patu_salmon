@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 using System.Collections;
+using UnityEngine.Events;
 
 public class DialogueController : MonoBehaviour
 {
@@ -69,7 +70,14 @@ public class DialogueController : MonoBehaviour
     [SerializeField] private GameObject mysteriousFox;
 
     [Header("Tutorial Pause")]
+    [Tooltip("Pause gameplay time while this dialogue is active.")]
     [SerializeField] private bool pauseGameDuringDialogue = true;
+
+    [Tooltip("Keep gameplay paused and counter interactions locked after this dialogue ends. Enable this in Main_Game when TutorialVDO opens afterward.")]
+    [SerializeField] private bool keepGameplayLockedAfterDialogue = false;
+
+    [Header("Dialogue End Event")]
+    [SerializeField] private UnityEvent onDialogueEnded;
 
     private int currentLine;
     private bool autoMode;
@@ -85,7 +93,8 @@ public class DialogueController : MonoBehaviour
 
     private string PlayerUsername;
 
-    private bool wasGamePausedByDialogue = false;
+    private bool wasGamePausedByDialogue;
+    private float previousTimeScale = 1f;
 
     private void Awake()
     {
@@ -124,6 +133,10 @@ public class DialogueController : MonoBehaviour
 
         PlayerUsername = PlayerPrefs.GetString("Username", "Player");
 
+        // Lock counter objects for the entire dialogue.
+        GameplayInputLock.Lock();
+
+        // Pause the game if this option is enabled.
         PauseGameForDialogue();
 
         if (tutorialOverlay != null)
@@ -138,8 +151,7 @@ public class DialogueController : MonoBehaviour
         ShowDialogue();
     }
 
-
-    // Locks map clicks while the dialogue sequence is active.
+    // Used by other scripts to check whether dialogue is active.
     public bool IsTutorialInputLocked()
     {
         return dialogueStarted;
@@ -192,6 +204,7 @@ public class DialogueController : MonoBehaviour
         if (entry == null)
         {
             isTutorial = false;
+
             Debug.LogWarning(
                 "Dialogue Sequence entry is empty at index " + currentLine
             );
@@ -207,9 +220,7 @@ public class DialogueController : MonoBehaviour
             ", Entry Type: " + entry.EntryType
         );
 
-        TutorialStepData step = isTutorial
-            ? entry.TutorialStep
-            : null;
+        TutorialStepData step = isTutorial ? entry.TutorialStep : null;
 
         string line;
 
@@ -264,80 +275,66 @@ public class DialogueController : MonoBehaviour
             {
                 switch (step.TargetID)
                 {
-                    //============ MAP =============
-                    //Country ICON
+                    // ============ MAP ============
+
                     case global::TutorialTargetID.CountryIcon:
                         tempCanvas.ShowCountryIcon();
                         break;
 
-                    //Country Popup
                     case global::TutorialTargetID.CountryWindow:
                         tempCanvas.ShowCountryPopup();
                         break;
 
-
-                    //Country Glow Popup
                     case global::TutorialTargetID.StartShift:
                         tempCanvas.ShowCountryPopupGlow();
                         break;
 
-                    //Coin Navbar
                     case global::TutorialTargetID.Wallet:
                         tempCanvas.ShowCoin();
                         break;
 
-                    //Day Navbar
                     case global::TutorialTargetID.Calendar:
                         tempCanvas.ShowDay();
                         break;
 
-                    //============ USA - MAIN GAME =============
-                    //Coffee Grinder
+                    // ============ MAIN GAME ============
+
                     case global::TutorialTargetID.CoffeeGrinder:
                         tempCanvas.ShowCoffeeGrinder();
                         break;
 
-                    //Espresso Machine
                     case global::TutorialTargetID.EspressoMachine:
                         tempCanvas.ShowEspressoMachine();
                         break;
 
-                    //Milk
                     case global::TutorialTargetID.Milk:
                         tempCanvas.ShowMilk();
                         break;
 
-                    //Cocoa
                     case global::TutorialTargetID.Cocoa:
                         tempCanvas.ShowCocoa();
                         break;
 
-                    //Coffee Portfilter
                     case global::TutorialTargetID.CoffeePortfilter:
                         tempCanvas.ShowCoffeePortfilter();
                         break;
 
-                    //Cup
                     case global::TutorialTargetID.Cup:
                         tempCanvas.ShowCup();
                         break;
 
-                    //Mat
                     case global::TutorialTargetID.Mat:
                         tempCanvas.ShowMat();
                         break;
 
-                    //Sink
                     case global::TutorialTargetID.Sink:
                         tempCanvas.ShowSink();
                         break;
 
-                    //Trash Bin
                     case global::TutorialTargetID.TrashBin:
                         tempCanvas.ShowTrashBin();
                         break;
 
-                    //Recipe Popup
                     case global::TutorialTargetID.RecipePopup:
                         tempCanvas.ShowRecipePopup();
                         break;
@@ -349,9 +346,7 @@ public class DialogueController : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning(
-                    "TempCanvas is NOT assigned!"
-                );
+                Debug.LogWarning("TempCanvas is NOT assigned!");
             }
         }
         else
@@ -359,10 +354,9 @@ public class DialogueController : MonoBehaviour
             HideTutorialObjects();
         }
 
-        // Hide only the 2D speaker model when requested by a Tutorial entry.
-        bool hideSpeakerModel = isTutorial &&
-                                step != null &&
-                                step.HideSpeaker;
+        // Hide the speaker model when requested by the tutorial step.
+        bool hideSpeakerModel =
+            isTutorial && step != null && step.HideSpeaker;
 
         if (speakerModel != null)
             speakerModel.SetActive(!hideSpeakerModel);
@@ -478,9 +472,7 @@ public class DialogueController : MonoBehaviour
     private void UpdateAutoButton()
     {
         if (autoButtonText != null)
-        {
             autoButtonText.text = autoMode ? "PLAYING" : "AUTO";
-        }
 
         if (autoButtonImage != null)
         {
@@ -522,22 +514,18 @@ public class DialogueController : MonoBehaviour
 
     private void EndDialogue()
     {
-        StopTyping();
-        StopAutoAdvance();
+        StopAllCoroutines();
 
         dialogueStarted = false;
-        isTutorial = false;
-        autoMode = false;
-
-        UpdateAutoButton();
-        RestoreDialoguePosition();
-        HideTutorialObjects();
-
-        if (dialogueRoot != null)
-            dialogueRoot.SetActive(false);
+        isTyping = false;
+        autoCoroutine = null;
+        typingCoroutine = null;
 
         if (tutorialOverlay != null)
             tutorialOverlay.SetActive(false);
+
+        if (dialogueRoot != null)
+            dialogueRoot.SetActive(false);
 
         if (advanceButton != null)
             advanceButton.gameObject.SetActive(false);
@@ -545,7 +533,58 @@ public class DialogueController : MonoBehaviour
         if (mysteriousFox != null)
             mysteriousFox.SetActive(false);
 
-        ResumeGameAfterDialogue();
+        HideTutorialObjects();
+
+        // Notify listeners first. TutorialTransition will pause the game
+        // when it opens TutorialVDO.
+        onDialogueEnded?.Invoke();
+
+        // Keep the existing option for other dialogues that need a gameplay lock.
+        if (!keepGameplayLockedAfterDialogue)
+        {
+            GameplayInputLock.Unlock();
+            ResumeGameAfterDialogue();
+        }
+    }
+
+    private void PauseGameForDialogue()
+    {
+        if (!pauseGameDuringDialogue)
+        {
+            Debug.LogWarning(
+                "Pause Game During Dialogue is disabled. " +
+                "Gameplay input will still be locked."
+            );
+
+            return;
+        }
+
+        previousTimeScale = Time.timeScale;
+
+        if (Time.timeScale != 0f)
+        {
+            Time.timeScale = 0f;
+            wasGamePausedByDialogue = true;
+        }
+        else
+        {
+            // The game was already paused before this dialogue.
+            wasGamePausedByDialogue = false;
+        }
+
+        Debug.Log(
+            "Dialogue pause called. Time scale = " + Time.timeScale +
+            ", Gameplay locked = " + GameplayInputLock.IsLocked
+        );
+    }
+
+    private void ResumeGameAfterDialogue()
+    {
+        if (wasGamePausedByDialogue)
+        {
+            Time.timeScale = previousTimeScale;
+            wasGamePausedByDialogue = false;
+        }
     }
 
     private void OnDestroy()
@@ -558,33 +597,5 @@ public class DialogueController : MonoBehaviour
 
         if (autoButton != null)
             autoButton.onClick.RemoveListener(ToggleAutoMode);
-    }
-
-
-    private void PauseGameForDialogue()
-    {
-        if (!pauseGameDuringDialogue)
-        {
-            Debug.LogWarning("Pause disabled in Inspector!");
-            return;
-        }
-
-        if (Time.timeScale > 0f)
-        {
-            Time.timeScale = 0f;
-            wasGamePausedByDialogue = true;
-        }
-
-        Debug.Log("Dialogue pause called. Time scale = " + Time.timeScale);
-    }
-
-
-    private void ResumeGameAfterDialogue()
-    {
-        if (wasGamePausedByDialogue)
-        {
-            Time.timeScale = 1f;
-            wasGamePausedByDialogue = false;
-        }
     }
 }

@@ -1,11 +1,12 @@
+
 using UnityEngine;
 using System.Collections;
 
 public class Cocoa : MonoBehaviour
 {
     private Cup currentCup;
-
     private bool isPumping = false;
+    private Coroutine pumpingCoroutine;
 
     [Header("Pump")]
     [SerializeField] private SpriteRenderer pumpNormal;
@@ -17,21 +18,17 @@ public class Cocoa : MonoBehaviour
 
     private void Start()
     {
-        if (pumpNormal != null)
-            pumpNormal.enabled = true;
-
-        if (pumpPressed != null)
-            pumpPressed.enabled = false;
-
-        if (cocoaAnimation != null)
-            cocoaAnimation.enabled = false;
+        ResetPumpVisuals();
     }
+
     public void AttachCup(Cup cup)
     {
+        if (GameplayInputLock.IsLocked)
+            return;
+
         currentCup = cup;
         GameLogger.DebugLog("Cocoa", "Cup attached to Cocoa");
     }
-
 
     public void RemoveCup(Cup cup)
     {
@@ -42,10 +39,11 @@ public class Cocoa : MonoBehaviour
         }
     }
 
-
     private void OnMouseDown()
     {
-        // เช็กว่ามี Cup
+        if (GameplayInputLock.IsLocked)
+            return;
+
         if (currentCup == null)
         {
             GameLogger.Warn("Cocoa", "ยังไม่ได้ใส่ Cup");
@@ -54,69 +52,104 @@ public class Cocoa : MonoBehaviour
 
         if (isPumping)
         {
-            GameLogger.DebugLog("Cocoa", "cocoa waiting");
+            GameLogger.DebugLog("Cocoa", "Cocoa is pumping, please wait");
             return;
         }
 
-        StartCoroutine(PumpCocoa());
+        pumpingCoroutine = StartCoroutine(PumpCocoa());
     }
 
     private IEnumerator PumpCocoa()
     {
         isPumping = true;
 
-        // เปลี่ยน Pump เป็นรูปกด
+        Cup targetCup = currentCup;
+
         if (pumpNormal != null)
             pumpNormal.enabled = false;
 
         if (pumpPressed != null)
             pumpPressed.enabled = true;
 
-        // แสดง Milk Animation
         if (cocoaAnimation != null)
             cocoaAnimation.enabled = true;
 
-        // เปิด Animator
         if (cocoaAnimator != null)
         {
             cocoaAnimator.enabled = true;
-
-            // เริ่ม Animation ที่ Key แรก
             cocoaAnimator.Play("cocoaanimation", 0, 0f);
-
-            // บังคับให้ Animator อัปเดตทันที
             cocoaAnimator.Update(0f);
         }
 
-        // รอ Animation
-        yield return new WaitForSeconds(1.3f);
+        float elapsed = 0f;
+        const float pumpDuration = 1.3f;
 
-        // เพิ่ม Milk เข้า Cup
-        if (currentCup != null)
+        while (elapsed < pumpDuration)
         {
-            bool success = currentCup.AddIngredient(IngredientType.Cocoa);
+            // Cancel dispensing if the tutorial begins.
+            if (GameplayInputLock.IsLocked)
+            {
+                ResetPumpVisuals();
+                isPumping = false;
+                pumpingCoroutine = null;
+                yield break;
+            }
 
-            if (success)
-                GameLogger.DebugLog("Cocoa", "Cocoa added to Cup");
-            else
-                GameLogger.DebugLog("Cocoa", "ไม่สามารถใส่ cocoa ลง Cup ได้");
+            elapsed += Time.deltaTime;
+            yield return null;
         }
 
-        // ซ่อน Animation
-        if (cocoaAnimation != null)
-            cocoaAnimation.enabled = false;
+        // Only add cocoa if the same cup remains attached
+        // and gameplay is still unlocked.
+        if (!GameplayInputLock.IsLocked &&
+            targetCup != null &&
+            currentCup == targetCup)
+        {
+            bool success = targetCup.AddIngredient(IngredientType.Cocoa);
 
-        // ปิด Animator เพื่อไม่ให้ Animation เล่นต่อ
-        if (cocoaAnimator != null)
-            cocoaAnimator.enabled = false;
+            if (success)
+            {
+                GameLogger.DebugLog("Cocoa", "Cocoa added to Cup");
+            }
+            else
+            {
+                GameLogger.DebugLog(
+                    "Cocoa",
+                    "ไม่สามารถใส่ cocoa ลง Cup ได้"
+                );
+            }
+        }
 
-        // กลับ Pump ปกติ
-        if (pumpPressed != null)
-            pumpPressed.enabled = false;
+        ResetPumpVisuals();
 
+        isPumping = false;
+        pumpingCoroutine = null;
+    }
+
+    private void ResetPumpVisuals()
+    {
         if (pumpNormal != null)
             pumpNormal.enabled = true;
 
+        if (pumpPressed != null)
+            pumpPressed.enabled = false;
+
+        if (cocoaAnimation != null)
+            cocoaAnimation.enabled = false;
+
+        if (cocoaAnimator != null)
+            cocoaAnimator.enabled = false;
+    }
+
+    private void OnDisable()
+    {
+        if (pumpingCoroutine != null)
+        {
+            StopCoroutine(pumpingCoroutine);
+            pumpingCoroutine = null;
+        }
+
         isPumping = false;
+        ResetPumpVisuals();
     }
 }

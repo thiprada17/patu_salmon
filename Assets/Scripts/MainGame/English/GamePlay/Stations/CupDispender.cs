@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿
+using System.Collections.Generic;
 using UnityEngine;
 
 public class CupDispenser : MonoBehaviour
@@ -16,24 +17,28 @@ public class CupDispenser : MonoBehaviour
 
     private List<Cup> spawnedCups = new List<Cup>();
 
-
     private Cup leftCup;
     private Cup rightCup;
 
-
-    private Dictionary<Cup, string> spawnSide = new Dictionary<Cup, string>();
-
+    private Dictionary<Cup, string> spawnSide =
+        new Dictionary<Cup, string>();
 
     private void OnMouseDown()
     {
+        // Block cup spawning during dialogue/tutorial.
+        if (GameplayInputLock.IsLocked)
+            return;
+
         CleanupCups();
 
         if (spawnedCups.Count >= 2)
         {
-            GameLogger.DebugLog("CupDis", "มี Cup ครบ 2 ใบแล้ว");
+            GameLogger.DebugLog(
+                "CupDis",
+                "มี Cup ครบ 2 ใบแล้ว"
+            );
             return;
         }
-
 
         if (spawnedCups.Count == 0)
         {
@@ -41,25 +46,21 @@ public class CupDispenser : MonoBehaviour
             return;
         }
 
-
         Cup existingCup = spawnedCups[0];
-
 
         if (leftCup == existingCup)
         {
-            // Left มีแล้ว spawn Right
+            // Left already has a cup; spawn on the right.
             SpawnCup(RspawnPoint, "R");
             return;
         }
 
-
         if (rightCup == existingCup)
         {
-            // Right มีแล้ว Spawn Left
+            // Right already has a cup; spawn on the left.
             SpawnCup(LspawnPoint, "L");
             return;
         }
-
 
         if (spawnSide.ContainsKey(existingCup))
         {
@@ -67,40 +68,42 @@ public class CupDispenser : MonoBehaviour
 
             if (previousSide == "L")
             {
-                // Cup เดิมเกิดจาก Left
-                // Cup ใหม่เกิด Right
                 SpawnCup(RspawnPoint, "R");
                 return;
             }
 
-
             if (previousSide == "R")
             {
-                // Cup เดิมเกิดจาก Right
-                // Cup ใหม่เกิด Left
                 SpawnCup(LspawnPoint, "L");
                 return;
             }
         }
 
-        GameLogger.Warn("CupDis", "ไม่สามารถระบุ Slot ของ Cup เดิมได้");
+        GameLogger.Warn(
+            "CupDis",
+            "ไม่สามารถระบุ Slot ของ Cup เดิมได้"
+        );
     }
 
     private void SpawnCup(Transform spawnPoint, string side)
     {
         if (cupPrefab == null)
         {
-            GameLogger.Warn("CupDis", "ยังไม่ได้ใส่ Cup Prefab");
+            GameLogger.Warn(
+                "CupDis",
+                "ยังไม่ได้ใส่ Cup Prefab"
+            );
             return;
         }
-
 
         if (spawnPoint == null)
         {
-            GameLogger.Warn("CupDis", "ยังไม่ได้ใส่ Spawn Point");
+            GameLogger.Warn(
+                "CupDis",
+                "ยังไม่ได้ใส่ Spawn Point"
+            );
             return;
         }
-
 
         GameObject newCup = Instantiate(
             cupPrefab,
@@ -108,13 +111,14 @@ public class CupDispenser : MonoBehaviour
             spawnPoint.rotation
         );
 
-
         Cup cup = newCup.GetComponent<Cup>();
-
 
         if (cup == null)
         {
-            GameLogger.Warn("CupDis", "Cup Prefab ไม่มี Cup Component");
+            GameLogger.Warn(
+                "CupDis",
+                "Cup Prefab ไม่มี Cup Component"
+            );
             Destroy(newCup);
             return;
         }
@@ -123,10 +127,9 @@ public class CupDispenser : MonoBehaviour
         spawnSide[cup] = side;
     }
 
-
     public void OccupySlot(string slot, Cup cup)
     {
-        if (cup == null)
+        if (GameplayInputLock.IsLocked || cup == null)
             return;
 
         if (slot == "L")
@@ -139,64 +142,48 @@ public class CupDispenser : MonoBehaviour
         }
     }
 
-
     public void ReleaseSlot(string slot, Cup cup)
     {
-        if (cup == null)  return;
-
+        if (cup == null)
+            return;
 
         if (slot == "L")
         {
-            // ต้องเป็น Cup ตัวเดียวกัน
             if (leftCup == cup)
-            {
                 leftCup = null;
-            }
         }
         else if (slot == "R")
         {
-            // ต้องเป็น Cup ตัวเดียวกัน
             if (rightCup == cup)
-            {
                 rightCup = null;
-            }
         }
     }
 
     private void CleanupCups()
     {
-        // ลบ Cup ที่ถูก Destroy
+        // Remove destroyed cups.
         spawnedCups.RemoveAll(cup => cup == null);
 
-
-        // ลบ reference ที่ถูก Destroy
+        // Clear references to destroyed cups.
         if (leftCup == null)
-        {
             leftCup = null;
-        }
 
         if (rightCup == null)
-        {
             rightCup = null;
-        }
 
-
-        // ลบข้อมูล Spawn Side ของ Cup ที่หายไป
+        // Remove spawn-side data for destroyed cups.
         List<Cup> keysToRemove = new List<Cup>();
 
         foreach (Cup cup in spawnSide.Keys)
         {
             if (cup == null)
-            {
                 keysToRemove.Add(cup);
-            }
         }
 
         foreach (Cup cup in keysToRemove)
         {
             spawnSide.Remove(cup);
         }
-
     }
 
     public bool IsSlotOccupied(string slot)

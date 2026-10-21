@@ -1,5 +1,7 @@
 
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.Video;
 using TMPro;
@@ -30,7 +32,6 @@ public class TutorialVideoCarousel : MonoBehaviour
 
     [Header("UI References")]
     [SerializeField] private Image sectionTitle;
-    //[SerializeField] private TMP_Text stepTitle;
     [SerializeField] private TMP_Text descriptionText;
 
     [Header("Page Dots - UI Images")]
@@ -49,14 +50,37 @@ public class TutorialVideoCarousel : MonoBehaviour
     [SerializeField] private GameObject tutorialPopup;
     [SerializeField] private GameObject dimBackground;
 
+    [Header("Scene Settings")]
+    [SerializeField] private string tutorialSceneName = "TutorialVDO";
+    [SerializeField] private string mainSceneName = "main_game";
+
     private int currentTopicIndex = 0;
     private int currentVideoIndex = 0;
+
+    private float previousTimeScale = 1f;
+    private bool isClosing = false;
+
+    private void Awake()
+    {
+        // Remember the previous time scale.
+        previousTimeScale = Time.timeScale;
+
+        // Pause gameplay and block gameplay input.
+        Time.timeScale = 0f;
+        GameplayInputLock.Lock();
+
+        Debug.Log(
+            "[Tutorial] TutorialVDO opened. Gameplay paused and input locked."
+        );
+    }
 
     private void Start()
     {
         if (topics == null || topics.Length == 0)
         {
-            Debug.LogError("TutorialVideoCarousel: No topics assigned.", this);
+            Debug.LogError(
+                "[Tutorial] No tutorial topics assigned.", this
+            );
             return;
         }
 
@@ -65,6 +89,9 @@ public class TutorialVideoCarousel : MonoBehaviour
 
     public void NextPage()
     {
+        if (isClosing)
+            return;
+
         TutorialTopic topic = GetCurrentTopic();
 
         if (!HasValidPages(topic))
@@ -74,22 +101,25 @@ public class TutorialVideoCarousel : MonoBehaviour
         {
             currentVideoIndex++;
             ShowPage();
+            return;
         }
-        else if (currentTopicIndex < topics.Length - 1)
+
+        if (currentTopicIndex < topics.Length - 1)
         {
             currentTopicIndex++;
             currentVideoIndex = 0;
             ShowPage();
+            return;
         }
-        else
-        {
-            // Final video of the final topic.
-            CloseTutorialPopup();
-        }
+
+        CloseTutorialScene();
     }
 
     public void PreviousPage()
     {
+        if (isClosing)
+            return;
+
         if (currentVideoIndex > 0)
         {
             currentVideoIndex--;
@@ -115,21 +145,18 @@ public class TutorialVideoCarousel : MonoBehaviour
 
     public void SkipTopic()
     {
-        if (topics == null || topics.Length == 0)
+        if (isClosing || topics == null || topics.Length == 0)
             return;
 
         if (currentTopicIndex < topics.Length - 1)
         {
-            // Jump to the next topic.
             currentTopicIndex++;
             currentVideoIndex = 0;
             ShowPage();
+            return;
         }
-        else
-        {
-            // No more topics: close the tutorial popup.
-            CloseTutorialPopup();
-        }
+
+        CloseTutorialScene();
     }
 
     private TutorialTopic GetCurrentTopic()
@@ -151,8 +178,8 @@ public class TutorialVideoCarousel : MonoBehaviour
             topic.pages.Length == 0)
         {
             Debug.LogWarning(
-                "TutorialVideoCarousel: Current topic has no video pages.",
-                this);
+                "[Tutorial] Current topic has no video pages.", this
+            );
 
             return false;
         }
@@ -169,29 +196,24 @@ public class TutorialVideoCarousel : MonoBehaviour
 
         if (currentVideoIndex < 0 ||
             currentVideoIndex >= topic.pages.Length)
+        {
+            Debug.LogWarning("[Tutorial] Invalid video page index.", this);
             return;
+        }
 
         VideoPage page = topic.pages[currentVideoIndex];
 
-        // Change the topic header image.
         if (sectionTitle != null)
         {
             sectionTitle.sprite = topic.headerSprite;
             sectionTitle.enabled = topic.headerSprite != null;
         }
 
-        // Change the title for each video.
-        //if (stepTitle != null)
-        //    stepTitle.text = page.title;
-
-        // Change the description only when the topic changes.
         if (descriptionText != null)
             descriptionText.text = topic.description;
 
-        // Update the page dots.
         UpdateDots(topic.pages.Length);
 
-        // Play the selected video.
         if (videoPlayer != null)
         {
             videoPlayer.Stop();
@@ -204,14 +226,18 @@ public class TutorialVideoCarousel : MonoBehaviour
             else
             {
                 Debug.LogWarning(
-                    $"Missing video clip: {topic.topicName}, " +
-                    $"page {currentVideoIndex + 1}.",
-                    this);
+                    "[Tutorial] Missing video clip in topic: "
+                    + topic.topicName
+                    + ", page: " + (currentVideoIndex + 1),
+                    this
+                );
             }
         }
         else
         {
-            Debug.LogWarning("Video Player is not assigned.", this);
+            Debug.LogWarning(
+                "[Tutorial] Video Player is not assigned.", this
+            );
         }
     }
 
@@ -245,6 +271,96 @@ public class TutorialVideoCarousel : MonoBehaviour
         if (dimBackground != null)
             dimBackground.SetActive(false);
 
-        Debug.Log("Tutorial carousel completed.");
+        Debug.Log("[Tutorial] Tutorial popup closed.");
+    }
+
+    private void CloseTutorialScene()
+    {
+        Debug.Log("[Tutorial] CloseTutorialScene called.");
+
+        if (isClosing)
+        {
+            Debug.Log("[Tutorial] Already closing.");
+            return;
+        }
+
+        isClosing = true;
+
+        // Keep gameplay paused until the tutorial is unloaded.
+        Time.timeScale = 0f;
+        GameplayInputLock.Lock();
+
+        StartCoroutine(UnloadTutorialScene());
+    }
+
+    private IEnumerator UnloadTutorialScene()
+    {
+        Debug.Log("[Tutorial] UnloadTutorialScene started.");
+
+        Scene tutorialScene =
+            SceneManager.GetSceneByName(tutorialSceneName);
+
+        Scene mainScene =
+            SceneManager.GetSceneByName(mainSceneName);
+
+        if (!tutorialScene.IsValid() || !tutorialScene.isLoaded)
+        {
+            Debug.LogWarning("[Tutorial] Tutorial scene is not loaded.");
+            ResumeGameplay();
+            yield break;
+        }
+
+        if (!mainScene.IsValid() || !mainScene.isLoaded)
+        {
+            Debug.LogError("[Tutorial] Main scene is not loaded.");
+            isClosing = false;
+            yield break;
+        }
+
+        if (!SceneManager.SetActiveScene(mainScene))
+        {
+            Debug.LogError("[Tutorial] Failed to activate main scene.");
+            isClosing = false;
+            yield break;
+        }
+
+        Debug.Log("[Tutorial] Main scene activated.");
+
+        AsyncOperation unloadOperation =
+            SceneManager.UnloadSceneAsync(tutorialSceneName);
+
+        if (unloadOperation == null)
+        {
+            Debug.LogError("[Tutorial] Unload operation is null.");
+            isClosing = false;
+            yield break;
+        }
+
+        unloadOperation.completed += operation =>
+        {
+            Debug.Log("[Tutorial] Unload completed. Resuming gameplay.");
+
+            ResumeGameplay();
+        };
+
+        yield break;
+    }
+
+    private void ResumeGameplay()
+    {
+        Debug.Log("[Tutorial] ResumeGameplay called.");
+
+        GameplayInputLock.Unlock();
+
+        // Restore the time scale captured when this component awoke.
+        Time.timeScale = previousTimeScale;
+
+        isClosing = false;
+
+        Debug.Log(
+            "[Tutorial] TutorialVDO unloaded. Gameplay resumed. "
+            + "Time scale: " + Time.timeScale
+            + ", Input locked: " + GameplayInputLock.IsLocked
+        );
     }
 }
