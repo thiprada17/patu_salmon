@@ -10,7 +10,7 @@ public class PauseManager : MonoBehaviour
 
     private void Start()
     {
-        // ตอนเริ่มเกมยังไม่ Pause
+
         Time.timeScale = 1f;
 
         if (pausePanel != null)

@@ -1,257 +1,292 @@
-﻿using UnityEngine;
-using UnityEngine.SceneManagement;
+﻿using System;
 using System.Collections;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
 
 public class CardSelect : MonoBehaviour
 {
-    [SerializeField] GameObject glow;
-    [SerializeField] string characterName;
-    [SerializeField] string nextScene = "idcard";
-    [SerializeField] float delay = 0.2f;
+    [Header("Character")]
+    [SerializeField] private string characterName = "salmon";
+    [SerializeField] private string nextScene = "idcard";
 
-    [Header("punch")]
-    [SerializeField] Transform card;
-    [SerializeField] float punchScale = 0.9f;
-    [SerializeField] float punchTime = 0.12f;
+    [Header("Selection")]
+    [SerializeField] private GameObject glow;
+    [SerializeField] private float delay = 0.2f;
 
-    [Header("animation center")]
-    [SerializeField] Vector3 centerPos = Vector3.zero;
-    [SerializeField] bool useScreenCenter = true;
-    [SerializeField] Vector2 centerOffset = Vector2.zero;
-    [SerializeField] Transform cardVisual;
-    [SerializeField] float moveTime = 0.6f;
-    [SerializeField] float zoomScale = 1.25f;
+    [Header("Card Animators")]
+    [SerializeField] private Animator salmonAnimator;
+    [SerializeField] private Animator platuAnimator;
 
-    [Header("animation in card")]
-    [SerializeField] Transform selectButton;
-    [SerializeField] float hideButtonTime = 0.2f;
-    [SerializeField] Transform contentRoot;
-    [SerializeField] Vector2 contentOffset = Vector2.zero;
+    [Header("Animation State Names")]
+    [SerializeField] private string salmonCenterState = "cardsalmon";
+    [SerializeField] private string platuCenterState = "cardplatu";
+    [SerializeField] private string salmonOutState = "cardsalmonout";
+    [SerializeField] private string platuOutState = "cardplatuout";
 
-    [Header("fade")]
-    [SerializeField] Transform[] otherStuff;
-    [SerializeField] float fadeOthers = 0.35f;
-    [SerializeField] float glowFadeTime = 0.25f;
+    [SerializeField] private float animTimeout = 10f;
 
-    [Header("cut")]
-    [SerializeField] float cutAtPercent = 0.85f;
+    private static CardSelect activeSelection;
+    private bool isSelecting;
 
-    static bool locked = false;
-
-    void Start()
+    private void Awake()
     {
-        locked = false;
-        if (glow != null) glow.SetActive(false);
+        if (glow != null)
+            glow.SetActive(false);
+
     }
 
-    void Update()
+    private void OnEnable()
     {
-        if (locked) return;
+        if (activeSelection != null && !activeSelection)
+            activeSelection = null;
+    }
 
-        // คลิกด้วยเมาส์
+    private void Update()
+    {
+        if (isSelecting || activeSelection != null)
+            return;
+
+        // Mobile touch
+        if (Touchscreen.current != null)
+        {
+            var touch = Touchscreen.current.primaryTouch;
+
+            if (touch.press.wasPressedThisFrame)
+            {
+                int touchId = touch.touchId.ReadValue();
+
+                if (EventSystem.current != null &&
+                    EventSystem.current.IsPointerOverGameObject(touchId))
+                    return;
+
+                TrySelect(touch.position.ReadValue());
+            }
+
+            return;
+        }
+
+        // PC mouse
         if (Mouse.current != null &&
             Mouse.current.leftButton.wasPressedThisFrame)
         {
+            if (EventSystem.current != null &&
+                EventSystem.current.IsPointerOverGameObject())
+                return;
+
             TrySelect(Mouse.current.position.ReadValue());
         }
-
-        // แตะหน้าจอมือถือ
-        if (Touchscreen.current != null &&
-            Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
-        {
-            TrySelect(
-                Touchscreen.current.primaryTouch.position.ReadValue()
-            );
-        }
     }
 
-    void TrySelect(Vector2 screenPosition)
+    private void TrySelect(Vector2 screenPosition)
     {
-        // ไม่เลือกการ์ดเมื่อแตะ UI
-        if (EventSystem.current != null &&
-            EventSystem.current.IsPointerOverGameObject())
-            return;
-
         Camera cam = Camera.main;
-        if (cam == null) return;
 
-        Vector2 worldPosition = cam.ScreenToWorldPoint(screenPosition);
+        if (cam == null)
+        {
+            GameLogger.Error("CardSelect", "Main Camera not found.");
+            return;
+        }
 
-        Collider2D hit = Physics2D.OverlapPoint(worldPosition);
+        Vector3 world = cam.ScreenToWorldPoint(
+            new Vector3(
+                screenPosition.x,
+                screenPosition.y,
+                Mathf.Abs(cam.transform.position.z)
+            )
+        );
 
-        if (hit == null || !hit.transform.IsChildOf(transform) &&
-            hit.transform != transform)
+        Collider2D hit = Physics2D.OverlapPoint(
+            new Vector2(world.x, world.y)
+        );
+
+        if (hit == null ||
+            (hit.transform != transform &&
+             !hit.transform.IsChildOf(transform)))
             return;
 
-        if (locked) return;
-        locked = true;
+        SelectCard();
+    }
 
-        if (glow != null) glow.SetActive(true);
+    // เรียกจากปุ่ม Select ใน Inspector ได้
+    public void SelectCard()
+    {
+        if (isSelecting || activeSelection != null)
+            return;
 
-        PlayerPrefs.SetString("SelectedCharacter", characterName);
+        if (salmonAnimator == null || platuAnimator == null)
+        {
+            GameLogger.Error(
+                "CardSelect",
+                "กรุณากำหนด Salmon Animator และ Platu Animator"
+            );
+            return;
+        }
+
+        bool isSalmon = characterName.Trim()
+            .Equals("salmon", StringComparison.OrdinalIgnoreCase);
+
+        bool isPlatu = characterName.Trim()
+            .Equals("platu", StringComparison.OrdinalIgnoreCase);
+
+        if (!isSalmon && !isPlatu)
+        {
+            GameLogger.Error(
+                "CardSelect",
+                "characterName ต้องเป็น salmon หรือ platu"
+            );
+            return;
+        }
+
+        activeSelection = this;
+        isSelecting = true;
+
+        PlayerPrefs.SetString(
+            "SelectedCharacter",
+            isSalmon ? "salmon" : "platu"
+        );
         PlayerPrefs.Save();
 
-        GameLogger.Info("CardSelect", "Selected character: " + characterName);
+        GameLogger.Info(
+            "CardSelect",
+            "Selected character: " + characterName
+        );
 
-        StartCoroutine(Punch(transform));
-        StartCoroutine(GoNext());
+        StartCoroutine(SelectRoutine(isSalmon));
     }
 
-    IEnumerator GoNext()
+    private IEnumerator SelectRoutine(bool isSalmon)
     {
+        if (glow != null)
+            glow.SetActive(true);
+
         yield return new WaitForSeconds(delay);
 
-        if (otherStuff != null)
+        string salmonState = isSalmon
+            ? salmonCenterState
+            : salmonOutState;
+
+        string platuState = isSalmon
+            ? platuOutState
+            : platuCenterState;
+
+        // สั่งเล่นแอนิเมชันทั้งสองการ์ดในเฟรมเดียวกัน
+        if (!PlayState(salmonAnimator, salmonState))
         {
-            foreach (var t in otherStuff)
-                if (t != null) StartCoroutine(FadeGroup(t, fadeOthers));
-        }
-
-        if (glow != null)
-            StartCoroutine(FadeGroup(glow.transform, glowFadeTime));
-
-        if (selectButton != null)
-            StartCoroutine(FadeGroup(selectButton, hideButtonTime));
-
-        StartCoroutine(ArrangeContent());
-
-        if (card == null)
-        {
-            SceneManager.LoadScene(nextScene);
+            CancelSelection();
             yield break;
         }
 
-        Vector3 fromPos = card.position;
-        Vector3 toPos;
-
-        if (useScreenCenter)
+        if (!PlayState(platuAnimator, platuState))
         {
-            Vector3 c = Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, 0f));
-            Vector3 wanted = new Vector3(c.x + centerOffset.x, c.y + centerOffset.y, fromPos.z);
-            Vector3 diff = (cardVisual != null) ? card.position - cardVisual.position : Vector3.zero;
-            toPos = wanted + diff;
+            CancelSelection();
+            yield break;
+        }
+
+        // รอจนกว่าแอนิเมชันทั้งสองจะเล่นจบ
+        yield return WaitForAnimations(salmonState, platuState);
+
+        LoadNextScene();
+    }
+
+    private bool PlayState(Animator animator, string stateName)
+    {
+        int stateHash = Animator.StringToHash(stateName);
+
+        if (!animator.HasState(0, stateHash))
+        {
+            GameLogger.Error(
+                "CardSelect",
+                "ไม่พบ Animation State: " + stateName
+            );
+            return false;
+        }
+
+        animator.Play(stateHash, 0, 0f);
+        return true;
+    }
+
+    private IEnumerator WaitForAnimations(
+        string salmonState,
+        string platuState)
+    {
+        // ให้ Animator อัปเดตสถานะหลังจากสั่ง Play
+        yield return null;
+
+        float elapsed = 0f;
+
+        while (elapsed < animTimeout)
+        {
+            bool salmonDone = IsAnimationFinished(salmonAnimator, salmonState);
+            bool platuDone = IsAnimationFinished(platuAnimator, platuState);
+
+            if (salmonDone && platuDone)
+                yield break;
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        GameLogger.Warn(
+            "CardSelect",
+            "Animation wait timed out. Loading next scene."
+        );
+    }
+
+    private bool IsAnimationFinished(
+        Animator animator,
+        string stateName)
+    {
+        if (animator == null)
+            return true;
+
+        AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
+
+        if (!state.IsName(stateName))
+            return false;
+
+        return state.normalizedTime >= 1f &&
+               !animator.IsInTransition(0);
+    }
+
+    private void CancelSelection()
+    {
+        activeSelection = null;
+        isSelecting = false;
+    }
+
+    private void LoadNextScene()
+    {
+        if (string.IsNullOrWhiteSpace(nextScene))
+        {
+            GameLogger.Error("CardSelect", "Next scene is empty.");
+            CancelSelection();
+            return;
+        }
+
+        if (!Application.CanStreamedLevelBeLoaded(nextScene))
+        {
+            GameLogger.Error(
+                "CardSelect",
+                "Scene not found in Build Settings: " + nextScene
+            );
+            CancelSelection();
+            return;
+        }
+
+        if (SceneTransition.Instance != null)
+        {
+            SceneTransition.Instance.LoadScene(nextScene);
         }
         else
         {
-            toPos = new Vector3(centerPos.x, centerPos.y, fromPos.z);
+            // fallback: ไม่เจอ SceneTransition เลยโหลดแบบตัดทันที
+            GameLogger.Warn(
+                "CardSelect",
+                "SceneTransition ไม่พบ โหลดแบบตัดทันที"
+            );
+            SceneManager.LoadScene(nextScene);
         }
-
-        Vector3 fromScale = card.localScale;
-        Vector3 toScale = fromScale * zoomScale;
-        Quaternion fromRot = card.rotation;
-
-        float e = 0f;
-        while (e < moveTime)
-        {
-            e += Time.deltaTime;
-            float raw = e / moveTime;
-            float p = 1f - Mathf.Pow(1f - raw, 3f);
-
-            card.position = Vector3.Lerp(fromPos, toPos, p);
-            card.localScale = Vector3.Lerp(fromScale, toScale, p);
-            card.rotation = Quaternion.Lerp(fromRot, Quaternion.identity, p);
-
-            if (raw >= cutAtPercent)
-            {
-                SceneManager.LoadScene(nextScene);
-                yield break;
-            }
-
-            yield return null;
-        }
-
-        SceneManager.LoadScene(nextScene);
-    }
-
-    IEnumerator ArrangeContent()
-    {
-        if (cardVisual == null || contentRoot == null) yield break;
-
-        Bounds b = new Bounds();
-        bool first = true;
-        foreach (var r in contentRoot.GetComponentsInChildren<Renderer>())
-        {
-            if (selectButton != null && r.transform.IsChildOf(selectButton)) continue;
-            if (first) { b = r.bounds; first = false; }
-            else b.Encapsulate(r.bounds);
-        }
-        if (first) yield break;
-
-        Vector3 cardCenter = GetCenter(cardVisual);
-        Vector3 shift = cardCenter - b.center
-            + new Vector3(contentOffset.x, contentOffset.y, 0f);
-
-        Vector3 from = contentRoot.localPosition;
-        Vector3 to = from + shift;
-
-        float e = 0f;
-        while (e < moveTime)
-        {
-            e += Time.deltaTime;
-            float p = 1f - Mathf.Pow(1f - (e / moveTime), 3f);
-            contentRoot.localPosition = Vector3.Lerp(from, to, p);
-            yield return null;
-        }
-        contentRoot.localPosition = to;
-    }
-
-    Vector3 GetCenter(Transform t)
-    {
-        Renderer r = t.GetComponent<Renderer>();
-        return (r != null) ? r.bounds.center : t.position;
-    }
-
-    IEnumerator FadeGroup(Transform root, float time)
-    {
-        SpriteRenderer[] sprites = root.GetComponentsInChildren<SpriteRenderer>(true);
-        TMPro.TMP_Text[] texts = root.GetComponentsInChildren<TMPro.TMP_Text>(true);
-
-        Color[] sBase = new Color[sprites.Length];
-        for (int i = 0; i < sprites.Length; i++) sBase[i] = sprites[i].color;
-
-        Color[] tBase = new Color[texts.Length];
-        for (int i = 0; i < texts.Length; i++) tBase[i] = texts[i].color;
-
-        float e = 0f;
-        while (e < time)
-        {
-            e += Time.deltaTime;
-            float a = 1f - (e / time);
-
-            for (int i = 0; i < sprites.Length; i++)
-            {
-                Color c = sBase[i]; c.a = sBase[i].a * a; sprites[i].color = c;
-            }
-            for (int i = 0; i < texts.Length; i++)
-            {
-                Color c = tBase[i]; c.a = tBase[i].a * a; texts[i].color = c;
-            }
-            yield return null;
-        }
-    }
-
-    IEnumerator Punch(Transform t)
-    {
-        Vector3 baseScale = t.localScale;
-        Vector3 bigScale = baseScale * punchScale;
-        yield return Scale(t, baseScale, bigScale, punchTime * 0.4f);
-        yield return Scale(t, bigScale, baseScale, punchTime * 0.6f);
-        t.localScale = baseScale;
-    }
-
-    IEnumerator Scale(Transform t, Vector3 from, Vector3 to, float time)
-    {
-        float e = 0f;
-        while (e < time)
-        {
-            e += Time.deltaTime;
-            float p = e / time;
-            p = 1f - Mathf.Pow(1f - p, 3f);
-            t.localScale = Vector3.Lerp(from, to, p);
-            yield return null;
-        }
-        t.localScale = to;
     }
 }

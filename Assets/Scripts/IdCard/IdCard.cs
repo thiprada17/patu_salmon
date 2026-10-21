@@ -1,164 +1,290 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class IdCard : MonoBehaviour
 {
-    [Header("profile")]
-    [SerializeField] SpriteRenderer profile;
-    [SerializeField] Sprite[] characterSprites;
-    [SerializeField] float targetHeight = 2.2f;
-
-    [Header("card pop-in")]
-    [SerializeField] Transform cardRoot;
-    [SerializeField] Transform[] followers;
-    [SerializeField] float popTime = 0.35f;
-    [SerializeField] float startScale = 0.9f;
-    [SerializeField] float riseDistance = 0.3f;
-
-    [Header("enter")]
-    [SerializeField] TMP_InputField input;
-    [SerializeField] TextMeshProUGUI warning;
-    [SerializeField] string nextScene = "SelectCharacter";
-    [SerializeField] float punchScale = 1.12f;
-    [SerializeField] float punchTime = 0.18f;
-
-    Transform[] roots;
-    Vector3[] basePos;
-    Vector3[] baseScale;
-    bool isBusy;
-
-    void Awake()
+    [System.Serializable]
+    public class CharacterCardData
     {
-        ShowProfile();
-        SetupCard();
+        public string id;
+        public Sprite portrait;
+        public string displayName;
+
+        [TextArea]
+        public string description;
     }
 
-    void Start()
+    [Header("Character Data")]
+    [SerializeField] private CharacterCardData[] characters;
+
+    [Header("Card UI")]
+    [SerializeField] private Image profile;
+    [SerializeField] private TMP_Text characterNameText;
+    [SerializeField] private TMP_Text characterDescriptionText;
+
+    [Header("Enter Animation (clip ที่สร้างใหม่)")]
+    [SerializeField] private Animator cardAnimator;
+    [Tooltip("ว่างไว้ได้ ถ้าตั้ง clip เป็น Default State อยู่แล้ว")]
+    [SerializeField] private string enterStateName = "idcardin";
+
+    [Header("Punch (ตอนกดเข้า)")]
+    [SerializeField] private RectTransform cardRoot;
+    [SerializeField] private float punchScale = 1.12f;
+    [SerializeField] private float punchTime = 0.18f;
+
+    [Header("Enter")]
+    [SerializeField] private TMP_InputField input;
+    [SerializeField] private TMP_Text warning;
+    [SerializeField] private string nextScene = "SelectCharacter";
+
+    private bool isBusy;
+    private CharacterCardData selectedCharacter;
+
+    private void Awake()
     {
-        if (roots != null) StartCoroutine(PopIn());
+        if (warning != null)
+            warning.gameObject.SetActive(false);
+
+        LoadCharacter();
     }
 
-    void ShowProfile()
+    private void Start()
     {
-        int id = PlayerPrefs.GetInt("SelectedCharacter", 0);
-        if (profile == null || id < 0 || id >= characterSprites.Length) return;
-
-        profile.sprite = characterSprites[id];
-
-        float h = profile.sprite != null ? profile.sprite.bounds.size.y : 0f;
-        if (h <= 0f) return;
-
-        float s = targetHeight / h;
-        profile.transform.localScale = new Vector3(s, s, 1f);
+        PlayEnterAnimation();
     }
 
-    void SetupCard()
+    private void PlayEnterAnimation()
     {
-        if (cardRoot == null) return;
+        if (cardAnimator == null || selectedCharacter == null)
+            return;
 
-        var list = new List<Transform> { cardRoot };
-        if (followers != null) list.AddRange(followers);
-        roots = list.ToArray();
+        if (string.IsNullOrWhiteSpace(enterStateName))
+            return; // ใช้ Default State ของ Animator เล่นเอง
 
-        basePos = new Vector3[roots.Length];
-        baseScale = new Vector3[roots.Length];
-        for (int i = 0; i < roots.Length; i++)
+        int hash = Animator.StringToHash(enterStateName);
+
+        if (!cardAnimator.HasState(0, hash))
         {
-            basePos[i] = roots[i].localPosition;
-            baseScale[i] = roots[i].localScale;
+            GameLogger.Error(
+                "IdCard",
+                "ไม่พบ Animation State: " + enterStateName
+            );
+            return;
         }
 
-        ApplyPop(0f);
+        cardAnimator.Play(hash, 0, 0f);
     }
 
-    IEnumerator PopIn()
+    private void LoadCharacter()
     {
-        for (float e = 0f; e < popTime; e += Time.deltaTime)
+        string id = PlayerPrefs.GetString(
+            "SelectedCharacter", ""
+        ).Trim().ToLowerInvariant();
+
+        selectedCharacter = null;
+
+        if (characters != null)
         {
-            ApplyPop(EaseOut(e / popTime));
-            yield return null;
-        }
-        ApplyPop(1f);
-    }
-
-    void ApplyPop(float k)
-    {
-        float s = Mathf.Lerp(startScale, 1f, k);
-        Vector3 rise = Vector3.down * riseDistance * (1f - k);
-        Vector3 pivot = basePos[0];
-
-        for (int i = 0; i < roots.Length; i++)
-        {
-            Vector3 offset = basePos[i] - pivot;
-            offset.x *= s;
-            offset.y *= s;
-
-            roots[i].localScale = baseScale[i] * s;
-            roots[i].localPosition = pivot + offset + rise;
-        }
-    }
-
-    void OnMouseDown()
-    {
-        if (isBusy) return;
-
-        string name = input.text.Trim();
-        if (string.IsNullOrEmpty(name))
-        {
-            if (warning != null)
+            foreach (CharacterCardData data in characters)
             {
-                warning.gameObject.SetActive(true);
-                warning.text = "ใส่ชื่อก่อนน้า";
+                if (data == null || string.IsNullOrWhiteSpace(data.id))
+                    continue;
+
+                if (data.id.Trim().ToLowerInvariant() == id)
+                {
+                    selectedCharacter = data;
+                    break;
+                }
             }
+        }
+
+        if (selectedCharacter == null)
+        {
+            GameLogger.Error(
+                "IdCard",
+                "Character data not found for ID: " + id
+            );
+
+            ShowWarning("ไม่พบข้อมูลตัวละคร กรุณากลับไปเลือกใหม่");
+            return;
+        }
+
+        // กำหนดรูปให้ UI Image
+        if (profile != null)
+        {
+            profile.sprite = selectedCharacter.portrait;
+            profile.preserveAspect = true;
+
+            if (profile.sprite == null)
+            {
+                GameLogger.Error(
+                    "IdCard",
+                    "Portrait is missing for: " + id
+                );
+            }
+        }
+
+        // กำหนดข้อความของตัวละคร
+        if (characterNameText != null)
+            characterNameText.text = selectedCharacter.displayName;
+
+        if (characterDescriptionText != null)
+            characterDescriptionText.text =
+                selectedCharacter.description;
+
+        GameLogger.Info(
+            "IdCard",
+            "Loaded character: " + selectedCharacter.id
+        );
+    }
+
+    public void OnEnterClick()
+    {
+        if (isBusy)
+            return;
+
+        if (selectedCharacter == null)
+        {
+            ShowWarning("ไม่พบข้อมูลตัวละคร กรุณากลับไปเลือกใหม่");
+            return;
+        }
+
+        string username = input != null
+            ? input.text.Trim()
+            : "";
+
+        if (string.IsNullOrWhiteSpace(username))
+        {
+            ShowWarning("ใส่ชื่อก่อนน้า");
+            return;
+        }
+
+        if (LoginManager.Instance == null)
+        {
+            GameLogger.Error(
+                "IdCard",
+                "LoginManager instance not found."
+            );
+
+            ShowWarning("ระบบยังไม่พร้อม กรุณาลองใหม่");
             return;
         }
 
         isBusy = true;
 
-        Debug.Log("Username: " + name);
-        PlayerPrefs.SetString("Username", name);
+        if (warning != null)
+            warning.gameObject.SetActive(false);
+
+        PlayerPrefs.SetString("Username", username);
         PlayerPrefs.Save();
 
-        string character = PlayerPrefs.GetString("SelectedCharacter", "salmon");
-        string language = PlayerPrefs.GetString("Language", "english");
+        string language = PlayerPrefs.GetString(
+            "Language", "english"
+        );
+
+        GameLogger.Info(
+            "IdCard",
+            "Sending starter player data."
+        );
+
         LoginManager.Instance.SendStarterPlayer(
-            name,
-            character,
+            username,
+            selectedCharacter.id,
             language,
             onSuccess: () =>
             {
-                Debug.Log("Player data sent successfully!");
-                StartCoroutine(PunchThenGo());
-                SceneFader.LoadScene(nextScene);
+                GameLogger.Info(
+                    "IdCard",
+                    "Player data sent successfully."
+                );
+
+                StartCoroutine(EnterAfterSuccess());
             },
-            onError: err =>
+            onError: error =>
             {
-                Debug.LogError("Send player data failed: " + err);
+                GameLogger.Error(
+                    "IdCard",
+                    "Send player data failed: " + error
+                );
+
                 isBusy = false;
-            });
-
+                ShowWarning("บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่");
+            }
+        );
     }
 
-    IEnumerator PunchThenGo()
+    private IEnumerator EnterAfterSuccess()
     {
-        Vector3 b = transform.localScale;
-        Vector3 big = b * punchScale;
-        yield return ScaleTo(b, big, punchTime * 0.4f);
-        yield return ScaleTo(big, b, punchTime * 0.6f);
-  
-    }
+        if (cardRoot != null)
+            yield return PunchCard();
 
-    IEnumerator ScaleTo(Vector3 from, Vector3 to, float time)
-    {
-        for (float e = 0f; e < time; e += Time.deltaTime)
+        if (SceneTransition.Instance != null)
+            SceneTransition.Instance.LoadScene(nextScene);
+        else
         {
-            transform.localScale = Vector3.Lerp(from, to, EaseOut(e / time));
+            GameLogger.Warn("IdCard", "SceneTransition ไม่พบ โหลดแบบตัดทันที");
+            SceneManager.LoadScene(nextScene);
+        }
+    }
+
+    private IEnumerator PunchCard()
+    {
+        Vector3 original = cardRoot.localScale;
+        Vector3 enlarged = original * punchScale;
+
+        yield return ScaleCard(
+            original, enlarged, punchTime * 0.4f
+        );
+
+        yield return ScaleCard(
+            enlarged, original, punchTime * 0.6f
+        );
+
+        cardRoot.localScale = original;
+    }
+
+    private IEnumerator ScaleCard(
+        Vector3 from, Vector3 to, float duration)
+    {
+        if (duration <= 0f)
+        {
+            cardRoot.localScale = to;
+            yield break;
+        }
+
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+
+            cardRoot.localScale = Vector3.Lerp(
+                from,
+                to,
+                EaseOut(elapsed / duration)
+            );
+
             yield return null;
         }
-        transform.localScale = to;
+
+        cardRoot.localScale = to;
     }
 
-    static float EaseOut(float p) => 1f - Mathf.Pow(1f - Mathf.Clamp01(p), 3f);
+    private void ShowWarning(string message)
+    {
+        if (warning == null)
+            return;
+
+        warning.text = message;
+        warning.gameObject.SetActive(true);
+    }
+
+    private static float EaseOut(float value)
+    {
+        float p = Mathf.Clamp01(value);
+        return 1f - Mathf.Pow(1f - p, 3f);
+    }
 }
