@@ -1,37 +1,123 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using TMPro;
 
 public class LoadingScreen : MonoBehaviour
 {
-    [Header("info")]
-    [SerializeField] SpriteRenderer infoBoard;
-    [SerializeField] Sprite[] infoSprites;
+    [Header("Info")]
+    [SerializeField] private SpriteRenderer infoBoard;
+    [SerializeField] private Sprite[] infoSprites;
 
-    [Header("Loading")]
-    [SerializeField] TMP_Text loadingText;
-    [SerializeField] float hopHeight = 10f;
-    [SerializeField] float hopTime = 0.25f;
-    [SerializeField] float hopGap = 0.06f;
-    [SerializeField] float restTime = 0.4f;
-    [SerializeField] float loadTime = 3f;
-    [SerializeField] string nextScene = "main_game";
+    [Header("Loading Animation")]
+    [SerializeField] private TMP_Text loadingText;
+    [SerializeField] private float hopHeight = 10f;
+    [SerializeField] private float hopTime = 0.25f;
+    [SerializeField] private float hopGap = 0.06f;
+    [SerializeField] private float restTime = 0.4f;
 
-    void Awake()
+    [Header("Scene")]
+    [SerializeField] private string nextScene = "main_game";
+
+    private bool isSending;
+
+    private void Awake()
     {
-        int id = PlayerPrefs.GetInt("SelectedCharacter", 0);
-        if (infoBoard != null && infoSprites != null && id < infoSprites.Length)
-            infoBoard.sprite = infoSprites[id];
+        string character = PlayerPrefs.GetString("SelectedCharacter", "");
+
+        GameLogger.Info("Loading", $"Selected character: {character}");
+
+        if (infoBoard != null && infoSprites != null)
+        {
+            if (character == "platu")
+                infoBoard.sprite = infoSprites[0];
+            else if (character == "salmon")
+                infoBoard.sprite = infoSprites[1];
+        }
     }
 
-    void Start()
+    private void Start()
     {
-        if (loadingText != null) StartCoroutine(Hop());
-        StartCoroutine(GoNext());
+        if (loadingText != null)
+            StartCoroutine(Hop());
+
+        SendPlayerData();
     }
 
-    IEnumerator Hop()
+    public void SendPlayerData()
+    {
+        if (isSending)
+            return;
+
+        string userId = LoginManager.UserId;
+        string username = PlayerPrefs.GetString("Username", "");
+        string character = PlayerPrefs.GetString("SelectedCharacter", "");
+        string language = PlayerPrefs.GetString("Language", "english");
+
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            GameLogger.Error(
+                "Loading",
+                "UserID is empty. Login/Signup must save the real Supabase UUID."
+            );
+
+            SetLoadingText("User ID not found. Please log in again.");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(username) ||
+            string.IsNullOrWhiteSpace(character))
+        {
+            GameLogger.Error(
+                "Loading",
+                "Username or character is empty."
+            );
+
+            SetLoadingText("Incomplete player information.");
+            return;
+        }
+
+        isSending = true;
+        SetLoadingText("Saving player data...");
+
+        LoginManager.Instance.SendStarterPlayer(
+            username,
+            character,
+            language,
+            onSuccess: () =>
+            {
+                GameLogger.Info(
+                    "Loading",
+                    "Starter player data saved successfully."
+                );
+
+              
+                SetLoadingText("Entering game...");
+                
+                SceneManager.LoadScene(nextScene);
+            },
+            onError: error =>
+            {
+                isSending = false;
+
+                GameLogger.Error(
+                    "Loading",
+                    "Failed to save starter player: " + error
+                );
+
+                SetLoadingText("Failed to save data. Please try again.");
+            }
+        );
+    }
+
+    private void SetLoadingText(string message)
+    {
+        if (loadingText != null)
+            loadingText.text = message;
+    }
+
+    private IEnumerator Hop()
     {
         while (true)
         {
@@ -40,22 +126,24 @@ public class LoadingScreen : MonoBehaviour
             int count = info.characterCount;
 
             float total = hopGap * count + hopTime;
-            float e = 0f;
+            float elapsed = 0f;
 
-            while (e < total)
+            while (elapsed < total)
             {
-                e += Time.deltaTime;
+                elapsed += Time.deltaTime;
                 loadingText.ForceMeshUpdate();
                 info = loadingText.textInfo;
 
                 for (int i = 0; i < info.characterCount; i++)
                 {
-                    if (!info.characterInfo[i].isVisible) continue;
+                    if (!info.characterInfo[i].isVisible)
+                        continue;
 
                     float start = i * hopGap;
-                    float p = (e - start) / hopTime;
+                    float p = (elapsed - start) / hopTime;
 
                     float offset = 0f;
+
                     if (p > 0f && p < 1f)
                         offset = Mathf.Sin(p * Mathf.PI) * hopHeight;
 
@@ -78,11 +166,5 @@ public class LoadingScreen : MonoBehaviour
 
             yield return new WaitForSeconds(restTime);
         }
-    }
-
-    IEnumerator GoNext()
-    {
-        yield return new WaitForSeconds(loadTime);
-        SceneManager.LoadScene(nextScene);
     }
 }

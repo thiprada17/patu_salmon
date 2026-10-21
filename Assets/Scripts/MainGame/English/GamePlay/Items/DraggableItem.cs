@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -12,7 +12,7 @@ public class DraggableItem : MonoBehaviour,
     private bool isDragging = false;
     private Vector3 dragOffset;
 
-    // �纵��˹�����ش��͹������ҡ�ͺ��� ����駡�Ѻ���ⴹ reject
+    // à¡çºµÓáË¹è§ÅèÒÊØ´¡èÍ¹àÃÔèÁÅÒ¡ÃÍº¹Õé äÇéà´é§¡ÅÑº¶éÒâ´¹ reject
     private Vector3 lastValidPosition;
 
     [Header("Reject Feedback")]
@@ -38,7 +38,7 @@ public class DraggableItem : MonoBehaviour,
     {
         isDragging = true;
 
-        // �纵��˹觡�͹������ҡ�ͺ��� (����ⴹ reject)
+        // à¡çºµÓáË¹è§¡èÍ¹àÃÔèÁÅÒ¡ÃÍº¹Õé (à¼×èÍâ´¹ reject)
         lastValidPosition = transform.position;
 
         Vector3 mouseWorldPosition = mainCamera.ScreenToWorldPoint(eventData.position);
@@ -79,14 +79,14 @@ public class DraggableItem : MonoBehaviour,
     {
         isAttached = value;
 
-        //��� attach ����� �����˹觻Ѩ�غѹ (attach point) �����繵��˹觷���ʹ����ͺ�Ѵ�
+        //¶éÒ attach ÊÓàÃç¨ ãËéµÓáË¹è§»Ñ¨¨ØºÑ¹ (attach point) ¡ÅÒÂà»ç¹µÓáË¹è§·Õè»ÅÍ´ÀÑÂÃÍº¶Ñ´ä»
         if (value)
         {
             lastValidPosition = transform.position;
         }
     }
 
-    // ���¡�ҡ slot �͹�ҧ����� (slot ���/���ç���͹�)
+    // àÃÕÂ¡¨Ò¡ slot µÍ¹ÇÒ§äÁèä´é (slot àµçÁ/äÁèµÃ§à§×èÍ¹ä¢)
     public void RejectDrop()
     {
         if (rejectRoutine != null)
@@ -99,7 +99,7 @@ public class DraggableItem : MonoBehaviour,
 
     private IEnumerator ShakeAndReturn()
     {
-        isDragging = false; // �ѹ������ OnDrag ��觤�����˹������ҧ shake
+        isDragging = false; // ¡Ñ¹äÁèãËé OnDrag áÂè§¤ØÁµÓáË¹è§ÃÐËÇèÒ§ shake
 
         Vector3 shakeCenter = transform.position;
         float elapsed = 0f;

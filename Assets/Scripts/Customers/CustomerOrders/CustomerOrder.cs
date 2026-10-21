@@ -1,4 +1,4 @@
-using UnityEngine;
+๏ปฟusing UnityEngine;
 
 public class CustomerOrder : MonoBehaviour
 {
@@ -118,32 +118,24 @@ public class CustomerOrder : MonoBehaviour
         if (cup == null)
             return;
 
-        Cup cupComponent =
-            cup.GetComponent<Cup>();
+        Cup cupComponent = cup.GetComponent<Cup>();
 
         if (cupComponent == null)
         {
-            Debug.LogWarning(
-                name + " received object without Cup component!"
-            );
+            GameLogger.Warn("ReceiveCup", name + " received object without Cup component!");
             return;
         }
 
-        // ห้ามรับแก้วเปล่า
+        // เธซเนเธฒเธกเธฃเธฑเธเนเธเนเธงเน€เธเธฅเนเธฒ
         if (!cupComponent.IsFinished())
         {
-            Debug.Log(
-                name + " cannot receive an unfinished cup!"
-            );
+            GameLogger.Info("ReceiveCup", name + " cannot receive an unfinished cup!");
             return;
         }
 
-        Debug.Log(
-            name +
-            " received " +
-            cup.RecipeType +
-            " | Expected = " +
-            order
+        GameLogger.Info(
+            "ReceiveCup",
+            name + " received " + cup.RecipeType + " | Expected = " + order
         );
 
         if (cup.RecipeType == order)
@@ -153,6 +145,13 @@ public class CustomerOrder : MonoBehaviour
         else
         {
             WrongOrder(cup);
+
+            DraggableItem draggable = cup.GetComponent<DraggableItem>();
+
+            if (draggable != null)
+            {
+                draggable.RejectDrop();
+            }
         }
     }
 
@@ -186,8 +185,8 @@ public class CustomerOrder : MonoBehaviour
             cup.RecipeType
         );
 
-        // ตอนนี้ยังไม่ทำอะไรกับ Customer
-        // ภายหลังสามารถทำให้ Angry ได้
+        // ยตรยนยนร•รฉรร‘ยงรครรจยทร“รรรครยกร‘ยบ Customer
+        // ร€ร’รรร…ร‘ยงรร’รร’รยถยทร“รฃรรฉ Angry รคยดรฉ
     }
 
     public void HideDialogue()
@@ -235,8 +234,8 @@ public class CustomerOrder : MonoBehaviour
             cup.RecipeType
         );
 
-        // ตอนนี้ยังไม่ทำอะไรกับลูกค้า
-        // แก้วยังอยู่ เพื่อให้เอาไปเสิร์ฟใหม่ได้
+        // ยตรยนยนร•รฉรร‘ยงรครรจยทร“รรรครยกร‘ยบร…รยกยครฉร’
+        // รกยกรฉรรร‘ยงรรรรจ ร ยพร—รจรรฃรรฉร รร’รคยปร รร”รรฌยฟรฃรรรจรคยดรฉ
     }
 
     public void ShowTimeBar()

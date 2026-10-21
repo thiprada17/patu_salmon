@@ -1,71 +1,68 @@
+
 using UnityEngine;
 
 public class Mat : MonoBehaviour
 {
-    private Cup currentCup;
+    private Cup leftCup;
+    private Cup rightCup;
 
     [Header("Recipe Manager")]
-    [SerializeField]
-    private RecipeManager recipeManager;
+    [SerializeField] private RecipeManager recipeManager;
 
     public void AttachLeftCup(Cup cup)
     {
-        currentCup = cup;
-        CheckRecipe();
-    }
+        if (cup == null) return;
 
+        leftCup = cup;
+        CheckRecipe(leftCup);
+    }
 
     public void RemoveLeftCup(Cup cup)
     {
-        if (currentCup == cup)
+        if (leftCup == cup)
         {
-            currentCup = null;
+            leftCup = null;
         }
     }
 
     public void AttachRightCup(Cup cup)
     {
-        currentCup = cup;
-        CheckRecipe();
-    }
+        if (cup == null) return;
 
+        rightCup = cup;
+        CheckRecipe(rightCup);
+    }
 
     public void RemoveRightCup(Cup cup)
     {
-        if (currentCup == cup)
+        if (rightCup == cup)
         {
-            currentCup = null;
+            rightCup = null;
         }
     }
 
-
-
-    private void CheckRecipe()
+    private void CheckRecipe(Cup cup)
     {
-        if (currentCup == null)
-            return;
-
+        if (cup == null) return;
 
         if (recipeManager == null)
         {
-            GameLogger.Warn("Mat", "ยังไม่ได้ใส่ RecipeManager");
+            GameLogger.Warn("Mat", "RecipeManager is not assigned.");
             return;
         }
 
-
-        RecipeData recipe =
-            recipeManager.GetRecipe(currentCup);
-
+        RecipeData recipe = recipeManager.GetRecipe(cup);
 
         if (recipe == null)
-        { 
-            GameLogger.Warn("Mat", "Cup นี้ไม่ตรงกับสูตร");
+        {
+            GameLogger.Warn("Mat", "Cup does not match any recipe.");
             return;
         }
 
-        GameLogger.Info("Mat", "Cup is " + recipe.recipeType);
-
-        // เปลี่ยน Cup เป็นรูปเมนูสำเร็จ
-        currentCup.SetFinishedRecipe(recipe.finishedCupSprite, recipe.recipeType);
+        GameLogger.Info("Mat", "Cup recipe: " + recipe.recipeType);
+        cup.SetFinishedRecipe(
+            recipe.finishedCupSprite,
+            recipe.recipeType
+        );
     }
 }

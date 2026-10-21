@@ -59,12 +59,19 @@ public class Milk : MonoBehaviour
             GameLogger.DebugLog("Milk", "pls wait milk");
             return;
         }
+        
+        if (currentCup.IsFull)
+        {
+            GameLogger.Warn("CoffeeMach", "Cup is full.");
+            MachineShakeManager.Shake(gameObject);
+            return;
+        }
         if (audioSource != null)
         {
             audioSource.PlayOneShot(audioSource.clip);
         }
 
-
+        
         StartCoroutine(PumpMilk());
     }
 

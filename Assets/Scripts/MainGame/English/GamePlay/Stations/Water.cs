@@ -9,6 +9,7 @@ public class Water : MonoBehaviour
     [Header("Water Animation")]
     [SerializeField] private Animator waterAnimator;
     [SerializeField] private SpriteRenderer waterRenderer;
+    [SerializeField] private AudioSource audioSource;
 
     public void AttachCup(Cup cup)
     {
@@ -69,7 +70,17 @@ public class Water : MonoBehaviour
             GameLogger.DebugLog("Water", "Water กำลังทำงานอยู่");
             return;
         }
+        if (currentCup.IsFull)
+        {
+            GameLogger.Warn("CoffeeMach", "Cup is full.");
+            MachineShakeManager.Shake(gameObject);
+            return;
+        }
 
+        if (audioSource != null)
+        {
+            audioSource.PlayOneShot(audioSource.clip);
+        }
         StartCoroutine(AddWater());
     }
 

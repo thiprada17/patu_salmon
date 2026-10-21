@@ -38,7 +38,7 @@ public class IdCard : MonoBehaviour
     [Header("Enter")]
     [SerializeField] private TMP_InputField input;
     [SerializeField] private TMP_Text warning;
-    [SerializeField] private string nextScene = "SelectCharacter";
+    [SerializeField] private string nextScene = "loading";
 
     private bool isBusy;
     private CharacterCardData selectedCharacter;
@@ -141,6 +141,7 @@ public class IdCard : MonoBehaviour
         );
     }
 
+
     public void OnEnterClick()
     {
         if (isBusy)
@@ -162,89 +163,63 @@ public class IdCard : MonoBehaviour
             return;
         }
 
-        if (LoginManager.Instance == null)
-        {
-            GameLogger.Error(
-                "IdCard",
-                "LoginManager instance not found."
-            );
-
-            ShowWarning("ระบบยังไม่พร้อม กรุณาลองใหม่");
-            return;
-        }
-
         isBusy = true;
 
         if (warning != null)
             warning.gameObject.SetActive(false);
 
-        PlayerPrefs.SetString("Username", username);
-        PlayerPrefs.Save();
-
         string language = PlayerPrefs.GetString(
             "Language", "english"
         );
 
+        PlayerPrefs.SetString("Username", username);
+        PlayerPrefs.SetString("SelectedCharacter", selectedCharacter.id);
+        PlayerPrefs.SetString("Language", language);
+        PlayerPrefs.Save();
+
         GameLogger.Info(
             "IdCard",
-            "Sending starter player data."
+            "Moving to Loading scene."
         );
 
-        LoginManager.Instance.SendStarterPlayer(
-            username,
-            selectedCharacter.id,
-            language,
-            onSuccess: () =>
-            {
-                GameLogger.Info(
-                    "IdCard",
-                    "Player data sent successfully."
-                );
-
-                StartCoroutine(EnterAfterSuccess());
-            },
-            onError: error =>
-            {
-                GameLogger.Error(
-                    "IdCard",
-                    "Send player data failed: " + error
-                );
-
-                isBusy = false;
-                ShowWarning("บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่");
-            }
-        );
+        SceneManager.LoadScene("Loading");
     }
+
+
 
     private IEnumerator EnterAfterSuccess()
     {
         if (cardRoot != null)
             yield return PunchCard();
 
-        if (SceneTransition.Instance != null)
-            SceneTransition.Instance.LoadScene(nextScene);
-        else
-        {
-            GameLogger.Warn("IdCard", "SceneTransition ไม่พบ โหลดแบบตัดทันที");
-            SceneManager.LoadScene(nextScene);
-        }
+        GameLogger.Info("IdCard", "Loading Scene: " + nextScene);
+
+        SceneManager.LoadScene(nextScene);
     }
+
 
     private IEnumerator PunchCard()
     {
         Vector3 original = cardRoot.localScale;
         Vector3 enlarged = original * punchScale;
 
+        // ขยายการ์ดอย่างรวดเร็ว
         yield return ScaleCard(
-            original, enlarged, punchTime * 0.4f
+            original,
+            enlarged,
+            punchTime * 0.4f
         );
 
+        // หดกลับสู่ขนาดเดิมอย่างนุ่มนวล
         yield return ScaleCard(
-            enlarged, original, punchTime * 0.6f
+            enlarged,
+            original,
+            punchTime * 0.6f
         );
 
         cardRoot.localScale = original;
     }
+
 
     private IEnumerator ScaleCard(
         Vector3 from, Vector3 to, float duration)

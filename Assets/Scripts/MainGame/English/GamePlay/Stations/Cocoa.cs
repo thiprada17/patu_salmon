@@ -16,6 +16,8 @@ public class Cocoa : MonoBehaviour
     [SerializeField] private SpriteRenderer cocoaAnimation;
 
     [SerializeField] private AudioSource audioSource;
+
+
     private void Start()
     {
         if (pumpNormal != null)
@@ -46,7 +48,6 @@ public class Cocoa : MonoBehaviour
 
     private void OnMouseDown()
     {
-        // เช็กว่ามี Cup
         if (currentCup == null)
         {
             GameLogger.Warn("Cocoa", "ยังไม่ได้ใส่ Cup");
@@ -59,10 +60,19 @@ public class Cocoa : MonoBehaviour
             return;
         }
 
+        if (currentCup.IsFull)
+        {
+            GameLogger.Warn("CoffeeMach", "Cup is full.");
+            MachineShakeManager.Shake(gameObject);
+            return;
+        }
+
         if (audioSource != null)
         {
             audioSource.PlayOneShot(audioSource.clip);
         }
+
+        
 
         StartCoroutine(PumpCocoa());
     }
@@ -71,7 +81,6 @@ public class Cocoa : MonoBehaviour
     {
         isPumping = true;
 
-        // เปลี่ยน Pump เป็นรูปกด
         if (pumpNormal != null)
             pumpNormal.enabled = false;
 
@@ -82,22 +91,18 @@ public class Cocoa : MonoBehaviour
         if (cocoaAnimation != null)
             cocoaAnimation.enabled = true;
 
-        // เปิด Animator
-        if (cocoaAnimator != null)
+     if (cocoaAnimator != null)
         {
             cocoaAnimator.enabled = true;
 
             // เริ่ม Animation ที่ Key แรก
             cocoaAnimator.Play("cocoaanimation", 0, 0f);
 
-            // บังคับให้ Animator อัปเดตทันที
             cocoaAnimator.Update(0f);
         }
 
-        // รอ Animation
         yield return new WaitForSeconds(1.3f);
 
-        // เพิ่ม Milk เข้า Cup
         if (currentCup != null)
         {
             bool success = currentCup.AddIngredient(IngredientType.Cocoa);
@@ -108,15 +113,12 @@ public class Cocoa : MonoBehaviour
                 GameLogger.DebugLog("Cocoa", "ไม่สามารถใส่ cocoa ลง Cup ได้");
         }
 
-        // ซ่อน Animation
         if (cocoaAnimation != null)
             cocoaAnimation.enabled = false;
 
-        // ปิด Animator เพื่อไม่ให้ Animation เล่นต่อ
         if (cocoaAnimator != null)
             cocoaAnimator.enabled = false;
 
-        // กลับ Pump ปกติ
         if (pumpPressed != null)
             pumpPressed.enabled = false;
 

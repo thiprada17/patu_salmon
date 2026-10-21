@@ -93,16 +93,20 @@ public class CoffeeMachine : MonoBehaviour
             GameLogger.Warn("CoffeeMach", "ยังไม่ได้ใส่ Cup");
             return;
         }
-
         if (currentCup.IsFull)
         {
+            GameLogger.Warn("CoffeeMach", "Cup is full.");
+            MachineShakeManager.Shake(gameObject);
             return;
         }
-
         if (audioSource != null)
         {
             audioSource.PlayOneShot(audioSource.clip);
         }
+
+     
+
+        
 
         // เริ่มทำกาแฟ
         StartCoroutine(MakeCoffeeProcess());
