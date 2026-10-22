@@ -20,7 +20,8 @@
 
 .DS_Store
 Thumbs.db
-Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/
+
+# Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/
 
 
 backend/services/__pycache__/
@@ -28,12 +29,12 @@ backend/services/__pycache__/
                
 backend/__pycache__/
 /backend/services/__pycache__
-/.utmp
-/.utmp/RelWithDebInfo
+/utmp
+/utmp/RelWithDebInfo
 /Assets/AddressableAssetsData
-**/.utmp/
+**/utmp/
 
-**/.utmp/
+**/utmp/
 /backend/core/__pycache__
 /backend/infrastructure/__pycache__
 /backend/schemas/__pycache__
@@ -42,20 +43,20 @@ backend/__pycache__/
 /backend/api/v1/__pycache__
 /backend/controllers/__pycache__
 /backend/repositories/__pycache__
-backend/.env
-backend/api/__pycache__/__init__.cpython-314.pyc
-backend/api/v1/__pycache__/__init__.cpython-314.pyc
-backend/api/v1/__pycache__/AuthRouter.cpython-314.pyc
-backend/api/v1/__pycache__/PlayerRouter.cpython-314.pyc
-backend/core/__pycache__/__init__.cpython-314.pyc
-backend/core/__pycache__/config.cpython-314.pyc
-backend/infrastructure/__pycache__/__init__.cpython-314.pyc
-backend/infrastructure/__pycache__/supabase_client.cpython-314.pyc
-backend/repositories/__pycache__/__init__.cpython-314.pyc
-backend/repositories/__pycache__/stats_repository.cpython-314.pyc
-backend/repositories/__pycache__/user_repository.cpython-314.pyc
-backend/schemas/__pycache__/__init__.cpython-314.pyc
-backend/schemas/__pycache__/auth.cpython-314.pyc
-backend/schemas/__pycache__/player.cpython-314.pyc
-backend/utils/__pycache__/__init__.cpython-314.pyc
-backend/utils/__pycache__/deeplink.cpython-314.pyc
+backend/env
+backend/api/__pycache__/__init__cpython-314pyc
+backend/api/v1/__pycache__/__init__cpython-314pyc
+backend/api/v1/__pycache__/AuthRoutercpython-314pyc
+backend/api/v1/__pycache__/PlayerRoutercpython-314pyc
+backend/core/__pycache__/__init__cpython-314pyc
+backend/core/__pycache__/configcpython-314pyc
+backend/infrastructure/__pycache__/__init__cpython-314pyc
+backend/infrastructure/__pycache__/supabase_clientcpython-314pyc
+backend/repositories/__pycache__/__init__cpython-314pyc
+backend/repositories/__pycache__/stats_repositorycpython-314pyc
+backend/repositories/__pycache__/user_repositorycpython-314pyc
+backend/schemas/__pycache__/__init__cpython-314pyc
+backend/schemas/__pycache__/authcpython-314pyc
+backend/schemas/__pycache__/playercpython-314pyc
+backend/utils/__pycache__/__init__cpython-314pyc
+backend/utils/__pycache__/deeplinkcpython-314pyc
