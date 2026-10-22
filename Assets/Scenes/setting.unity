@@ -1714,6 +1714,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pressedScale: 1.25
   time: 0.15
+  handle: {fileID: 0}
+  baseScale: {x: 0, y: 0, z: 0}
 --- !u!1 &427699813
 GameObject:
   m_ObjectHideFlags: 0
@@ -2545,8 +2547,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -385, y: 139.4}
-  m_SizeDelta: {x: 56.4, y: 58.46}
+  m_AnchoredPosition: {x: -370, y: 142.1}
+  m_SizeDelta: {x: 93.6, y: 97.1}
   m_Pivot: {x: 0.5000007, y: 0.5}
 --- !u!114 &877747247
 MonoBehaviour:
@@ -2568,7 +2570,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -9119609629918001555, guid: 32883accb2bb0b54393672c7bacbc735, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a12d2694a60670648ac637c35cd10068, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -4722,7 +4724,7 @@ MonoBehaviour:
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 1440, y: 2960}
+  m_ReferenceResolution: {x: 2960, y: 1440}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
@@ -6844,7 +6846,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 316d9848faae5aa43b066e26e8bf9f3b, type: 3}
+  m_Sprite: {fileID: -7040440478454705485, guid: cad3bc03803c3aa479f3c962de9b6538, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7142,6 +7144,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pressedScale: 1.25
   time: 0.15
+  handle: {fileID: 0}
+  baseScale: {x: 0, y: 0, z: 0}
 --- !u!1 &1958565046
 GameObject:
   m_ObjectHideFlags: 0
@@ -7674,7 +7678,7 @@ MonoBehaviour:
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 1440, y: 2960}
+  m_ReferenceResolution: {x: 2960, y: 1440}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
@@ -7746,14 +7750,10 @@ MonoBehaviour:
   usernameInput: {fileID: 1102706665}
   editButton: {fileID: 327579052}
   maxUsernameLength: 12
-  characterImage: {fileID: 180187339}
-  salmonSprite: {fileID: 6040741923042906628, guid: 671cc226f5bd83140a1335daba2b366c, type: 3}
-  platuSprite: {fileID: 552396656871141063, guid: fdd5146c8b7571d42b3792f293caafd1, type: 3}
-  effectSlider: {fileID: 1937613702}
-  backgroundSlider: {fileID: 402678677}
-  mixer: {fileID: 0}
-  effectParameter: SFXVolume
-  backgroundParameter: BGMVolume
+  effectButton: {fileID: 0}
+  effectValue: {fileID: 0}
+  backgroundButton: {fileID: 0}
+  backgroundValue: {fileID: 0}
   languageButton: {fileID: 1450156599}
   languageValue: {fileID: 674887594}
   dropdownPanel: {fileID: 335951279}
