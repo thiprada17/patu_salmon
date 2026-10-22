@@ -3,6 +3,8 @@ using UnityEngine;
 
 public enum TutorialTargetID
 {
+
+    //Map Element
     VocabCollection,
     CustomerCollection,
     DailyTask,
@@ -13,7 +15,28 @@ public enum TutorialTargetID
     Profile,
     CountryIcon,
     CountryWindow,
-    StartShift
+    StartShift,
+
+
+    //Main Game Element
+    CoffeeGrinder,
+    EspressoMachine,
+    Milk,
+    Cocoa,
+    CoffeePortfilter,
+    Cup,
+    Mat,
+    Sink,
+    TrashBin,
+    RecipePopup,
+
+
+    //Main Game Tab Bar
+    Map,
+    Setting,
+    RecipeBook,
+    LightBulb
+
 }
 
 public class TutorialTarget : MonoBehaviour

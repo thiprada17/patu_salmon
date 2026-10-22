@@ -34,7 +34,7 @@ public class TutorialStepData : ScriptableObject
     [SerializeField] private int order = 1;
 
     [Header("Dialogue")]
-    [SerializeField] private string speakerName;
+    //[SerializeField] private string speakerName;
 
     [TextArea(2, 5)]
     [SerializeField] private string dialogue;
@@ -97,7 +97,7 @@ public class TutorialStepData : ScriptableObject
 
     public string StepID => stepID;
     public int Order => order;
-    public string SpeakerName => speakerName;
+    //public string SpeakerName => speakerName;
     public string Dialogue => dialogue;
     public TutorialTargetID TargetID => targetID;
     public Sprite TargetPreviewSprite => targetPreviewSprite;

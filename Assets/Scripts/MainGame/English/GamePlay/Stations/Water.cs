@@ -59,6 +59,10 @@ public class Water : MonoBehaviour
 
     private void OnMouseDown()
     {
+        // Block gameplay interactions while the dialogue is active.
+        if (GameplayInputLock.IsLocked)
+            return;
+
         if (currentCup == null)
         {
             GameLogger.Warn("Water", "ยังไม่ได้ใส่ Cup");
@@ -83,6 +87,7 @@ public class Water : MonoBehaviour
         }
         StartCoroutine(AddWater());
     }
+
 
     private IEnumerator AddWater()
     {

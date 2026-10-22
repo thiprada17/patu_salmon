@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 using System.Collections;
 
 public class Grinder : MonoBehaviour
@@ -12,154 +13,318 @@ public class Grinder : MonoBehaviour
     [SerializeField] private Animator coffeeAnimator;
     [SerializeField] private SpriteRenderer coffeeRenderer;
 
+    [Header("Audio")]
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioSource inputaudioSource;
     [SerializeField] private AudioSource outputaudioSource;
-    private bool isGrinding = false;
 
+    [Header("Grinding Settings")]
+    [SerializeField] private float grindDuration = 3f;
+    [SerializeField] private float shakeMagnitude = 0.02f;
+
+    [Header("Portfilter Setup")]
+    [SerializeField] private Portfilter portfilterToDetect;
+
+    private bool isGrinding;
+    private Coroutine grindCoroutine;
+
+    private DraggableItem currentDraggable;
+    private bool wasDraggableEnabled;
 
     private void Start()
     {
         originalPosition = transform.localPosition;
 
         if (coffeeRenderer != null)
-        {
             coffeeRenderer.enabled = false;
+
+        if (coffeeAnimator != null)
+            coffeeAnimator.enabled = false;
+
+        if (portfilterToDetect != null)
+        {
+            currentPortfilter = portfilterToDetect;
+            portfilterOriginalPosition =
+                portfilterToDetect.transform.localPosition;
+
+            GameLogger.Info(
+                "Grinder",
+                $"Portfilter detected: {currentPortfilter.name}"
+            );
+        }
+        else
+        {
+            GameLogger.Warn(
+                "Grinder",
+                "Portfilter To Detect is not assigned in the Inspector."
+            );
+        }
+    }
+
+    private void Update()
+    {
+        // ยกเลิกการบดเมื่อระบบล็อกการเล่นเกม
+        if (isGrinding && GameplayInputLock.IsLocked)
+        {
+            CancelGrinding();
         }
     }
 
     private void PlayCoffeeAnimation()
     {
         if (coffeeRenderer != null)
-        {
             coffeeRenderer.enabled = true;
-        }
 
         if (coffeeAnimator != null)
         {
+            coffeeAnimator.enabled = true;
             coffeeAnimator.Play("grinderanimation", 0, 0f);
+        }
+    }
+
+    private void ResetCoffeeAnimation()
+    {
+        if (coffeeRenderer != null)
+            coffeeRenderer.enabled = false;
+
+        if (coffeeAnimator != null)
+            coffeeAnimator.enabled = false;
+    }
+
+    public void RemovePortfilter(Portfilter portfilter)
+    {
+        if (portfilter == null)
+            return;
+
+        if (currentPortfilter == portfilter)
+        {
+            if (isGrinding)
+                CancelGrinding();
+
+            currentPortfilter = null;
+
+            GameLogger.DebugLog(
+                "Grinder",
+                "Portfilter removed from Grinder."
+            );
         }
     }
 
     public void AttachPortfilter(Portfilter portfilter)
     {
-        currentPortfilter = portfilter;
+        if (GameplayInputLock.IsLocked || isGrinding)
+            return;
 
-        // จำตำแหน่งเดิมของ Portfilter
-        portfilterOriginalPosition = portfilter.transform.localPosition;
-        if (inputaudioSource != null)
-        {
+        if (portfilter == null)
+            return;
+
+        currentPortfilter = portfilter;
+        portfilterOriginalPosition =
+            portfilter.transform.localPosition;
+
+        GameLogger.DebugLog(
+            "Grinder",
+            "Portfilter attached to Grinder."
+        );
+
+        if (inputaudioSource != null && inputaudioSource.clip != null)
             inputaudioSource.PlayOneShot(inputaudioSource.clip);
-        }
-        GameLogger.DebugLog("Grinder", "Portfilter attached to Grinder");
     }
 
-    public void RemovePortfilter(Portfilter portfilter)
+    public void DetachPortfilter(Portfilter portfilter)
     {
+        if (portfilter == null)
+            return;
+
         if (currentPortfilter == portfilter)
         {
+            if (isGrinding)
+                CancelGrinding();
+
             currentPortfilter = null;
-            if (outputaudioSource != null)
+
+            if (outputaudioSource != null &&
+                outputaudioSource.clip != null)
             {
-                outputaudioSource.PlayOneShot(outputaudioSource.clip);
+                outputaudioSource.PlayOneShot(
+                    outputaudioSource.clip
+                );
             }
-            GameLogger.DebugLog("Grinder", "Portfilter removed from Coffee Machine");
+
+            GameLogger.DebugLog(
+                "Grinder",
+                "Portfilter removed from Coffee Machine."
+            );
         }
     }
+
     private void OnMouseDown()
     {
+        if (GameplayInputLock.IsLocked || isGrinding)
+            return;
+
         if (currentPortfilter == null)
         {
-            GameLogger.Warn("Grinder", "ยังไม่ได้ใส่ Portfilter");
-            return;
-        }
-
-        if (isGrinding)
-        {
+            GameLogger.Warn(
+                "Grinder",
+                "No Portfilter attached. Attach the Portfilter again."
+            );
             return;
         }
 
         if (currentPortfilter.hasCoffeeGround)
         {
-            GameLogger.Warn("Grinder", "Portfilter มี Coffee Ground อยู่แล้ว!");
+            GameLogger.Warn(
+                "Grinder",
+                "Portfilter already contains coffee grounds!"
+            );
             return;
         }
 
-        if (audioSource != null)
-        {
+        if (audioSource != null && audioSource.clip != null)
             audioSource.PlayOneShot(audioSource.clip);
-        }
 
-        StartCoroutine(Grind(currentPortfilter));
+        grindCoroutine = StartCoroutine(
+            Grind(currentPortfilter)
+        );
     }
 
-
-    private IEnumerator Shake()
+    private IEnumerator Grind(Portfilter portfilter)
     {
-        float duration = 3f;
-        float magnitude = 0.02f;
+        if (GameplayInputLock.IsLocked || portfilter == null)
+        {
+            FinishGrinding();
+            yield break;
+        }
+
+        isGrinding = true;
+
+        currentDraggable =
+            portfilter.GetComponent<DraggableItem>();
+
+        if (currentDraggable != null)
+        {
+            wasDraggableEnabled = currentDraggable.enabled;
+            currentDraggable.enabled = false;
+        }
+
+        originalPosition = transform.localPosition;
+        portfilterOriginalPosition =
+            portfilter.transform.localPosition;
+
+        GameLogger.DebugLog(
+            "Grinder",
+            "Grinding coffee..."
+        );
+
+        PlayCoffeeAnimation();
 
         float elapsed = 0f;
 
-        while (elapsed < duration)
+        while (elapsed < grindDuration)
         {
-            float x = Random.Range(-magnitude, magnitude);
-            float y = Random.Range(-magnitude, magnitude);
+            if (GameplayInputLock.IsLocked || portfilter == null)
+            {
+                CancelGrinding();
+                yield break;
+            }
 
-            transform.localPosition = originalPosition + new Vector3(x, y, 0);
+            float x = Random.Range(
+                -shakeMagnitude,
+                shakeMagnitude
+            );
 
-            currentPortfilter.transform.localPosition = portfilterOriginalPosition + new Vector3(x, y, 0);
+            float y = Random.Range(
+                -shakeMagnitude,
+                shakeMagnitude
+            );
+
+            Vector3 shakeOffset = new Vector3(x, y, 0f);
+
+            transform.localPosition =
+                originalPosition + shakeOffset;
+
+            portfilter.transform.localPosition =
+                portfilterOriginalPosition + shakeOffset;
 
             elapsed += Time.deltaTime;
-
             yield return null;
         }
 
-        // กลับตำแหน่งเดิม
+        if (!GameplayInputLock.IsLocked && portfilter != null)
+        {
+            RestorePositions(portfilter);
+            ResetCoffeeAnimation();
+
+            portfilter.AddCoffeeGround();
+
+            GameLogger.Info(
+                "Grinder",
+                "Coffee grounds added!"
+            );
+        }
+
+        RestoreDraggable();
+        FinishGrinding();
+    }
+
+    private void CancelGrinding()
+    {
+        if (grindCoroutine != null)
+        {
+            StopCoroutine(grindCoroutine);
+            grindCoroutine = null;
+        }
+
+        RestorePositions(currentPortfilter);
+        ResetCoffeeAnimation();
+        RestoreDraggable();
+
+        isGrinding = false;
+
+        GameLogger.DebugLog(
+            "Grinder",
+            "Grinding cancelled."
+        );
+    }
+
+    private void RestorePositions(Portfilter portfilter)
+    {
         transform.localPosition = originalPosition;
 
-        if (currentPortfilter != null)
+        if (portfilter != null)
         {
-            currentPortfilter.transform.localPosition =
+            portfilter.transform.localPosition =
                 portfilterOriginalPosition;
         }
     }
 
-
-    private IEnumerator Grind(Portfilter portfilter)
+    private void RestoreDraggable()
     {
-        isGrinding = true;
-
-        DraggableItem draggable =
-            portfilter.GetComponent<DraggableItem>();
-
-        if (draggable != null)
+        if (currentDraggable != null)
         {
-            draggable.enabled = false;
+            currentDraggable.enabled = wasDraggableEnabled;
+            currentDraggable = null;
+        }
+    }
+
+    private void FinishGrinding()
+    {
+        isGrinding = false;
+        grindCoroutine = null;
+    }
+
+    private void OnDisable()
+    {
+        if (grindCoroutine != null)
+        {
+            StopCoroutine(grindCoroutine);
+            grindCoroutine = null;
         }
 
-        GameLogger.DebugLog("Grinder", "Grinding coffee...");
-
-        // เล่น Animation กาแฟ
-        PlayCoffeeAnimation();
-        yield return new WaitForSeconds(0f);
-        // Grinder + Portfilter สั่น 3 วิ
-        yield return StartCoroutine(Shake());
-
-        // เติม Coffee Ground
-        portfilter.AddCoffeeGround();
-
-        if (coffeeRenderer != null)
-        {
-            coffeeRenderer.enabled = false;
-        }
-
-        GameLogger.Info("Grinder", "Coffee Ground added!");
-
-        if (draggable != null)
-        {
-            draggable.enabled = true;
-        }
+        RestorePositions(currentPortfilter);
+        ResetCoffeeAnimation();
+        RestoreDraggable();
 
         isGrinding = false;
     }
