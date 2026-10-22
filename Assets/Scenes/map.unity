@@ -4104,7 +4104,7 @@ MonoBehaviour:
   typingSpeed: 0.025
   autoAdvanceDelay: 2.5
   tutorialVisuals: {fileID: 71261913}
-  tempCanvas: {fileID: 0}
+  tempCanvas: {fileID: 1224455083}
   mysteriousFox: {fileID: 487989445}
   pauseGameDuringDialogue: 1
   keepGameplayLockedAfterDialogue: 0
@@ -6890,7 +6890,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 361, y: 140.7}
+  m_AnchoredPosition: {x: 329, y: 140.7}
   m_SizeDelta: {x: 652.4, y: 610}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1128544509
@@ -11683,7 +11683,7 @@ SceneRoots:
   - {fileID: 497137950}
   - {fileID: 1963394235}
   - {fileID: 1218590715}
-  - {fileID: 1145316544}
   - {fileID: 1065549801}
   - {fileID: 417624795}
+  - {fileID: 1145316544}
   - {fileID: 950487797}

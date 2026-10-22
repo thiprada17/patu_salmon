@@ -63,13 +63,13 @@ public class TempCanvasController : MonoBehaviour
         if (Cup != null)
             Cup.SetActive(false);
 
-        if (Mat != null) 
+        if (Mat != null)
             Mat.SetActive(false);
 
         if (Sink != null)
             Sink.SetActive(false);
 
-        if(TrashBin != null)
+        if (TrashBin != null)
             TrashBin.SetActive(false);
 
         if (RecipePopup != null)
