@@ -1,8 +1,6 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 using TMPro;
 
@@ -11,36 +9,28 @@ public class Setting : MonoBehaviour
 
     [Header("Username")]
     [SerializeField] TMP_InputField usernameInput;
-    [SerializeField] Button editButton;
+    [SerializeField] Button editButton;             
     [SerializeField] int maxUsernameLength = 12;
-
-    [Header("ID Card")]
-    [SerializeField] Image characterImage;
-    [SerializeField] Sprite salmonSprite;
-    [SerializeField] Sprite platuSprite;
 
 
     [Header("Sound")]
-    [SerializeField] Slider effectSlider;
-    [SerializeField] Slider backgroundSlider;
-    [SerializeField] AudioMixer mixer;
-    [SerializeField] string effectParameter = "SFXVolume";
-    [SerializeField] string backgroundParameter = "BGMVolume";
+    [SerializeField] Button effectButton;
+    [SerializeField] TMP_Text effectValue;
+    [SerializeField] Button backgroundButton;
+    [SerializeField] TMP_Text backgroundValue;
 
-    const int MaxLevel = 5;
-
-
+    
     [Header("Language")]
-    [SerializeField] Button languageButton;
-    [SerializeField] TMP_Text languageValue;
-    [SerializeField] GameObject dropdownPanel;
-    [SerializeField] Button[] langButtons;
-    [SerializeField] GameObject[] langChecks;
+    [SerializeField] Button languageButton;   
+    [SerializeField] TMP_Text languageValue;  
+    [SerializeField] GameObject dropdownPanel;   
+    [SerializeField] Button[] langButtons;       
+    [SerializeField] GameObject[] langChecks;   
 
     readonly string[] langNames = { "Thai", "English", "Japanese" };
     readonly string[] langCodes = { "th", "en", "ja" };
 
-
+ 
     [Header("Logout")]
     [SerializeField] Button logoutButton;
     [SerializeField] string logoutPopupScene = "Setting_A1";
@@ -50,7 +40,7 @@ public class Setting : MonoBehaviour
     [SerializeField] Button backButton;
     [SerializeField] string backScene = "MainMenu";
 
-
+    
     [Header("Punch")]
     [SerializeField] float punchScale = 1.15f;
     [SerializeField] float punchTime = 0.18f;
@@ -58,15 +48,12 @@ public class Setting : MonoBehaviour
     int langIndex;
     bool isBusy;
 
-    readonly Dictionary<Transform, Vector3> handleBase = new Dictionary<Transform, Vector3>();
-    readonly Dictionary<Transform, Coroutine> handlePunch = new Dictionary<Transform, Coroutine>();
-
 
     void Start()
     {
-        SetCharacterImage();
-
         NoClip(languageValue);
+        NoClip(effectValue);
+        NoClip(backgroundValue);
 
         if (usernameInput != null)
         {
@@ -78,8 +65,8 @@ public class Setting : MonoBehaviour
             usernameInput.onEndEdit.AddListener(EndEditUsername);
         }
 
-        SetupSlider(effectSlider, "SfxVolume", "SfxOn", effectParameter);
-        SetupSlider(backgroundSlider, "BgmVolume", "BgmOn", backgroundParameter);
+        SetToggleLabel(effectValue, PlayerPrefs.GetInt("SfxOn", 1) == 1);
+        SetToggleLabel(backgroundValue, PlayerPrefs.GetInt("BgmOn", 1) == 1);
 
         langIndex = Mathf.Clamp(PlayerPrefs.GetInt("LanguageIndex", 0), 0, langNames.Length - 1);
         SetLanguageLabel(langIndex);
@@ -87,7 +74,7 @@ public class Setting : MonoBehaviour
 
         if (dropdownPanel != null) dropdownPanel.SetActive(false);
 
-
+        
         if (langButtons != null)
         {
             for (int i = 0; i < langButtons.Length; i++)
@@ -99,20 +86,11 @@ public class Setting : MonoBehaviour
         }
 
         if (editButton != null) editButton.onClick.AddListener(BeginEditUsername);
+        if (effectButton != null) effectButton.onClick.AddListener(() => ToggleSound("SfxOn", effectValue, effectButton));
+        if (backgroundButton != null) backgroundButton.onClick.AddListener(() => ToggleSound("BgmOn", backgroundValue, backgroundButton));
         if (languageButton != null) languageButton.onClick.AddListener(ToggleDropdown);
         if (logoutButton != null) logoutButton.onClick.AddListener(OnLogout);
         if (backButton != null) backButton.onClick.AddListener(OnBack);
-    }
-
-    void SetCharacterImage()
-    {
-        if (characterImage == null) return;
-
-        string character = GameData.selectedCharacter;
-        if (string.IsNullOrEmpty(character)) character = PlayerPrefs.GetString("Character", "salmon");
-
-        Sprite s = character == "platu" ? platuSprite : salmonSprite;
-        if (s != null) characterImage.sprite = s;
     }
 
     void Update()
@@ -131,7 +109,7 @@ public class Setting : MonoBehaviour
         t.overflowMode = TextOverflowModes.Overflow;
     }
 
-
+ 
     void BeginEditUsername()
     {
         if (usernameInput == null) return;
@@ -161,56 +139,25 @@ public class Setting : MonoBehaviour
         usernameInput.readOnly = true;
     }
 
-
-    void SetupSlider(Slider slider, string volumeKey, string onKey, string parameter)
+    
+    void ToggleSound(string key, TMP_Text label, Button btn)
     {
-        if (slider == null) return;
-
-        slider.wholeNumbers = false;
-        slider.minValue = 0f;
-        slider.maxValue = 1f;
-
-        float fallback = PlayerPrefs.GetInt(onKey, 1) == 1 ? 1f : 0f;
-        float volume = Mathf.Clamp01(PlayerPrefs.GetFloat(volumeKey, fallback));
-
-        slider.SetValueWithoutNotify(volume);
-        ApplyVolume(parameter, volume);
-
-        slider.onValueChanged.AddListener(v => OnVolumeChanged(volumeKey, onKey, parameter, v));
-    }
-
-    void OnVolumeChanged(string volumeKey, string onKey, string parameter, float volume)
-    {
-        PlayerPrefs.SetFloat(volumeKey, volume);
-        PlayerPrefs.SetInt(onKey, volume > 0.001f ? 1 : 0);
-        ApplyVolume(parameter, volume);
-    }
-
-    void ApplyVolume(string parameter, float volume)
-    {
-        if (mixer == null) return;
-        float db = volume <= 0.001f ? -80f : Mathf.Log10(volume) * 20f;
-        mixer.SetFloat(parameter, db);
-    }
-
-    void OnDisable()
-    {
+        bool next = PlayerPrefs.GetInt(key, 1) == 0;
+        PlayerPrefs.SetInt(key, next ? 1 : 0);
         PlayerPrefs.Save();
+
+        SetToggleLabel(label, next);
+        if (btn != null) StartCoroutine(Punch(btn.transform));
+
+
     }
 
-    void PunchHandle(Slider slider)
+    void SetToggleLabel(TMP_Text label, bool on)
     {
-        Transform t = slider.handleRect;
-        if (t == null) return;
-
-        if (!handleBase.ContainsKey(t)) handleBase[t] = t.localScale;
-        if (handlePunch.TryGetValue(t, out Coroutine running) && running != null) StopCoroutine(running);
-
-        t.localScale = handleBase[t];
-        handlePunch[t] = StartCoroutine(Punch(t));
+        if (label != null) label.text = on ? "ON" : "OFF";
     }
 
-
+  
     void ToggleDropdown()
     {
         if (dropdownPanel == null) return;
@@ -235,7 +182,7 @@ public class Setting : MonoBehaviour
         CloseDropdown();
     }
 
-
+ 
     void RefreshChecks()
     {
         if (langChecks == null) return;
@@ -252,7 +199,7 @@ public class Setting : MonoBehaviour
         languageValue.text = langNames[Mathf.Clamp(index, 0, langNames.Length - 1)];
     }
 
-
+    
     void OnLogout()
     {
         if (isBusy) return;
@@ -303,7 +250,7 @@ public class Setting : MonoBehaviour
         {
             e += Time.unscaledDeltaTime;
             float k = Mathf.Clamp01(e / time);
-            k = 1f - Mathf.Pow(1f - k, 3f);
+            k = 1f - Mathf.Pow(1f - k, 3f); 
             t.localScale = Vector3.LerpUnclamped(from, to, k);
             yield return null;
         }
