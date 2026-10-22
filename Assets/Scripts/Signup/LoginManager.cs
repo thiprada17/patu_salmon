@@ -39,7 +39,6 @@ public class LoginManager : MonoBehaviour
 
     // ---------- Public API ----------
 
-    /// ปุ่มเดียว: Backend ตรวจเองว่าบัญชีเก่าหรือใหม่ (POST /auth/continue)
     public void Continue(string email, string password,
                          Action<AuthResponse> onSuccess, Action<string> onError)
     {

@@ -1,5 +1,6 @@
 from infrastructure.supabase_client import admin_client
 
+
 class StatsRepository:
     # อ้างอิงตาราง player_stats ใน schema user_management
     def _stats(self):
@@ -21,23 +22,38 @@ class StatsRepository:
 
     # สร้างข้อมูลเริ่มต้นให้ผู้เล่น หากยังไม่มีข้อมูล
     def create_stats(self, user_id: str):
-        self._stats().insert({
+        result = self._stats().insert({
             "user_id": user_id,
             "coin": 0,
             "work_days": 0,
             "work_streak": 0,
             "total_customers_served": 0,
         }).execute()
+        return result.data[0] if result.data else None
 
-    # ป้องกันการสร้าง player_stats ซ้ำ
+    # สร้าง player_stats หากยังไม่มี โดยไม่เขียนทับข้อมูลเดิม
     def create_if_not_exists(self, user_id: str):
         existing = self.get_by_user_id(user_id)
-
         if existing:
             return existing
 
-        self.create_stats(user_id)
-        return self.get_by_user_id(user_id)
+        try:
+            self.create_stats(user_id)
+        except Exception:
+            # อาจมี Trigger หรือ Request อื่นสร้างแถวเดียวกันพร้อมกัน
+            # ถ้าพบข้อมูลหลัง insert ล้มเหลว ให้ใช้ข้อมูลเดิม
+            existing = self.get_by_user_id(user_id)
+            if existing:
+                return existing
+            raise
+
+        # อ่านข้อมูลกลับเพื่อยืนยันว่าบันทึกสำเร็จ
+        saved = self.get_by_user_id(user_id)
+        if not saved:
+            raise RuntimeError(
+                f"Player stats row was not found after creation: {user_id}"
+            )
+        return saved
 
     # บันทึกสถิติใหม่หลังจบวันทำงาน
     def update_after_workday(
