@@ -17,10 +17,15 @@ public class LoadingScreen : MonoBehaviour
     [SerializeField] private float hopGap = 0.06f;
     [SerializeField] private float restTime = 0.4f;
 
+    [Header("Loading Duration")]
+    [SerializeField] private float minimumLoadingTime = 3f;
+
     [Header("Scene")]
     [SerializeField] private string nextScene = "main_game";
 
     private bool isSending;
+    private bool isReadyToEnterGame;
+    private float loadingStartTime;
 
     private void Awake()
     {
@@ -30,51 +35,74 @@ public class LoadingScreen : MonoBehaviour
 
         if (infoBoard != null && infoSprites != null)
         {
-            if (character == "platu")
+            if (character == "platu" && infoSprites.Length > 0)
                 infoBoard.sprite = infoSprites[0];
-            else if (character == "salmon")
+            else if (character == "salmon" && infoSprites.Length > 1)
                 infoBoard.sprite = infoSprites[1];
         }
     }
 
     private void Start()
     {
+        loadingStartTime = Time.time;
+
         if (loadingText != null)
             StartCoroutine(Hop());
 
         SendPlayerData();
     }
 
+    private void Update()
+    {
+        if (!isReadyToEnterGame)
+            return;
+
+        if (Time.time - loadingStartTime < minimumLoadingTime)
+            return;
+
+        SceneManager.LoadScene(nextScene);
+    }
+
     public void SendPlayerData()
     {
-        if (isSending)
+        if (isSending || isReadyToEnterGame)
             return;
 
         string userId = LoginManager.UserId;
-        string username = PlayerPrefs.GetString("Username", "");
-        string character = PlayerPrefs.GetString("SelectedCharacter", "");
-        string language = PlayerPrefs.GetString("Language", "english");
 
         if (string.IsNullOrWhiteSpace(userId))
         {
-            GameLogger.Error(
-                "Loading",
-                "UserID is empty. Login/Signup must save the real Supabase UUID."
-            );
-
+            GameLogger.Error("Loading", "UserID is empty. Please log in again.");
             SetLoadingText("User ID not found. Please log in again.");
             return;
         }
 
+        string savedUserId =
+            PlayerPrefs.GetString("StarterPlayerSavedUserID", "");
+
+        if (savedUserId == userId)
+        {
+            GameLogger.Info("Loading", "Starter player already saved. Skipping save.");
+            PrepareToEnterGame();
+            return;
+        }
+
+        string username = PlayerPrefs.GetString("Username", "");
+        string character = PlayerPrefs.GetString("SelectedCharacter", "");
+        string language = PlayerPrefs.GetString("Language", "english");
+
         if (string.IsNullOrWhiteSpace(username) ||
             string.IsNullOrWhiteSpace(character))
         {
-            GameLogger.Error(
-                "Loading",
-                "Username or character is empty."
-            );
-
+            GameLogger.Error("Loading", "Username or character is empty.");
             SetLoadingText("Incomplete player information.");
+            return;
+        }
+
+        if (LoginManager.Instance == null)
+        {
+            GameLogger.Error("Loading", "LoginManager instance not found.");
+            SetLoadingText("Login service unavailable. Please try again.");
             return;
         }
 
@@ -87,28 +115,27 @@ public class LoadingScreen : MonoBehaviour
             language,
             onSuccess: () =>
             {
-                GameLogger.Info(
-                    "Loading",
-                    "Starter player data saved successfully."
-                );
+                PlayerPrefs.SetString("StarterPlayerSavedUserID", userId);
+                PlayerPrefs.Save();
 
-              
-                SetLoadingText("Entering game...");
-                
-                SceneManager.LoadScene(nextScene);
+                GameLogger.Info("Loading", "Starter player data saved successfully.");
+
+                PrepareToEnterGame();
             },
             onError: error =>
             {
                 isSending = false;
 
-                GameLogger.Error(
-                    "Loading",
-                    "Failed to save starter player: " + error
-                );
-
+                GameLogger.Error("Loading", "Failed to save starter player: " + error);
                 SetLoadingText("Failed to save data. Please try again.");
             }
         );
+    }
+
+    private void PrepareToEnterGame()
+    {
+        isReadyToEnterGame = true;
+        SetLoadingText("Entering game...");
     }
 
     private void SetLoadingText(string message)
@@ -121,6 +148,9 @@ public class LoadingScreen : MonoBehaviour
     {
         while (true)
         {
+            if (loadingText == null)
+                yield break;
+
             loadingText.ForceMeshUpdate();
             TMP_TextInfo info = loadingText.textInfo;
             int count = info.characterCount;
@@ -141,11 +171,9 @@ public class LoadingScreen : MonoBehaviour
 
                     float start = i * hopGap;
                     float p = (elapsed - start) / hopTime;
-
-                    float offset = 0f;
-
-                    if (p > 0f && p < 1f)
-                        offset = Mathf.Sin(p * Mathf.PI) * hopHeight;
+                    float offset = p > 0f && p < 1f
+                        ? Mathf.Sin(p * Mathf.PI) * hopHeight
+                        : 0f;
 
                     int mat = info.characterInfo[i].materialReferenceIndex;
                     int vert = info.characterInfo[i].vertexIndex;

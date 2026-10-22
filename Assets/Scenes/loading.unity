@@ -620,7 +620,7 @@ MonoBehaviour:
   hopTime: 0.3
   hopGap: 0.06
   restTime: 0.4
-  nextScene: main_game
+  nextScene: map
 --- !u!4 &1033159395
 Transform:
   m_ObjectHideFlags: 0
