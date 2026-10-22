@@ -11,7 +11,11 @@ public class Mat : MonoBehaviour
 
     public void AttachLeftCup(Cup cup)
     {
-        if (cup == null) return;
+        if (GameplayInputLock.IsLocked)
+            return;
+
+        if (cup == null)
+            return;
 
         leftCup = cup;
         CheckRecipe(leftCup);
@@ -27,7 +31,11 @@ public class Mat : MonoBehaviour
 
     public void AttachRightCup(Cup cup)
     {
-        if (cup == null) return;
+        if (GameplayInputLock.IsLocked)
+            return;
+
+        if (cup == null)
+            return;
 
         rightCup = cup;
         CheckRecipe(rightCup);
@@ -43,11 +51,19 @@ public class Mat : MonoBehaviour
 
     private void CheckRecipe(Cup cup)
     {
-        if (cup == null) return;
+        // Prevent recipe checking during dialogue/tutorial.
+        if (GameplayInputLock.IsLocked)
+            return;
+
+        if (cup == null)
+            return;
 
         if (recipeManager == null)
         {
-            GameLogger.Warn("Mat", "RecipeManager is not assigned.");
+            GameLogger.Warn(
+                "Mat",
+                "�ѧ�������� RecipeManager"
+            );
             return;
         }
 
@@ -55,14 +71,28 @@ public class Mat : MonoBehaviour
 
         if (recipe == null)
         {
-            GameLogger.Warn("Mat", "Cup does not match any recipe.");
+            GameLogger.Warn(
+                "Mat",
+                "Cup ������ç�Ѻ�ٵ�"
+            );
             return;
         }
 
-        GameLogger.Info("Mat", "Cup recipe: " + recipe.recipeType);
+        GameLogger.Info(
+            "Mat",
+            "Cup is " + recipe.recipeType
+        );
+
+        // Change this cup to its finished-recipe appearance.
         cup.SetFinishedRecipe(
             recipe.finishedCupSprite,
             recipe.recipeType
         );
+    }
+
+    private void OnDisable()
+    {
+        leftCup = null;
+        rightCup = null;
     }
 }

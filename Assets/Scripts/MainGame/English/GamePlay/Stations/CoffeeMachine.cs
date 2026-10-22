@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using System.Collections;
 using UnityEngine.Audio;
@@ -11,13 +12,19 @@ public class CoffeeMachine : MonoBehaviour
     private Vector3 portfilterOriginalPosition;
     private Vector3 cupOriginalPosition;
 
+    [Header("Audio")]
     [SerializeField] private AudioSource audioSource;
 
     [SerializeField] private AudioSource inputaudioSource;
     [SerializeField] private AudioSource outputaudioSource;
 
-    // àªç¡ÇèÒà¤Ã×èÍ§¡ÓÅÑ§·Ó§Ò¹ÍÂÙèËÃ×ÍäÁè
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í§ï¿½ï¿½ï¿½Ñ§ï¿½Ó§Ò¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    [Header("Coffee Settings")]
+    [SerializeField] private float coffeeDuration = 2f;
+    [SerializeField] private float shakeMagnitude = 0.02f;
+
     private bool isMakingCoffee = false;
+    private Coroutine coffeeCoroutine;
 
     private void Start()
     {
@@ -26,6 +33,12 @@ public class CoffeeMachine : MonoBehaviour
 
     public void AttachPortfilter(Portfilter portfilter)
     {
+        if (GameplayInputLock.IsLocked)
+            return;
+
+        if (portfilter == null)
+            return;
+
         currentPortfilter = portfilter;
         portfilterOriginalPosition = portfilter.transform.localPosition;
         if (inputaudioSource != null)
@@ -33,6 +46,11 @@ public class CoffeeMachine : MonoBehaviour
             inputaudioSource.PlayOneShot(inputaudioSource.clip);
         }
         GameLogger.DebugLog("CoffeeMach", "Portfilter attached to Coffee Machine");
+
+        GameLogger.DebugLog(
+            "CoffeeMach",
+            "Portfilter attached to Coffee Machine"
+        );
     }
 
     public void RemovePortfilter(Portfilter portfilter)
@@ -45,14 +63,29 @@ public class CoffeeMachine : MonoBehaviour
                 outputaudioSource.PlayOneShot(outputaudioSource.clip);
             }
             GameLogger.DebugLog("CoffeeMach", "Portfilter removed from Coffee Machine");
+
+            GameLogger.DebugLog(
+                "CoffeeMach",
+                "Portfilter removed from Coffee Machine"
+            );
         }
     }
 
     public void AttachCup(Cup cup)
     {
+        if (GameplayInputLock.IsLocked)
+            return;
+
+        if (cup == null)
+            return;
+
         currentCup = cup;
         cupOriginalPosition = cup.transform.localPosition;
-        GameLogger.DebugLog("CoffeeMach", "Cup attached to Coffee Machine");
+
+        GameLogger.DebugLog(
+            "CoffeeMach",
+            "Cup attached to Coffee Machine"
+        );
     }
 
     public void RemoveCup(Cup cup)
@@ -60,83 +93,175 @@ public class CoffeeMachine : MonoBehaviour
         if (currentCup == cup)
         {
             currentCup = null;
-            GameLogger.DebugLog("CoffeeMach", "Cup removed from Coffee Machine");
+
+            GameLogger.DebugLog(
+                "CoffeeMach",
+                "Cup removed from Coffee Machine"
+            );
         }
     }
+
     private void OnMouseDown()
     {
-        // ¶éÒ¡ÓÅÑ§·Ó¡Òá¿ÍÂÙè
+        if (GameplayInputLock.IsLocked)
+            return;
+
         if (isMakingCoffee)
         {
-            GameLogger.DebugLog("CoffeeMach", "Coffee Machine is working...");
+            GameLogger.DebugLog(
+                "CoffeeMach",
+                "Coffee Machine is working..."
+            );
             return;
         }
 
-        // àªç¡ Portfilter
         if (currentPortfilter == null)
         {
-            GameLogger.Warn("CoffeeMach", "ÂÑ§äÁèä´éãÊè Portfilter");
+            GameLogger.Warn(
+                "CoffeeMach",
+                "ï¿½Ñ§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Portfilter"
+            );
             return;
         }
 
-        // àªç¡ Coffee Ground
         if (!currentPortfilter.hasCoffeeGround)
         {
-            GameLogger.DebugLog("CoffeeMach", "Need coffee ground");
+            GameLogger.DebugLog(
+                "CoffeeMach",
+                "Need coffee ground"
+            );
             return;
         }
 
-
-        // àªç¡ Cup
         if (currentCup == null)
         {
-            GameLogger.Warn("CoffeeMach", "ÂÑ§äÁèä´éãÊè Cup");
+            GameLogger.Warn(
+                "CoffeeMach",
+                "ï¿½Ñ§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Cup"
+            );
             return;
         }
         if (currentCup.IsFull)
-        {
-            GameLogger.Warn("CoffeeMach", "Cup is full.");
-            MachineShakeManager.Shake(gameObject);
             return;
-        }
-        if (audioSource != null)
-        {
+
+        if (audioSource != null && audioSource.clip != null)
             audioSource.PlayOneShot(audioSource.clip);
-        }
 
-     
-
-        
-
-        // àÃÔèÁ·Ó¡Òá¿
-        StartCoroutine(MakeCoffeeProcess());
+        coffeeCoroutine = StartCoroutine(MakeCoffeeProcess());
     }
 
     private IEnumerator MakeCoffeeProcess()
     {
         isMakingCoffee = true;
 
-        float duration = 2f;
+        Portfilter portfilter = currentPortfilter;
+        Cup cup = currentCup;
+
+        if (portfilter == null || cup == null)
+        {
+            FinishCoffeeProcess();
+            yield break;
+        }
+
+        // Save positions before shaking begins.
+        originalPosition = transform.localPosition;
+        portfilterOriginalPosition = portfilter.transform.localPosition;
+        cupOriginalPosition = cup.transform.localPosition;
+
         float elapsed = 0f;
 
-        while (elapsed < duration)
+        while (elapsed < coffeeDuration)
         {
-            float x = Random.Range(-0.02f, 0.02f);
-            float y = Random.Range(-0.02f, 0.02f);
+            // Stop coffee production if the tutorial starts.
+            if (GameplayInputLock.IsLocked)
+            {
+                RestorePositions(portfilter, cup);
+                FinishCoffeeProcess();
+                yield break;
+            }
 
-            transform.localPosition =
-                originalPosition + new Vector3(x, y, 0);
+            // Stop safely if either item is destroyed.
+            if (portfilter == null || cup == null)
+                break;
 
-            currentPortfilter.transform.localPosition = portfilterOriginalPosition + new Vector3(x, y, 0);
+            float x = Random.Range(-shakeMagnitude, shakeMagnitude);
+            float y = Random.Range(-shakeMagnitude, shakeMagnitude);
 
-            currentCup.transform.localPosition = cupOriginalPosition + new Vector3(x, y, 0);
+            Vector3 shakeOffset = new Vector3(x, y, 0f);
+
+            transform.localPosition = originalPosition + shakeOffset;
+            portfilter.transform.localPosition =
+                portfilterOriginalPosition + shakeOffset;
+            cup.transform.localPosition =
+                cupOriginalPosition + shakeOffset;
+
             elapsed += Time.deltaTime;
-
             yield return null;
         }
 
-        // ¡ÅÑºµÓáË¹è§à´ÔÁ
+        RestorePositions(portfilter, cup);
+
+        // Do not produce coffee if gameplay has become locked.
+        if (!GameplayInputLock.IsLocked &&
+            portfilter != null &&
+            cup != null &&
+            currentPortfilter == portfilter &&
+            currentCup == cup)
+        {
+            bool success = cup.AddIngredient(IngredientType.Coffee);
+
+            if (success)
+            {
+                GameLogger.DebugLog(
+                    "CoffeeMach",
+                    "Coffee added to Cup!"
+                );
+
+                portfilter.RemoveCoffeeGround();
+            }
+            else
+            {
+                GameLogger.DebugLog(
+                    "CoffeeMach",
+                    "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¶ï¿½ï¿½ï¿½ Coffee Å§ Cup ï¿½ï¿½"
+                );
+            }
+        }
+
+        FinishCoffeeProcess();
+    }
+
+    private void RestorePositions(Portfilter portfilter, Cup cup)
+    {
         transform.localPosition = originalPosition;
+
+        if (portfilter != null)
+        {
+            portfilter.transform.localPosition =
+                portfilterOriginalPosition;
+        }
+
+        if (cup != null)
+        {
+            cup.transform.localPosition = cupOriginalPosition;
+        }
+    }
+
+    private void FinishCoffeeProcess()
+    {
+        isMakingCoffee = false;
+        coffeeCoroutine = null;
+    }
+
+    private void OnDisable()
+    {
+        if (coffeeCoroutine != null)
+        {
+            StopCoroutine(coffeeCoroutine);
+            coffeeCoroutine = null;
+        }
+
+        isMakingCoffee = false;
 
         if (currentPortfilter != null)
         {
@@ -144,21 +269,12 @@ public class CoffeeMachine : MonoBehaviour
                 portfilterOriginalPosition;
         }
 
-        // à¾ÔèÁ Coffee à¢éÒ Cup
-        bool success = currentCup.AddIngredient( IngredientType.Coffee );
-
-        if (success)
+        if (currentCup != null)
         {
-            GameLogger.DebugLog("CocCoffeeMachoa", "Coffee added to Cup!");
-
-            // Åº Coffee Ground ÍÍ¡¨Ò¡ Portfilter
-            currentPortfilter.RemoveCoffeeGround();
-        }
-        else
-        {
-            GameLogger.DebugLog("CoffeeMach", "äÁèÊÒÁÒÃ¶ãÊè Coffee Å§ Cup ä´é");
+            currentCup.transform.localPosition =
+                cupOriginalPosition;
         }
 
-        isMakingCoffee = false;
+        transform.localPosition = originalPosition;
     }
 }
