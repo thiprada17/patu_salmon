@@ -1,7 +1,6 @@
-
 from datetime import datetime, timezone
 
-from infrastructure.supabase_client import db_client, admin_client
+from infrastructure.supabase_client import admin_client
 
 
 class UserRepository:
@@ -11,7 +10,7 @@ class UserRepository:
     def get_by_user_id(self, user_id: str):
         result = (
             self._users()
-            .select("user_id, username, character", "language")
+            .select("user_id, username, character, language")
             .eq("user_id", user_id)
             .limit(1)
             .execute()
@@ -21,7 +20,7 @@ class UserRepository:
     def create_player(self, user_id: str):
         now = datetime.now(timezone.utc).isoformat()
 
-        self._users(use_admin=True).insert({
+        self._users().insert({
             "user_id": user_id,
             "username": f"Player_{user_id[:8]}",
             "character": "salmon",
@@ -29,7 +28,6 @@ class UserRepository:
             "created_at": now,
             "last_login_at": now,
         }).execute()
-
 
     def update_last_login(self, user_id: str):
         now = datetime.now(timezone.utc).isoformat()

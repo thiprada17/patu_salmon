@@ -96,7 +96,7 @@ class AuthService:
         # ตรวจว่ามีบัญชีอยู่แล้วหรือไม่
         try:
             existing_user = self._find_auth_user(email)
-            print(f"DEBUG: email={email}, existing_user={existing_user is not None}")
+            logger.debug("Existing auth account found: %s", existing_user is not None)
         except Exception:
             logger.exception("Failed to find auth user")
             raise HTTPException(
@@ -105,17 +105,13 @@ class AuthService:
             )
 
         if existing_user:
-            # บัญชีเดิม: Login เท่านั้น
+            # บัญชีเดิม: เข้าสู่ระบบด้วยอีเมลและรหัสผ่าน
             try:
-                result = supabase.auth.sign_up({
+                result = supabase.auth.sign_in_with_password({
                     "email": email,
                     "password": password,
-                    "options": {
-                        "email_redirect_to": "https://thiprada17.itch.io/platu-salmon"
-                    }
                 })
             except Exception as exc:
-                print(f"LOGIN ERROR: {type(exc).__name__}: {exc}")
                 message = str(exc).lower()
                 code = str(getattr(exc, "code", "")).lower()
 
@@ -129,8 +125,9 @@ class AuthService:
                     )
 
                 if (
-                    code == "invalid_credentials"
+                    code in ("invalid_credentials", "invalid_login_credentials")
                     or "invalid login credentials" in message
+                    or "invalid password" in message
                 ):
                     raise HTTPException(
                         status_code=401,
@@ -326,8 +323,14 @@ class AuthService:
 
         except HTTPException:
             raise
-        except Exception:
-            logger.exception("Failed to refresh session")
+        except Exception as exc:
+            # Refresh token ที่ถูกใช้ไปแล้วหรือหมดอายุ ไม่ควรนำกลับมา Retry
+            message = str(exc).lower()
+            if "already used" in message or "invalid refresh token" in message:
+                logger.info("Refresh token is no longer valid; user must sign in again")
+            else:
+                logger.exception("Failed to refresh session")
+
             raise HTTPException(
                 status_code=401,
                 detail="Session expired. Please login again",
