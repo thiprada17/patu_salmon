@@ -13,6 +13,9 @@ public class CustomerOrder : MonoBehaviour
 
     public RecipeType Order => order;
 
+    private bool orderAlreadyServed;
+    private CustomerMovement movement;
+
     private void Awake()
     {
         if (orderBubble == null)
@@ -31,6 +34,15 @@ public class CustomerOrder : MonoBehaviour
                 name + " cannot find CustomerOrderBubble!"
             );
         }
+
+        movement = GetComponent<CustomerMovement>();
+
+        if (movement == null)
+        {
+            Debug.LogError(
+                name + " cannot find CustomerMovement!"
+            );
+        }
     }
 
     public void GenerateOrder()
@@ -38,6 +50,7 @@ public class CustomerOrder : MonoBehaviour
         int randomIndex = Random.Range(1, 6);
 
         order = (RecipeType)randomIndex;
+        orderAlreadyServed = false;
 
         ShowDialogue();
 
@@ -65,10 +78,7 @@ public class CustomerOrder : MonoBehaviour
 
         string dialogue =
             dialogueData.dialogues[
-                Random.Range(
-                    0,
-                    dialogueData.dialogues.Length
-                )
+                Random.Range(0, dialogueData.dialogues.Length)
             ];
 
         string itemName = GetItemName(order);
@@ -115,27 +125,33 @@ public class CustomerOrder : MonoBehaviour
 
     public void ReceiveCup(ServingCup cup)
     {
-        if (cup == null)
+        if (cup == null || orderAlreadyServed)
             return;
 
         Cup cupComponent = cup.GetComponent<Cup>();
 
         if (cupComponent == null)
         {
-            GameLogger.Warn("ReceiveCup", name + " received object without Cup component!");
+            GameLogger.Warn(
+                "ReceiveCup",
+                name + " received object without Cup component!"
+            );
             return;
         }
 
-        // ห้ามรับแก้วเปล่า
         if (!cupComponent.IsFinished())
         {
-            GameLogger.Info("ReceiveCup", name + " cannot receive an unfinished cup!");
+            GameLogger.Info(
+                "ReceiveCup",
+                name + " cannot receive an unfinished cup!"
+            );
             return;
         }
 
         GameLogger.Info(
             "ReceiveCup",
-            name + " received " + cup.RecipeType + " | Expected = " + order
+            name + " received " + cup.RecipeType +
+            " | Expected = " + order
         );
 
         if (cup.RecipeType == order)
@@ -146,7 +162,8 @@ public class CustomerOrder : MonoBehaviour
         {
             WrongOrder(cup);
 
-            DraggableItem draggable = cup.GetComponent<DraggableItem>();
+            DraggableItem draggable =
+                cup.GetComponent<DraggableItem>();
 
             if (draggable != null)
             {
@@ -157,36 +174,12 @@ public class CustomerOrder : MonoBehaviour
 
     private void ServeCorrectOrder(ServingCup cup)
     {
-        Debug.Log(
-            name + " received CORRECT order!"
-        );
-
-        HideDialogue();
-
-        CustomerMovement movement =
-            GetComponent<CustomerMovement>();
-
-        if (movement != null)
-        {
-            movement.LeaveHappy();
-        }
-
-        Destroy(cup.gameObject);
+        CorrectOrder(cup);
     }
 
     private void ServeWrongOrder(ServingCup cup)
     {
-        Debug.Log(
-            name +
-            " received WRONG order! " +
-            "Expected = " +
-            order +
-            ", Received = " +
-            cup.RecipeType
-        );
-
-        // µÍ¹¹ÕéÂÑ§äÁè·ÓÍÐäÃ¡Ñº Customer
-        // ÀÒÂËÅÑ§ÊÒÁÒÃ¶·ÓãËé Angry ä´é
+        WrongOrder(cup);
     }
 
     public void HideDialogue()
@@ -199,33 +192,54 @@ public class CustomerOrder : MonoBehaviour
 
     private void CorrectOrder(ServingCup cup)
     {
-        Debug.Log(name + " received CORRECT order!");
+        if (orderAlreadyServed)
+            return;
 
+        if (movement == null)
+        {
+            Debug.LogError(
+                name + " cannot complete order: CustomerMovement is missing!"
+            );
+            return;
+        }
+
+        orderAlreadyServed = true;
         HideDialogue();
 
-        CustomerMovement movement =
-            GetComponent<CustomerMovement>();
-
-        if (CoinManager.Instance != null && movement != null)
+        if (CoinManager.Instance != null)
         {
             CoinManager.Instance.EarnCoins(
-              order,
-              movement.GetWaitTimer(),
-              movement.GetMaxWaitTime(),
-              movement.IsAngryState()
+                order,
+                movement.GetWaitTimer(),
+                movement.GetMaxWaitTime(),
+                movement.IsAngryState()
             );
         }
 
-        if (movement != null)
+        TutorialSession.RegisterTutorialCustomerServed();
+
+        bool isFinalTutorialCustomer =
+            TutorialSession.IsFinalTutorialCustomer;
+
+        if (cup != null)
         {
-            movement.LeaveHappy();
+            Destroy(cup.gameObject);
         }
 
-        Destroy(cup.gameObject);
+        if (isFinalTutorialCustomer)
+        {
+            movement.LeaveHappy(true);
+            return;
+        }
+
+        movement.LeaveHappy();
     }
 
     private void WrongOrder(ServingCup cup)
     {
+        if (cup == null)
+            return;
+
         Debug.Log(
             name +
             " received WRONG order! Expected = " +
@@ -233,9 +247,6 @@ public class CustomerOrder : MonoBehaviour
             " | Received = " +
             cup.RecipeType
         );
-
-        // µÍ¹¹ÕéÂÑ§äÁè·ÓÍÐäÃ¡ÑºÅÙ¡¤éÒ
-        // á¡éÇÂÑ§ÍÂÙè à¾×èÍãËéàÍÒä»àÊÔÃì¿ãËÁèä´é
     }
 
     public void ShowTimeBar()
