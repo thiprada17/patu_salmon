@@ -17,8 +17,12 @@ public class ShiftEnd : MonoBehaviour
 
     [SerializeField] private GameObject shiftSummaryPopup;
 
+    public bool IsShowingSummary { get; private set; }
+
     public void ShowSummary()
     {
+        IsShowingSummary = true;
+
         if (shiftSummaryPopup != null)
         {
             shiftSummaryPopup.SetActive(true);
@@ -63,11 +67,10 @@ public class ShiftEnd : MonoBehaviour
         );
     }
 
-
-
-
     public void NextShift()
     {
+        IsShowingSummary = false;
+
         GameLogger.DebugLog("SHIFT END", "click");
 
         Time.timeScale = 1f;

@@ -8958,9 +8958,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4fb09fbd6058814f835fb64193d2dc2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dayDurationSeconds: 30
+  dayDurationSeconds: 300
   timerText: {fileID: 930312945}
   TutorialPanel: {fileID: 324664396}
+  customerSpawner: {fileID: 1449912688}
+  shiftEnd: {fileID: 276356386}
+  summaryEveryShifts: 1
 --- !u!4 &1023286688
 Transform:
   m_ObjectHideFlags: 0
@@ -11176,9 +11179,12 @@ MonoBehaviour:
   customerPrefab: {fileID: 7}
   spawnPoint: {fileID: 979556902}
   customerQueue: {fileID: 428087306}
-  customerCount: 100
-  minSpawnTime: 5
-  maxSpawnTime: 12
+  startingCustomerCount: 5
+  extraCustomersPerShift: 1
+  startingMinSpawnTime: 2
+  startingMaxSpawnTime: 5
+  spawnTimeReductionPerShift: 0.1
+  minimumSpawnDelay: 0.75
   tutorialCustomerCount: 3
 --- !u!1 &1452895327
 GameObject:
