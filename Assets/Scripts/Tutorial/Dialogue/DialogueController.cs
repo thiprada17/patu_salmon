@@ -1,6 +1,7 @@
 
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using TMPro;
 using System;
 using System.Collections;
@@ -55,10 +56,10 @@ public class DialogueController : MonoBehaviour
     [SerializeField] private DialogueSequenceEntry[] dialogueSequence;
 
     [Header("Typewriter Settings")]
-    [SerializeField] private float typingSpeed = 0.035f;
+    [SerializeField, Min(0f)] private float typingSpeed = 0.035f;
 
     [Header("Auto Settings")]
-    [SerializeField] private float autoAdvanceDelay = 2.5f;
+    [SerializeField, Min(0f)] private float autoAdvanceDelay = 2.5f;
 
     [Header("Tutorial Visuals")]
     [SerializeField] private TutorialVisualController tutorialVisuals;
@@ -70,10 +71,9 @@ public class DialogueController : MonoBehaviour
     [SerializeField] private GameObject mysteriousFox;
 
     [Header("Tutorial Pause")]
-    [Tooltip("Pause gameplay time while this dialogue is active.")]
     [SerializeField] private bool pauseGameDuringDialogue = true;
 
-    [Tooltip("Keep gameplay paused and counter interactions locked after this dialogue ends. Enable this in Main_Game when TutorialVDO opens afterward.")]
+    [Tooltip("Keep gameplay paused and input locked after this dialogue ends.")]
     [SerializeField] private bool keepGameplayLockedAfterDialogue = false;
 
     [Header("Dialogue End Event")]
@@ -91,10 +91,12 @@ public class DialogueController : MonoBehaviour
     private Coroutine typingCoroutine;
     private Coroutine autoCoroutine;
 
-    private string PlayerUsername;
+    private string playerUsername;
 
     private bool wasGamePausedByDialogue;
     private float previousTimeScale = 1f;
+
+    private bool inputLockAcquired;
 
     private void Awake()
     {
@@ -116,27 +118,73 @@ public class DialogueController : MonoBehaviour
         UpdateAutoButton();
     }
 
+
     private void Start()
     {
-        Debug.Log("DialogueController Start() is running!");
+        string sceneName = SceneManager.GetActiveScene().name;
+
+        Debug.Log(
+            $"[DialogueController] Start. Scene={sceneName}, " +
+            $"Initialized={TutorialSession.IsInitialized}, " +
+            $"FirstTime={TutorialSession.IsFirstTimePlayer}"
+        );
+
+        // Only run the dialogue in main_game.
+        if (sceneName != "main_game")
+        {
+            HideDialogueUI();
+            return;
+        }
+
+        // Do not show ANY dialogue until player stats are initialized.
+        if (!TutorialSession.IsInitialized)
+        {
+            Debug.LogWarning(
+                "[DialogueController] Player stats are not initialized. " +
+                "Dialogue will remain hidden."
+            );
+
+            HideDialogueUI();
+            return;
+        }
+
+        // Returning players skip the entire dialogue sequence,
+        // including both Normal and Tutorial entries.
+        if (!TutorialSession.IsFirstTimePlayer)
+        {
+            Debug.Log(
+                "[DialogueController] Returning player. " +
+                "Skipping the entire dialogue sequence."
+            );
+
+            HideDialogueUI();
+            return;
+        }
+
+        // Only first-time players reach this point.
+        TutorialSession.StartTutorial();
 
         if (dialogueSequence == null || dialogueSequence.Length == 0)
         {
-            Debug.LogWarning("No entries assigned to Dialogue Sequence.");
+            Debug.LogWarning(
+                "[DialogueController] No Dialogue Sequence entries assigned."
+            );
+
+            HideDialogueUI();
             return;
         }
 
         currentLine = 0;
+
         autoMode = false;
         dialogueStarted = true;
         isTutorial = false;
 
-        PlayerUsername = PlayerPrefs.GetString("Username", "Player");
+        playerUsername = PlayerPrefs.GetString("Username", "Player");
 
-        // Lock counter objects for the entire dialogue.
         GameplayInputLock.Lock();
+        inputLockAcquired = true;
 
-        // Pause the game if this option is enabled.
         PauseGameForDialogue();
 
         if (tutorialOverlay != null)
@@ -151,7 +199,7 @@ public class DialogueController : MonoBehaviour
         ShowDialogue();
     }
 
-    // Used by other scripts to check whether dialogue is active.
+
     public bool IsTutorialInputLocked()
     {
         return dialogueStarted;
@@ -167,6 +215,7 @@ public class DialogueController : MonoBehaviour
             return;
         }
 
+        // First click finishes the typewriter.
         if (isTyping)
         {
             FinishTyping();
@@ -175,14 +224,67 @@ public class DialogueController : MonoBehaviour
 
         StopAutoAdvance();
 
-        if (currentLine >= dialogueSequence.Length - 1)
+        int nextLine = FindNextEligibleEntry(currentLine + 1);
+
+        if (nextLine >= dialogueSequence.Length)
         {
             EndDialogue();
             return;
         }
 
-        currentLine++;
+        currentLine = nextLine;
         ShowDialogue();
+    }
+
+    private int FindNextEligibleEntry(int startIndex)
+    {
+        int index = Mathf.Max(0, startIndex);
+
+        while (index < dialogueSequence.Length &&
+            ShouldSkipTutorialEntry(dialogueSequence[index]))
+        {
+            Debug.Log(
+                $"[DialogueController] Skipping entry {index}: " +
+                $"{dialogueSequence[index].EntryType}"
+            );
+
+            index++;
+        }
+
+        return index;
+    }
+
+    private bool ShouldSkipTutorialEntry(DialogueSequenceEntry entry)
+    {
+        if (entry == null)
+            return true;
+
+        // Normal dialogue should remain available to everyone.
+        if (entry.EntryType == DialogueEntryType.Normal)
+            return false;
+
+        // Do not show tutorial entries until player stats are loaded.
+        if (!TutorialSession.IsInitialized)
+        {
+            Debug.LogWarning(
+                "Player stats are not initialized. Skipping tutorial entry."
+            );
+
+            return true;
+        }
+
+        // Only players with work_days == 0 can see tutorial entries.
+        bool shouldSkip = !TutorialSession.IsFirstTimePlayer;
+
+        if (shouldSkip)
+        {
+            Debug.Log(
+                $"Skipping tutorial entry at index {currentLine}. " +
+                $"FirstTimePlayer={TutorialSession.IsFirstTimePlayer}"
+            );
+        }
+
+        return shouldSkip;
     }
 
     private void ShowDialogue()
@@ -194,8 +296,7 @@ public class DialogueController : MonoBehaviour
             currentLine < 0 ||
             currentLine >= dialogueSequence.Length)
         {
-            isTutorial = false;
-            HideTutorialObjects();
+            EndDialogue();
             return;
         }
 
@@ -203,25 +304,22 @@ public class DialogueController : MonoBehaviour
 
         if (entry == null)
         {
-            isTutorial = false;
-
             Debug.LogWarning(
-                "Dialogue Sequence entry is empty at index " + currentLine
+                $"[DialogueController] Empty entry at index {currentLine}."
             );
 
-            HideTutorialObjects();
+            AdvancePastInvalidEntry();
             return;
         }
 
         isTutorial = entry.EntryType == DialogueEntryType.Tutorial;
 
         Debug.Log(
-            "Dialogue index: " + currentLine +
-            ", Entry Type: " + entry.EntryType
+            $"[DialogueController] Index={currentLine}, " +
+            $"Type={entry.EntryType}, Scene={SceneManager.GetActiveScene().name}"
         );
 
         TutorialStepData step = isTutorial ? entry.TutorialStep : null;
-
         string line;
 
         if (mysteriousFox != null)
@@ -230,10 +328,12 @@ public class DialogueController : MonoBehaviour
         if (isTutorial && step == null)
         {
             Debug.LogWarning(
-                "Missing TutorialStepData at sequence index " + currentLine
+                $"[DialogueController] Missing TutorialStepData " +
+                $"at index {currentLine}."
             );
 
             HideTutorialObjects();
+            AdvancePastInvalidEntry();
             return;
         }
 
@@ -246,134 +346,171 @@ public class DialogueController : MonoBehaviour
                 index >= dialogueLines.Length)
             {
                 Debug.LogWarning(
-                    "Invalid normal dialogue index: " + index
+                    $"[DialogueController] Invalid normal dialogue index: {index}."
                 );
 
-                HideTutorialObjects();
+                AdvancePastInvalidEntry();
                 return;
             }
 
-            line = dialogueLines[index] ?? "";
+            line = dialogueLines[index] ?? string.Empty;
             RestoreDialoguePosition();
         }
         else
         {
-            line = step.Dialogue ?? "";
+            line = step.Dialogue ?? string.Empty;
             ApplyDialoguePosition(step);
         }
 
-        // Update tutorial visuals and temporary UI highlights.
+        // Show tutorial visuals only for Tutorial entries.
         if (isTutorial)
         {
-            Debug.Log("Tutorial dialogue reached: " + currentLine);
-            Debug.Log("Tutorial TargetID: " + step.TargetID);
-
             if (tutorialVisuals != null)
                 tutorialVisuals.ShowStep(step);
 
-            if (tempCanvas != null)
-            {
-                switch (step.TargetID)
-                {
-                    // ============ MAP ============
-
-                    case global::TutorialTargetID.CountryIcon:
-                        tempCanvas.ShowCountryIcon();
-                        break;
-
-                    case global::TutorialTargetID.CountryWindow:
-                        tempCanvas.ShowCountryPopup();
-                        break;
-
-                    case global::TutorialTargetID.StartShift:
-                        tempCanvas.ShowCountryPopupGlow();
-                        break;
-
-                    case global::TutorialTargetID.Wallet:
-                        tempCanvas.ShowCoin();
-                        break;
-
-                    case global::TutorialTargetID.Calendar:
-                        tempCanvas.ShowDay();
-                        break;
-
-                    // ============ MAIN GAME ============
-
-                    case global::TutorialTargetID.CoffeeGrinder:
-                        tempCanvas.ShowCoffeeGrinder();
-                        break;
-
-                    case global::TutorialTargetID.EspressoMachine:
-                        tempCanvas.ShowEspressoMachine();
-                        break;
-
-                    case global::TutorialTargetID.Milk:
-                        tempCanvas.ShowMilk();
-                        break;
-
-                    case global::TutorialTargetID.Cocoa:
-                        tempCanvas.ShowCocoa();
-                        break;
-
-                    case global::TutorialTargetID.CoffeePortfilter:
-                        tempCanvas.ShowCoffeePortfilter();
-                        break;
-
-                    case global::TutorialTargetID.Cup:
-                        tempCanvas.ShowCup();
-                        break;
-
-                    case global::TutorialTargetID.Mat:
-                        tempCanvas.ShowMat();
-                        break;
-
-                    case global::TutorialTargetID.Sink:
-                        tempCanvas.ShowSink();
-                        break;
-
-                    case global::TutorialTargetID.TrashBin:
-                        tempCanvas.ShowTrashBin();
-                        break;
-
-                    case global::TutorialTargetID.RecipePopup:
-                        tempCanvas.ShowRecipePopup();
-                        break;
-
-                    default:
-                        tempCanvas.HideAll();
-                        break;
-                }
-            }
-            else
-            {
-                Debug.LogWarning("TempCanvas is NOT assigned!");
-            }
+            ShowTargetHighlight(step.TargetID);
         }
         else
         {
             HideTutorialObjects();
         }
 
-        // Hide the speaker model when requested by the tutorial step.
-        bool hideSpeakerModel =
+        bool hideSpeaker =
             isTutorial && step != null && step.HideSpeaker;
 
         if (speakerModel != null)
-            speakerModel.SetActive(!hideSpeakerModel);
+            speakerModel.SetActive(!hideSpeaker);
 
         if (dialogueText == null)
         {
-            Debug.LogWarning("Dialogue Text is not assigned.");
+            Debug.LogError(
+                "[DialogueController] Dialogue Text is not assigned."
+            );
+
+            AdvancePastInvalidEntry();
             return;
         }
 
-        line = line.Replace("{player_name}", PlayerUsername);
+        line = line.Replace("{player_name}", playerUsername);
 
         dialogueText.text = line;
         dialogueText.maxVisibleCharacters = 0;
         dialogueText.ForceMeshUpdate();
 
         typingCoroutine = StartCoroutine(TypeText());
+    }
+
+    private void ShowTargetHighlight(TutorialTargetID targetID)
+    {
+        if (tempCanvas == null)
+        {
+            Debug.LogWarning(
+                "[DialogueController] TempCanvas is not assigned."
+            );
+
+            return;
+        }
+
+        switch (targetID)
+        {
+            case global::TutorialTargetID.CountryIcon:
+                tempCanvas.ShowCountryIcon();
+                break;
+
+            case global::TutorialTargetID.CountryWindow:
+                tempCanvas.ShowCountryPopup();
+                break;
+
+            case global::TutorialTargetID.StartShift:
+                tempCanvas.ShowCountryPopupGlow();
+                break;
+
+            case global::TutorialTargetID.Wallet:
+                tempCanvas.ShowCoin();
+                break;
+
+            case global::TutorialTargetID.Calendar:
+                tempCanvas.ShowDay();
+                break;
+
+            case global::TutorialTargetID.CoffeeGrinder:
+                tempCanvas.ShowCoffeeGrinder();
+                break;
+
+            case global::TutorialTargetID.EspressoMachine:
+                tempCanvas.ShowEspressoMachine();
+                break;
+
+            case global::TutorialTargetID.Milk:
+                tempCanvas.ShowMilk();
+                break;
+
+            case global::TutorialTargetID.Cocoa:
+                tempCanvas.ShowCocoa();
+                break;
+
+            case global::TutorialTargetID.CoffeePortfilter:
+                tempCanvas.ShowCoffeePortfilter();
+                break;
+
+            case global::TutorialTargetID.Cup:
+                tempCanvas.ShowCup();
+                break;
+
+            case global::TutorialTargetID.Mat:
+                tempCanvas.ShowMat();
+                break;
+
+            case global::TutorialTargetID.Sink:
+                tempCanvas.ShowSink();
+                break;
+
+            case global::TutorialTargetID.TrashBin:
+                tempCanvas.ShowTrashBin();
+                break;
+
+            case global::TutorialTargetID.RecipePopup:
+                tempCanvas.ShowRecipePopup();
+                break;
+
+            default:
+                tempCanvas.HideAll();
+                break;
+        }
+    }
+
+    private void AdvancePastInvalidEntry()
+    {
+        int nextLine = FindNextEligibleEntry(currentLine + 1);
+
+        if (nextLine >= dialogueSequence.Length)
+        {
+            EndDialogue();
+            return;
+        }
+
+        currentLine = nextLine;
+        ShowDialogue();
+    }
+
+    private void HideDialogueUI()
+    {
+        dialogueStarted = false;
+        isTyping = false;
+
+        if (tutorialOverlay != null)
+            tutorialOverlay.SetActive(false);
+
+        if (dialogueRoot != null)
+            dialogueRoot.SetActive(false);
+
+        if (advanceButton != null)
+            advanceButton.gameObject.SetActive(false);
+
+        if (mysteriousFox != null)
+            mysteriousFox.SetActive(false);
+
+        HideTutorialObjects();
     }
 
     private void HideTutorialObjects()
@@ -475,11 +612,7 @@ public class DialogueController : MonoBehaviour
             autoButtonText.text = autoMode ? "PLAYING" : "AUTO";
 
         if (autoButtonImage != null)
-        {
-            autoButtonImage.sprite = autoMode
-                ? autoOnSprite
-                : autoOffSprite;
-        }
+            autoButtonImage.sprite = autoMode ? autoOnSprite : autoOffSprite;
     }
 
     private void ScheduleAutoAdvance()
@@ -514,6 +647,9 @@ public class DialogueController : MonoBehaviour
 
     private void EndDialogue()
     {
+        if (!dialogueStarted)
+            return;
+
         StopAllCoroutines();
 
         dialogueStarted = false;
@@ -535,14 +671,12 @@ public class DialogueController : MonoBehaviour
 
         HideTutorialObjects();
 
-        // Notify listeners first. TutorialTransition will pause the game
-        // when it opens TutorialVDO.
+        // Keep the existing Inspector event.
         onDialogueEnded?.Invoke();
 
-        // Keep the existing option for other dialogues that need a gameplay lock.
         if (!keepGameplayLockedAfterDialogue)
         {
-            GameplayInputLock.Unlock();
+            UnlockGameplayInput();
             ResumeGameAfterDialogue();
         }
     }
@@ -552,45 +686,51 @@ public class DialogueController : MonoBehaviour
         if (!pauseGameDuringDialogue)
         {
             Debug.LogWarning(
-                "Pause Game During Dialogue is disabled. " +
-                "Gameplay input will still be locked."
+                "[DialogueController] Pause is disabled; " +
+                "gameplay input is still locked."
             );
 
             return;
         }
 
         previousTimeScale = Time.timeScale;
+        wasGamePausedByDialogue = Time.timeScale != 0f;
 
-        if (Time.timeScale != 0f)
-        {
+        if (wasGamePausedByDialogue)
             Time.timeScale = 0f;
-            wasGamePausedByDialogue = true;
-        }
-        else
-        {
-            // The game was already paused before this dialogue.
-            wasGamePausedByDialogue = false;
-        }
 
         Debug.Log(
-            "Dialogue pause called. Time scale = " + Time.timeScale +
-            ", Gameplay locked = " + GameplayInputLock.IsLocked
+            $"[DialogueController] TimeScale={Time.timeScale}, " +
+            $"GameplayLocked={GameplayInputLock.IsLocked}"
         );
     }
 
     private void ResumeGameAfterDialogue()
     {
-        if (wasGamePausedByDialogue)
-        {
-            Time.timeScale = previousTimeScale;
-            wasGamePausedByDialogue = false;
-        }
+        if (!wasGamePausedByDialogue)
+            return;
+
+        Time.timeScale = previousTimeScale;
+        wasGamePausedByDialogue = false;
+    }
+
+    private void UnlockGameplayInput()
+    {
+        if (!inputLockAcquired)
+            return;
+
+        GameplayInputLock.Unlock();
+        inputLockAcquired = false;
     }
 
     private void OnDestroy()
     {
         StopTyping();
         StopAutoAdvance();
+
+        // Avoid leaving gameplay paused/locked if this controller is destroyed.
+        UnlockGameplayInput();
+        ResumeGameAfterDialogue();
 
         if (advanceButton != null)
             advanceButton.onClick.RemoveListener(NextDialogue);

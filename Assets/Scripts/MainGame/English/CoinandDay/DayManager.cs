@@ -9,7 +9,6 @@ public class DayManager : MonoBehaviour
     [SerializeField, Min(1)] private int dayDurationSeconds = 30;
     [SerializeField] private TMP_Text timerText;
 
-    // ป้องกันการจบวันซ้ำ
     private bool isDayEnding;
     private float timeRemaining;
 
@@ -17,14 +16,25 @@ public class DayManager : MonoBehaviour
     {
         timeRemaining = dayDurationSeconds;
 
-        GameLogger.Info("DayManager", $"เริ่มวันใหม่ ระยะเวลา {dayDurationSeconds} วินาที");
+        GameLogger.Info(
+            "DayManager",
+            $"เริ่มวันใหม่ ระยะเวลา {dayDurationSeconds} วินาที"
+        );
 
         UpdateTimerText();
     }
 
     private void Update()
     {
-        // หยุดนับเมื่อกำลังจบวัน
+        // Pause the work timer only while the tutorial is active.
+        if (TutorialSession.IsTutorialActive)
+        {
+            if (timerText != null && timerText.text != "TUTORIAL")
+                timerText.text = "TUTORIAL";
+
+            return;
+        }
+
         if (isDayEnding)
             return;
 
@@ -34,8 +44,8 @@ public class DayManager : MonoBehaviour
         {
             timeRemaining = 0f;
             UpdateTimerText();
+
             GameLogger.Info("DayManager", "หมดเวลา เริ่ม EndDay()");
-            // จบวันอัตโนมัติเมื่อหมดเวลา
             StartCoroutine(EndDay());
             return;
         }
@@ -48,24 +58,36 @@ public class DayManager : MonoBehaviour
         if (timerText == null)
             return;
 
-        int seconds = Mathf.CeilToInt(timeRemaining);
-        int minutes = seconds / 60;
-        seconds %= 60;
+        if (TutorialSession.IsTutorialActive)
+        {
+            timerText.text = "TUTORIAL";
+            return;
+        }
+
+        int totalSeconds = Mathf.CeilToInt(timeRemaining);
+        int minutes = totalSeconds / 60;
+        int seconds = totalSeconds % 60;
 
         timerText.text = $"{minutes:00}:{seconds:00}";
     }
 
-        private IEnumerator EndDay()
+    private IEnumerator EndDay()
     {
         if (isDayEnding)
             yield break;
 
+        // Never save a workday while the tutorial is active.
+        if (TutorialSession.IsTutorialActive)
+            yield break;
+
         isDayEnding = true;
+
         GameLogger.Info("DayManager", "กำลังเรียก FinishWorkDay()");
 
         if (CoinManager.Instance == null)
         {
             GameLogger.Error("DayManager", "ไม่พบ CoinManager.Instance");
+            isDayEnding = false;
             yield break;
         }
 
@@ -85,11 +107,12 @@ public class DayManager : MonoBehaviour
         if (!saveSucceeded)
         {
             GameLogger.Error("DayManager", "บันทึกวันไม่สำเร็จ");
+            isDayEnding = false;
             yield break;
         }
+
         GameLogger.Info("DayManager", "บันทึกวันสำเร็จ");
 
-        // อัปเดต Navbar หลังรับค่าล่าสุดจาก Backend
         CoinManager.Instance.RefreshNavbar();
 
         timeRemaining = dayDurationSeconds;
