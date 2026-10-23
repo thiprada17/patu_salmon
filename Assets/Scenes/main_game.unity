@@ -11016,6 +11016,7 @@ MonoBehaviour:
   customerCount: 100
   minSpawnTime: 5
   maxSpawnTime: 12
+  tutorialCustomerCount: 3
 --- !u!1 &1452895327
 GameObject:
   m_ObjectHideFlags: 0

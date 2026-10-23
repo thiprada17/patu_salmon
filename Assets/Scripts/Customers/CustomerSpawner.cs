@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
 
 public class CustomerSpawner : MonoBehaviour
 {
@@ -14,24 +14,49 @@ public class CustomerSpawner : MonoBehaviour
 
     [Header("Spawn Settings")]
     [SerializeField] private int customerCount = 5;
+    [SerializeField, Min(0f)] private float minSpawnTime = 2f;
+    [SerializeField, Min(0f)] private float maxSpawnTime = 5f;
 
-    [SerializeField] private float minSpawnTime = 2f;
-    [SerializeField] private float maxSpawnTime = 5f;
+    //Customer Spawn During tutorial Session
+    [Header("Tutorial Settings")]
+    [SerializeField, Min(1)] private int tutorialCustomerCount = 3;
 
-    private int spawnedCount = 0;
-
+    private int spawnedCount;
 
     private void Start()
     {
+        if (customerPrefab == null ||
+            spawnPoint == null ||
+            customerQueue == null)
+        {
+            Debug.LogError(
+                "[CustomerSpawner] Assign Customer Prefab, " +
+                "Spawn Point, and Customer Queue in the Inspector."
+            );
+            enabled = false;
+            return;
+        }
+
+        spawnedCount = 0;
         StartCoroutine(SpawnCustomers());
     }
 
-
     private IEnumerator SpawnCustomers()
     {
-        while (spawnedCount < customerCount)
+        int targetCount = customerCount;
+
+        if (TutorialSession.IsInitialized &&
+            TutorialSession.IsFirstTimePlayer)
         {
-            // ถ้าคิวเต็ม ให้รอจนกว่าจะมีช่อง
+            targetCount = tutorialCustomerCount;
+        }
+
+        Debug.Log(
+            $"[CustomerSpawner] Target customer count: {targetCount}"
+        );
+
+        while (spawnedCount < targetCount)
+        {
             if (customerQueue.IsFull())
             {
                 yield return null;
@@ -39,41 +64,39 @@ public class CustomerSpawner : MonoBehaviour
             }
 
             SpawnCustomer();
-
             spawnedCount++;
 
-            // สุ่มเวลาสำหรับ Customer คนต่อไป
-            float randomSpawnTime =
-                Random.Range(minSpawnTime, maxSpawnTime);
+            if (spawnedCount >= targetCount)
+                break;
+
+            float randomSpawnTime = Random.Range(
+                minSpawnTime,
+                Mathf.Max(minSpawnTime, maxSpawnTime)
+            );
 
             Debug.Log(
-                "Next customer will spawn in " +
-                randomSpawnTime.ToString("F1") +
-                " seconds."
+                $"[CustomerSpawner] Next customer in " +
+                $"{randomSpawnTime:F1} seconds."
             );
 
             yield return new WaitForSeconds(randomSpawnTime);
         }
     }
 
-
     private void SpawnCustomer()
     {
-        CustomerMovement customer =
-            Instantiate(
-                customerPrefab,
-                spawnPoint.position,
-                Quaternion.identity
-            );
+        CustomerMovement customer = Instantiate(
+            customerPrefab,
+            spawnPoint.position,
+            Quaternion.identity
+        );
 
-        bool joinedQueue =
-            customerQueue.TryAddCustomer(customer);
+        bool joinedQueue = customerQueue.TryAddCustomer(customer);
 
         if (joinedQueue)
         {
             Debug.Log(
-                customer.name +
-                " spawned and joined queue."
+                customer.name + " spawned and joined queue."
             );
         }
         else
