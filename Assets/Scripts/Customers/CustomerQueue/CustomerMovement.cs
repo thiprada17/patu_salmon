@@ -39,6 +39,9 @@ public class CustomerMovement : MonoBehaviour
     private bool hasGeneratedOrder = false;
     private bool hasStartedWaiting = false;
 
+    // True only for the third tutorial customer.
+    private bool isFinalTutorialCustomer;
+
 
     private void Awake()
     {
@@ -68,13 +71,12 @@ public class CustomerMovement : MonoBehaviour
         }
 
         currentQueueSlot = queueSlot;
-
         targetX = queueSlot.position.x;
 
         isMoving = true;
         isWaiting = false;
 
-        // ห้าม reset waitTimer ตรงนี้
+        // Do not reset waitTimer here.
         bobTimer = 0f;
 
         if (animator != null)
@@ -82,11 +84,7 @@ public class CustomerMovement : MonoBehaviour
             animator.SetBool("IsWalking", true);
         }
 
-        Debug.Log(
-            name +
-            " moving to " +
-            queueSlot.name
-        );
+        Debug.Log(name + " moving to " + queueSlot.name);
     }
 
 
@@ -122,8 +120,7 @@ public class CustomerMovement : MonoBehaviour
 
         bobTimer += Time.deltaTime * bobSpeed;
 
-        float bobY =
-            Mathf.Sin(bobTimer) * bobHeight;
+        float bobY = Mathf.Sin(bobTimer) * bobHeight;
 
         transform.position = new Vector3(
             newX,
@@ -140,10 +137,10 @@ public class CustomerMovement : MonoBehaviour
             );
 
             StopMoving();
-
             StartWaiting();
         }
     }
+
 
     private void StopMoving()
     {
@@ -161,11 +158,8 @@ public class CustomerMovement : MonoBehaviour
             transform.position.z
         );
 
-        Debug.Log(
-            name + " arrived at " + currentQueueSlot.name
-        );
+        Debug.Log(name + " arrived at " + currentQueueSlot.name);
 
-        // Generate Order แค่ครั้งแรกเท่านั้น
         if (!hasGeneratedOrder)
         {
             hasGeneratedOrder = true;
@@ -196,10 +190,8 @@ public class CustomerMovement : MonoBehaviour
             }
 
             Debug.Log(
-                name +
-                " started waiting for " +
-                maxWaitTime +
-                " seconds."
+                name + " started waiting for " +
+                maxWaitTime + " seconds."
             );
         }
     }
@@ -211,10 +203,7 @@ public class CustomerMovement : MonoBehaviour
 
         if (customerOrder != null)
         {
-            customerOrder.UpdateTimeBar(
-                waitTimer,
-                maxWaitTime
-            );
+            customerOrder.UpdateTimeBar(waitTimer, maxWaitTime);
         }
 
         if (!isAngry && waitTimer >= angryTime)
@@ -248,10 +237,7 @@ public class CustomerMovement : MonoBehaviour
             animator.Play("Angry");
         }
 
-        Debug.Log(
-            name +
-            " is ANGRY! 10 seconds remaining."
-        );
+        Debug.Log(name + " is ANGRY! 10 seconds remaining.");
     }
 
 
@@ -261,7 +247,6 @@ public class CustomerMovement : MonoBehaviour
         isWaiting = false;
         isLeaving = true;
 
-        // ซ่อน Bubble ตอน Customer เดินออก
         if (customerOrder != null)
         {
             customerOrder.HideDialogue();
@@ -273,7 +258,6 @@ public class CustomerMovement : MonoBehaviour
             animator.Play("Walk_out_Angry");
         }
 
-        // เดินไปทางซ้าย
         targetX = transform.position.x - 5f;
 
         if (animator != null)
@@ -282,19 +266,21 @@ public class CustomerMovement : MonoBehaviour
         }
 
         Debug.Log(
-            name +
-            " wait time expired. Walking out angry to LEFT."
+            name + " wait time expired. Walking out angry to LEFT."
         );
     }
 
-    public void LeaveHappy()
+
+    // WALK OUT HAPPY
+    public void LeaveHappy(bool finalTutorialCustomer = false)
     {
-        if (isLeaving)
-            return;
+        if (isLeaving) return;
 
         isWaiting = false;
         isAngry = false;
         isMoving = false;
+
+        isFinalTutorialCustomer = finalTutorialCustomer;
 
         if (customerOrder != null)
         {
@@ -305,10 +291,10 @@ public class CustomerMovement : MonoBehaviour
         StartCoroutine(HappyThenWalkOut());
     }
 
+
     private IEnumerator HappyThenWalkOut()
     {
         Debug.Log(name + " >>> PLAY HAPPY");
-
 
         // HAPPY
         if (animator != null)
@@ -317,9 +303,8 @@ public class CustomerMovement : MonoBehaviour
             animator.Play("Happy", 0, 0f);
         }
 
-        // ยืนเล่น Happy 2 วินาที
+        // Let the happy animation play for two seconds.
         yield return new WaitForSeconds(2f);
-
 
         // WALK OUT HAPPY
         Debug.Log(name + " >>> PLAY Walk_out_Happy");
@@ -348,8 +333,7 @@ public class CustomerMovement : MonoBehaviour
 
         bobTimer += Time.deltaTime * bobSpeed;
 
-        float bobY =
-            Mathf.Sin(bobTimer) * bobHeight;
+        float bobY = Mathf.Sin(bobTimer) * bobHeight;
 
         transform.position = new Vector3(
             newX,
@@ -373,17 +357,39 @@ public class CustomerMovement : MonoBehaviour
             animator.SetBool("IsWalking", false);
         }
 
-        Debug.Log(
-            name +
-            " finished leaving queue."
-        );
+        Debug.Log(name + " finished leaving queue.");
 
         if (customerQueue != null)
         {
             customerQueue.RemoveCustomer(this);
         }
 
+        bool shouldFinishTutorial = isFinalTutorialCustomer;
+        isFinalTutorialCustomer = false;
+
+        // The NPC has completed its exit movement.
         Destroy(gameObject);
+
+        if (shouldFinishTutorial)
+        {
+            Debug.Log("[CustomerMovement] Final tutorial customer has left. Returning to map.");
+
+            TutorialSession.FinishTutorialAfterLastCustomerLeaves();
+        }
+    }
+
+
+    private IEnumerator FinishTutorialAfterDestruction()
+    {
+        // Wait until Unity processes Destroy(gameObject).
+        yield return new WaitForEndOfFrame();
+
+        Debug.Log(
+            "[CustomerMovement] Final tutorial NPC destroyed. " +
+            "Finishing tutorial."
+        );
+
+        TutorialSession.FinishTutorialAfterLastCustomerLeaves();
     }
 
 

@@ -1,4 +1,3 @@
-
 using UnityEngine;
 
 public class MapInputController : MonoBehaviour
@@ -7,8 +6,18 @@ public class MapInputController : MonoBehaviour
 
     [SerializeField] private DialogueController dialogueController;
 
+    private bool congratulationsPopupOpen;
+
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Debug.LogWarning(
+                "[MapInputController] Duplicate instance found."
+            );
+            return;
+        }
+
         Instance = this;
 
         if (dialogueController == null)
@@ -22,17 +31,34 @@ public class MapInputController : MonoBehaviour
 
     public bool CanClickMap()
     {
-        // Allow map clicks only when the dialogue sequence is not active.
+        // Block map input while the congratulations popup is open.
+        if (congratulationsPopupOpen)
+            return false;
+
+        // Preserve the existing dialogue tutorial input lock.
         if (dialogueController == null)
         {
             Debug.LogWarning(
-                "MapInputController: MapDialogueController not found."
+                "[MapInputController] DialogueController not found."
             );
-
-            // Fail safely: don't allow map clicks if the controller is missing.
             return false;
         }
 
         return !dialogueController.IsTutorialInputLocked();
+    }
+
+    public void SetCongratulationsPopupOpen(bool isOpen)
+    {
+        congratulationsPopupOpen = isOpen;
+
+        Debug.Log(
+            "[MapInputController] Congratulations popup lock: " + isOpen
+        );
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
     }
 }
