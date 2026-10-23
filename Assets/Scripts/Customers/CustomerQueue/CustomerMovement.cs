@@ -199,6 +199,9 @@ public class CustomerMovement : MonoBehaviour
 
     private void UpdateWaiting()
     {
+        if (TutorialSession.IsTutorialActive)
+            return;
+
         waitTimer += Time.deltaTime;
 
         if (customerOrder != null)
