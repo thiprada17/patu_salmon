@@ -119,6 +119,7 @@ public class DialogueController : MonoBehaviour
     }
 
 
+
     private void Start()
     {
         string sceneName = SceneManager.GetActiveScene().name;
@@ -129,14 +130,14 @@ public class DialogueController : MonoBehaviour
             $"FirstTime={TutorialSession.IsFirstTimePlayer}"
         );
 
-        // Only run the dialogue in main_game.
-        if (sceneName != "main_game")
+        // Only run the dialogue in the map or gameplay scene.
+        if (sceneName != "map" && sceneName != "main_game")
         {
             HideDialogueUI();
             return;
         }
 
-        // Do not show ANY dialogue until player stats are initialized.
+        // Do not show dialogue until player stats are initialized.
         if (!TutorialSession.IsInitialized)
         {
             Debug.LogWarning(
@@ -149,7 +150,7 @@ public class DialogueController : MonoBehaviour
         }
 
         // Returning players skip the entire dialogue sequence,
-        // including both Normal and Tutorial entries.
+        // including Normal and Tutorial entries.
         if (!TutorialSession.IsFirstTimePlayer)
         {
             Debug.Log(
@@ -161,8 +162,11 @@ public class DialogueController : MonoBehaviour
             return;
         }
 
-        // Only first-time players reach this point.
-        TutorialSession.StartTutorial();
+        // Start the gameplay tutorial only in main_game.
+        if (sceneName == "main_game")
+        {
+            TutorialSession.StartTutorial();
+        }
 
         if (dialogueSequence == null || dialogueSequence.Length == 0)
         {
@@ -738,4 +742,24 @@ public class DialogueController : MonoBehaviour
         if (autoButton != null)
             autoButton.onClick.RemoveListener(ToggleAutoMode);
     }
+
+    //For Tutorial
+    public void LoadMainGameAfterDialogue()
+    {
+        // Only transition after the map dialogue finishes.
+        if (SceneManager.GetActiveScene().name != "map")
+            return;
+
+        Debug.Log("[DialogueController] Map dialogue finished. Loading main_game.");
+
+        // Make sure the tutorial session remains active for gameplay.
+        if (TutorialSession.IsInitialized &&
+            TutorialSession.IsFirstTimePlayer)
+        {
+            TutorialSession.StartTutorial();
+        }
+
+        SceneManager.LoadScene("main_game");
+    }
+
 }

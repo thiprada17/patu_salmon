@@ -209,6 +209,17 @@ public class LanguagePopup : MonoBehaviour
         }
     }
 
+    private void InitializeNewPlayerTutorial()
+    {
+        TutorialSession.Initialize(0);
+
+        Debug.Log(
+            "[LanguagePopup] New player tutorial initialized. " +
+            "FirstTimePlayer=" + TutorialSession.IsFirstTimePlayer
+        );
+    }
+
+
     public void OnEnterClick()
     {
         if (string.IsNullOrEmpty(selectedLanguage))
@@ -217,9 +228,13 @@ public class LanguagePopup : MonoBehaviour
             return;
         }
 
+        // Save the new player's tutorial state before changing scenes.
+        InitializeNewPlayerTutorial();
+
         Close();
         SceneManager.LoadScene("SelectCharacter");
     }
+
 
     private IEnumerator Punch(Transform target)
     {

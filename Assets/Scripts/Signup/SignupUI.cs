@@ -157,34 +157,86 @@ public class SignupUI : MonoBehaviour
         if (signupButton != null) signupButton.interactable = true;
     }
 
- 
-public void OnContinueSuccess(LoginManager.AuthResponse res)
-{
-    Debug.Log($"Continue OK. new={res.is_new_user} profile={res.has_profile}");
 
-    if (res.needs_email_confirmation)
-    {
-        Debug.Log("Please confirm email first");
-        return;
-    }
 
-    if (res.is_new_user || !res.has_profile)
+    public void OnContinueSuccess(LoginManager.AuthResponse res)
     {
-        if (languagePopup != null)
+        Debug.Log(
+            $"Continue OK. new={res.is_new_user} profile={res.has_profile}"
+        );
+
+        if (res.needs_email_confirmation)
         {
-            languagePopup.gameObject.SetActive(true);
-            languagePopup.Open();
+            Debug.Log("Please confirm email first");
+            ReleaseButton();
+            return;
+        }
+
+        if (res.is_new_user || !res.has_profile)
+        {
+            // Keep the existing new-player flow.
+            if (languagePopup != null)
+            {
+                languagePopup.gameObject.SetActive(true);
+                languagePopup.Open();
+            }
+            else
+            {
+                Debug.LogError("LanguagePopup is not assigned!");
+                ReleaseButton();
+            }
         }
         else
         {
-            Debug.LogError("LanguagePopup is not assigned!");
+            // Existing player: load stats before choosing a scene.
+            LoginManager.Instance.GetPlayerStats(
+                OnPlayerStatsLoaded,
+                OnPlayerStatsFailed
+            );
         }
     }
-    else
+
+
+    private void OnPlayerStatsLoaded(LoginManager.PlayerStatsResponse stats)
     {
-        SceneManager.LoadScene("loading");
+        if (stats == null)
+        {
+            OnPlayerStatsFailed("Player stats response is empty.");
+            return;
+        }
+
+        TutorialSession.Initialize(stats.work_days);
+
+        Debug.Log(
+            $"[SignupUI] Initialized: work_days={stats.work_days}, " +
+            $"FirstTimePlayer={TutorialSession.IsFirstTimePlayer}"
+        );
+
+        if (stats.work_days == 0)
+        {
+            SceneManager.LoadScene("map");
+        }
+        else
+        {
+            SceneManager.LoadScene("loading");
+        }
     }
-}
+
+    private void OnPlayerStatsFailed(string error)
+    {
+        Debug.LogError("[SignupUI] Failed to load player stats: " + error);
+
+        ShowError(
+            passwordInput,
+            passwordError,
+            passwordErrorGroup,
+            "Could not load player data. Please try again."
+        );
+
+        ReleaseButton();
+    }
+
+
     // ---------- UI helpers ----------
 
     void HookClearOnFocus(TMP_InputField field, TMP_Text label, GameObject group)
