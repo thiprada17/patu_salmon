@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
@@ -10,11 +11,11 @@ public class TutorialTransition : MonoBehaviour
 
     private bool isLoading;
     private bool isClosing;
-    private float previousTimeScale = 1f;
+    private bool tutorialOpened;
 
     public void OpenTutorialVDO()
     {
-        if (isLoading || isClosing)
+        if (isLoading || isClosing || tutorialOpened)
             return;
 
         StartCoroutine(LoadTutorial());
@@ -24,8 +25,7 @@ public class TutorialTransition : MonoBehaviour
     {
         isLoading = true;
 
-        // Remember the current game speed, then pause the game.
-        previousTimeScale = Time.timeScale;
+        // Keep gameplay paused while the tutorial video is active.
         Time.timeScale = 0f;
 
         Scene tutorialScene =
@@ -44,7 +44,6 @@ public class TutorialTransition : MonoBehaviour
                     "Failed to load tutorial scene: " + tutorialSceneName
                 );
 
-                Time.timeScale = previousTimeScale;
                 isLoading = false;
                 yield break;
             }
@@ -58,22 +57,25 @@ public class TutorialTransition : MonoBehaviour
         if (!tutorialScene.IsValid() || !tutorialScene.isLoaded)
         {
             Debug.LogError("Tutorial scene did not load correctly.");
-
-            Time.timeScale = previousTimeScale;
             isLoading = false;
             yield break;
         }
 
-        SceneManager.SetActiveScene(tutorialScene);
+        Scene mainScene =
+            SceneManager.GetSceneByName(mainSceneName);
+
+        if (mainScene.IsValid() && mainScene.isLoaded)
+            SceneManager.SetActiveScene(tutorialScene);
+
+        tutorialOpened = true;
+        isLoading = false;
 
         Debug.Log("TutorialVDO opened. Game paused.");
-
-        isLoading = false;
     }
 
     public void CloseTutorialVDO()
     {
-        if (isLoading || isClosing)
+        if (isLoading || isClosing || !tutorialOpened)
             return;
 
         StartCoroutine(UnloadTutorial());
@@ -86,20 +88,20 @@ public class TutorialTransition : MonoBehaviour
         Scene tutorialScene =
             SceneManager.GetSceneByName(tutorialSceneName);
 
+        Scene mainScene =
+            SceneManager.GetSceneByName(mainSceneName);
+
+        if (!mainScene.IsValid() || !mainScene.isLoaded)
+        {
+            Debug.LogError("Main scene is not loaded: " + mainSceneName);
+            isClosing = false;
+            yield break;
+        }
+
+        SceneManager.SetActiveScene(mainScene);
+
         if (tutorialScene.IsValid() && tutorialScene.isLoaded)
         {
-            Scene mainScene =
-                SceneManager.GetSceneByName(mainSceneName);
-
-            if (!mainScene.IsValid() || !mainScene.isLoaded)
-            {
-                Debug.LogError("Main scene is not loaded: " + mainSceneName);
-                isClosing = false;
-                yield break;
-            }
-
-            SceneManager.SetActiveScene(mainScene);
-
             AsyncOperation operation =
                 SceneManager.UnloadSceneAsync(tutorialScene);
 
@@ -107,11 +109,13 @@ public class TutorialTransition : MonoBehaviour
                 yield return operation;
         }
 
-        // Resume the game after TutorialVDO closes.
-        Time.timeScale = previousTimeScale;
+        tutorialOpened = false;
+        isClosing = false;
+
+        TutorialSession.CompleteTutorial();
+
+        Time.timeScale = 1f;
 
         Debug.Log("TutorialVDO closed. Game resumed.");
-
-        isClosing = false;
     }
 }
