@@ -9,11 +9,14 @@ public class DayManager : MonoBehaviour
     [SerializeField, Min(1)] private int dayDurationSeconds = 30;
     [SerializeField] private TMP_Text timerText;
 
+    [SerializeField] private GameObject TutorialPanel;
+
     private bool isDayEnding;
     private float timeRemaining;
 
     private void Start()
     {
+
         timeRemaining = dayDurationSeconds;
 
         GameLogger.Info(
@@ -31,6 +34,8 @@ public class DayManager : MonoBehaviour
         {
             if (timerText != null && timerText.text != "TUTORIAL")
                 timerText.text = "TUTORIAL";
+
+            TutorialPanel.SetActive(true);
 
             return;
         }
