@@ -1,4 +1,3 @@
-
 using System.Collections;
 using UnityEngine;
 using TMPro;
@@ -8,20 +7,42 @@ public class DayManager : MonoBehaviour
     [Header("Day Settings")]
     [SerializeField, Min(1)] private int dayDurationSeconds = 30;
     [SerializeField] private TMP_Text timerText;
-
     [SerializeField] private GameObject TutorialPanel;
+
+    //Shift Manager
+    [Header("Shift References")]
+    [SerializeField] private CustomerSpawner customerSpawner;
+    [SerializeField] private ShiftEnd shiftEnd;
+
+    [Header("Summary Settings")]
+    [SerializeField, Min(1)] private int summaryEveryShifts = 10;
 
     private bool isDayEnding;
     private float timeRemaining;
 
     private void Start()
     {
-
         timeRemaining = dayDurationSeconds;
+
+        if (customerSpawner == null)
+            customerSpawner = FindFirstObjectByType<CustomerSpawner>();
+
+        if (customerSpawner == null)
+            Debug.LogError("[DayManager] CustomerSpawner not found.");
+
+        if (shiftEnd == null)
+            Debug.LogError("[DayManager] ShiftEnd is not assigned.");
+
+        if (TutorialPanel != null)
+            TutorialPanel.SetActive(TutorialSession.IsTutorialActive);
+
+        // Start spawning for the initial shift.
+        if (customerSpawner != null)
+            customerSpawner.BeginShift();
 
         GameLogger.Info(
             "DayManager",
-            $"เริ่มวันใหม่ ระยะเวลา {dayDurationSeconds} วินาที"
+            $"Starting shift: {dayDurationSeconds} seconds."
         );
 
         UpdateTimerText();
@@ -29,16 +50,20 @@ public class DayManager : MonoBehaviour
 
     private void Update()
     {
-        // Pause the work timer only while the tutorial is active.
+        //Tutorial Session is active
         if (TutorialSession.IsTutorialActive)
         {
-            if (timerText != null && timerText.text != "TUTORIAL")
+            if (timerText != null)
                 timerText.text = "TUTORIAL";
 
-            TutorialPanel.SetActive(true);
+            if (TutorialPanel != null)
+                TutorialPanel.SetActive(true);
 
             return;
         }
+
+        if (TutorialPanel != null && TutorialPanel.activeSelf)
+            TutorialPanel.SetActive(false);
 
         if (isDayEnding)
             return;
@@ -50,7 +75,6 @@ public class DayManager : MonoBehaviour
             timeRemaining = 0f;
             UpdateTimerText();
 
-            GameLogger.Info("DayManager", "หมดเวลา เริ่ม EndDay()");
             StartCoroutine(EndDay());
             return;
         }
@@ -70,28 +94,29 @@ public class DayManager : MonoBehaviour
         }
 
         int totalSeconds = Mathf.CeilToInt(timeRemaining);
-        int minutes = totalSeconds / 60;
-        int seconds = totalSeconds % 60;
-
-        timerText.text = $"{minutes:00}:{seconds:00}";
+        timerText.text =
+            $"{totalSeconds / 60:00}:{totalSeconds % 60:00}";
     }
+
 
     private IEnumerator EndDay()
     {
         if (isDayEnding)
             yield break;
 
-        // Never save a workday while the tutorial is active.
+        // Do not end the shift during the tutorial.
         if (TutorialSession.IsTutorialActive)
             yield break;
 
         isDayEnding = true;
 
-        GameLogger.Info("DayManager", "กำลังเรียก FinishWorkDay()");
+        // Stop customer spawning when the timer reaches zero.
+        if (customerSpawner != null)
+            customerSpawner.StopSpawning();
 
         if (CoinManager.Instance == null)
         {
-            GameLogger.Error("DayManager", "ไม่พบ CoinManager.Instance");
+            GameLogger.Error("DayManager", "CoinManager.Instance missing.");
             isDayEnding = false;
             yield break;
         }
@@ -103,7 +128,11 @@ public class DayManager : MonoBehaviour
         {
             saveSucceeded = success;
             saveFinished = true;
-            GameLogger.Info("DayManager", $"ผลบันทึกวัน: {success}");
+
+            GameLogger.Info(
+                "DayManager",
+                $"Shift save result: {success}"
+            );
         });
 
         while (!saveFinished)
@@ -111,18 +140,65 @@ public class DayManager : MonoBehaviour
 
         if (!saveSucceeded)
         {
-            GameLogger.Error("DayManager", "บันทึกวันไม่สำเร็จ");
+            GameLogger.Error("DayManager", "Failed to save shift.");
             isDayEnding = false;
             yield break;
         }
 
-        GameLogger.Info("DayManager", "บันทึกวันสำเร็จ");
-
         CoinManager.Instance.RefreshNavbar();
 
+        int completedShifts = CoinManager.Instance.WorkDays;
+
+        GameLogger.Info(
+            "DayManager",
+            $"Completed shifts: {completedShifts}"
+        );
+
+        bool showSummary =
+            completedShifts > 0 &&
+            completedShifts % summaryEveryShifts == 0;
+
+        GameLogger.Info(
+            "DayManager",
+            $"Show summary: {showSummary}, " +
+            $"Interval: {summaryEveryShifts}"
+        );
+
+        if (showSummary)
+        {
+            if (shiftEnd == null)
+            {
+                Debug.LogError(
+                    "[DayManager] ShiftEnd reference is missing!"
+                );
+            }
+            else
+            {
+                shiftEnd.gameObject.SetActive(true);
+                shiftEnd.ShowSummary();
+
+                // Wait for the Continue button.
+                while (shiftEnd != null &&
+                       shiftEnd.IsShowingSummary)
+                {
+                    yield return null;
+                }
+            }
+        }
+
+        // Prepare the next shift.
+        Time.timeScale = 1f;
         timeRemaining = dayDurationSeconds;
+
+        if (customerSpawner != null)
+            customerSpawner.BeginShift();
+
         isDayEnding = false;
 
-        GameLogger.Info("DayManager", "เริ่มวันถัดไปแล้ว");
+        GameLogger.Info(
+            "DayManager",
+            "Next shift started."
+        );
     }
+
 }
