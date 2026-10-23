@@ -11013,7 +11013,7 @@ MonoBehaviour:
   customerPrefab: {fileID: 7}
   spawnPoint: {fileID: 979556902}
   customerQueue: {fileID: 428087306}
-  customerCount: 5
+  customerCount: 100
   minSpawnTime: 5
   maxSpawnTime: 12
 --- !u!1 &1452895327
