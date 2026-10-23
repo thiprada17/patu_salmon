@@ -134,6 +134,74 @@ public class LoginManager : MonoBehaviour
         PlayerPrefs.Save();
     }
 
+    // GET: Player Stats --> for Tutoral Session Check if this playe need tutorial or not
+    public void GetPlayerStats(
+    Action<PlayerStatsResponse> onSuccess,
+    Action<string> onError)
+    {
+        string userId = UserId;
+        string token = PlayerPrefs.GetString("AccessToken", "");
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            onError?.Invoke("User ID is missing. Please log in again.");
+            return;
+        }
+
+        if (string.IsNullOrEmpty(token))
+        {
+            onError?.Invoke("Access token is missing. Please log in again.");
+            return;
+        }
+
+        StartCoroutine(GetPlayerStatsRequest(userId, token, onSuccess, onError));
+    }
+
+    private IEnumerator GetPlayerStatsRequest(
+        string userId,
+        string token,
+        Action<PlayerStatsResponse> onSuccess,
+        Action<string> onError)
+    {
+        string url = backendUrl + "/player/stats/" + UnityWebRequest.EscapeURL(userId);
+
+        using (UnityWebRequest request = UnityWebRequest.Get(url))
+        {
+            request.SetRequestHeader("Authorization", "Bearer " + token);
+
+            yield return request.SendWebRequest();
+
+            string body = request.downloadHandler.text;
+
+            Debug.Log("[API] GET " + url);
+            Debug.Log("[API] HTTP Status: " + request.responseCode);
+            Debug.Log("[API] Response: " + body);
+
+            if (request.result != UnityWebRequest.Result.Success ||
+                request.responseCode < 200 ||
+                request.responseCode >= 300)
+            {
+                string error = string.IsNullOrEmpty(body)
+                    ? request.error
+                    : body;
+
+                onError?.Invoke("Could not load player stats: " + error);
+                yield break;
+            }
+
+            PlayerStatsResponse stats =
+                JsonUtility.FromJson<PlayerStatsResponse>(body);
+
+            if (stats == null || string.IsNullOrEmpty(stats.user_id))
+            {
+                onError?.Invoke("Invalid player stats response.");
+                yield break;
+            }
+
+            onSuccess?.Invoke(stats);
+        }
+    }
+
     // ---------- DTOs ----------
 
     [Serializable] class AuthRequest { public string email; public string password; }
@@ -151,5 +219,17 @@ public class LoginManager : MonoBehaviour
         public bool is_new_user;
         public bool has_profile;
         public bool needs_email_confirmation;
+    }
+
+    // Player Stats
+    [Serializable]
+    public class PlayerStatsResponse
+    {
+        public string message;
+        public string user_id;
+        public int coin;
+        public int work_days;
+        public int work_streak;
+        public int total_customers_served;
     }
 }
