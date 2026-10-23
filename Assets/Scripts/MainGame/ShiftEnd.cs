@@ -65,14 +65,19 @@ public class ShiftEnd : MonoBehaviour
 
 
 
+
     public void NextShift()
     {
-       if (shiftSummaryPopup != null)
-       {
-            shiftSummaryPopup.SetActive(false);
-       }
-        gameObject.SetActive(false);
-        shiftSummaryPopup.SetActive(false);
+        GameLogger.DebugLog("SHIFT END", "click");
+
         Time.timeScale = 1f;
+
+        if (shiftSummaryPopup != null)
+        {
+            shiftSummaryPopup.SetActive(false);
+        }
+
+        gameObject.SetActive(false);
     }
+
 }

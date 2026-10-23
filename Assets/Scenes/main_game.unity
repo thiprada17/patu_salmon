@@ -5158,9 +5158,6 @@ MonoBehaviour:
   autoOffSprite: {fileID: 1852599099772028583, guid: 8c511b4a33bb0b8428cff07a4969127f, type: 3}
   autoOnSprite: {fileID: -1307664305451782276, guid: b5a9445a2d8809541a661216e7ec0e8a, type: 3}
   dialogueLines:
-  - test
-  - test2
-  - test3
   - Coffee Grinder
   - Espresso Machine
   - Milk
@@ -5759,13 +5756,14 @@ GameObject:
   - component: {fileID: 748708794}
   - component: {fileID: 748708797}
   - component: {fileID: 748708796}
+  - component: {fileID: 748708798}
   m_Layer: 5
   m_Name: ShiftEnd Penel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &748708793
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5806,7 +5804,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.392}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -5852,7 +5850,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!223 &748708797
 Canvas:
   m_ObjectHideFlags: 0
@@ -5876,6 +5874,23 @@ Canvas:
   m_SortingLayerID: -1091874365
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &748708798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 748708792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1 &761139901
 GameObject:
   m_ObjectHideFlags: 0
