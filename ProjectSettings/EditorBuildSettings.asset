@@ -18,6 +18,9 @@ EditorBuildSettings:
     path: Assets/Scenes/SelectCharacter.unity
     guid: 4507980a8b8c3814d8bafcee2761b95f
   - enabled: 1
+    path: Assets/Scenes/TransitionScene.unity
+    guid: a967661539817b74c8794bd393fc55c8
+  - enabled: 1
     path: Assets/Scenes/idcard.unity
     guid: 0b8344bbe60326c45ad90fdc10006a94
   - enabled: 1

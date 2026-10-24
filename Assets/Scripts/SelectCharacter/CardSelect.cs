@@ -256,6 +256,7 @@ public class CardSelect : MonoBehaviour
         isSelecting = false;
     }
 
+
     private void LoadNextScene()
     {
         if (string.IsNullOrWhiteSpace(nextScene))
@@ -269,24 +270,25 @@ public class CardSelect : MonoBehaviour
         {
             GameLogger.Error(
                 "CardSelect",
-                "Scene not found in Build Settings: " + nextScene
+                "Scene not found in Build Profiles: " + nextScene
             );
             CancelSelection();
             return;
         }
 
-        if (SceneTransition.Instance != null)
+        if (TransitionLauncher.Instance != null)
         {
-            SceneTransition.Instance.LoadScene(nextScene);
+            TransitionLauncher.Instance.LoadScene(nextScene);
         }
         else
         {
-            // fallback: ไม่เจอ SceneTransition เลยโหลดแบบตัดทันที
-            GameLogger.Warn(
+            GameLogger.Error(
                 "CardSelect",
-                "SceneTransition ไม่พบ โหลดแบบตัดทันที"
+                "TransitionLauncher ไม่พบใน SelectCharacter"
             );
-            SceneManager.LoadScene(nextScene);
+
+            CancelSelection();
         }
     }
+
 }
