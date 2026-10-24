@@ -1,143 +1,133 @@
+Ôªø
 using System;
 using System.Collections;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
-/// ∑’Ë‡¥’¬«∑’Ë§ÿ¬°—∫ Backend (continue / signup / starter player)
-///  √È“ßµ—«‡ÕßÕ—µ‚π¡—µ‘·≈–Õ¬ŸË¢È“¡´’π ‰¡ËµÈÕß«“ß„π Scene
 public class LoginManager : MonoBehaviour
 {
-    const string backendUrl = "https://patu-salmon.onrender.com";
+    private const string backendUrl = "https://patu-salmon.onrender.com";
 
-    static LoginManager instance;
+    private static LoginManager instance;
+
     public static LoginManager Instance
     {
         get
         {
             if (instance == null)
             {
-                var go = new GameObject("LoginManager");
+                GameObject go = new GameObject("LoginManager");
                 instance = go.AddComponent<LoginManager>();
             }
+
             return instance;
         }
     }
 
-    public static string UserId => PlayerPrefs.GetString("UserID", "");
+    public static string UserId =>
+        PlayerPrefs.GetString("UserID", "");
 
-    void Awake()
+
+    public static bool HasAccessToken()
+    {
+        return !string.IsNullOrEmpty(
+            PlayerPrefs.GetString("AccessToken", "")
+        );
+    }
+
+    private void Awake()
     {
         if (instance != null && instance != this)
         {
             Destroy(gameObject);
             return;
         }
+
         instance = this;
         DontDestroyOnLoad(gameObject);
     }
 
     // ---------- Public API ----------
 
-    public void Continue(string email, string password,
-                         Action<AuthResponse> onSuccess, Action<string> onError)
+    public void Continue(
+        string email,
+        string password,
+        Action<AuthResponse> onSuccess,
+        Action<string> onError)
     {
-        string json = JsonUtility.ToJson(new AuthRequest { email = email, password = password });
+        string json = JsonUtility.ToJson(
+            new AuthRequest
+            {
+                email = email,
+                password = password
+            }
+        );
 
-        StartCoroutine(PostJson("/auth/continue", json,
+        StartCoroutine(PostJson(
+            "/auth/continue",
+            json,
             text =>
             {
-                var res = JsonUtility.FromJson<AuthResponse>(text);
+                AuthResponse res =
+                    JsonUtility.FromJson<AuthResponse>(text);
+
                 if (res == null || string.IsNullOrEmpty(res.user_id))
                 {
-                    onError?.Invoke("Response ‰¡Ë¡’ user_id");
+                    onError?.Invoke("Response is missing user_id.");
                     return;
                 }
 
                 SaveSession(res);
                 onSuccess?.Invoke(res);
             },
-            onError));
+            onError
+        ));
     }
 
-    public void SendStarterPlayer(string username, string character, string language,
-                                  Action onSuccess, Action<string> onError)
+    /// <summary>
+    /// ‡∏™‡πà‡∏á‡∏Ç‡πâ‡∏≠‡∏°‡∏π‡∏•‡∏ú‡∏π‡πâ‡πÄ‡∏•‡πà‡∏ô‡πÄ‡∏£‡∏¥‡πà‡∏°‡∏ï‡πâ‡∏ô‡πÑ‡∏õ Backend
+    /// ‡πÄ‡∏£‡∏µ‡∏¢‡∏Å‡πÉ‡∏ä‡πâ‡πÄ‡∏â‡∏û‡∏≤‡∏∞‡πÄ‡∏°‡∏∑‡πà‡∏≠‡∏ú‡∏π‡πâ‡πÄ‡∏•‡πà‡∏ô‡∏¢‡∏±‡∏á‡πÑ‡∏°‡πà‡∏°‡∏µ Profile
+    /// </summary>
+    public void SendStarterPlayer(
+        string username,
+        string character,
+        string language,
+        Action onSuccess,
+        Action<string> onError)
     {
-        string json = JsonUtility.ToJson(new StarterPlayerData
+        string userId = UserId;
+
+        if (string.IsNullOrEmpty(userId))
         {
-            user_id = UserId,
-            username = username,
-            character = character,
-            language = language,
-        });
+            onError?.Invoke("User ID is missing. Please log in again.");
+            return;
+        }
 
-        Debug.Log("Sending player data: " + json);
-        StartCoroutine(PostJson("/player/starter", json,
-            _ => onSuccess?.Invoke(),
-            onError));
-    }
-
-    // ---------- Internals ----------
-
-    IEnumerator PostJson(string path, string json,
-                         Action<string> onDone, Action<string> onError)
-    {
-        Debug.LogWarning("[API] Sending: " + path);
-
-        using (var request = new UnityWebRequest(backendUrl + path, "POST"))
-        {
-            request.uploadHandler =
-                new UploadHandlerRaw(Encoding.UTF8.GetBytes(json));
-            request.downloadHandler = new DownloadHandlerBuffer();
-            request.SetRequestHeader("Content-Type", "application/json");
-
-            yield return request.SendWebRequest();
-
-            string body = request.downloadHandler.text;
-
-            Debug.LogWarning("[API] HTTP Status: " + request.responseCode);
-            Debug.LogWarning("[API] Response Body: " + body);
-            Debug.LogWarning("[API] Error: " + request.error);
-
-            if (request.responseCode < 200 || request.responseCode >= 300)
+        string json = JsonUtility.ToJson(
+            new StarterPlayerData
             {
-                onError?.Invoke(body);
-                yield break;
+                user_id = userId,
+                username = username,
+                character = character,
+                language = language
             }
+        );
 
-            onDone?.Invoke(body);
-        }
+        StartCoroutine(PostJson(
+            "/player/starter",
+            json,
+            _ => onSuccess?.Invoke(),
+            onError
+        ));
     }
 
-    // FastAPI µÕ∫ error ‡ªÁπ {"detail": "..."} -> ¥÷ß¢ÈÕ§«“¡¡“· ¥ß
-    static string ExtractError(UnityWebRequest request)
-    {
-        try
-        {
-            var body = JsonUtility.FromJson<ErrorBody>(request.downloadHandler.text);
-            if (body != null && !string.IsNullOrEmpty(body.detail)) return body.detail;
-        }
-        catch { /* detail Õ“®‡ªÁπ list (422) „ÀÈ fallback */ }
+    // ---------- Player Stats ----------
 
-        return request.error;
-    }
-
-    static void SaveSession(AuthResponse res)
-    {
-        PlayerPrefs.SetString("UserID", res.user_id);
-        if (!string.IsNullOrEmpty(res.email)) PlayerPrefs.SetString("Email", res.email);
-        if (!string.IsNullOrEmpty(res.access_token))
-        {
-            PlayerPrefs.SetString("AccessToken", res.access_token);
-            PlayerPrefs.SetString("RefreshToken", res.refresh_token ?? "");
-        }
-        PlayerPrefs.Save();
-    }
-
-    // GET: Player Stats --> for Tutoral Session Check if this playe need tutorial or not
     public void GetPlayerStats(
-    Action<PlayerStatsResponse> onSuccess,
-    Action<string> onError)
+        Action<PlayerStatsResponse> onSuccess,
+        Action<string> onError)
     {
         string userId = UserId;
         string token = PlayerPrefs.GetString("AccessToken", "");
@@ -154,7 +144,12 @@ public class LoginManager : MonoBehaviour
             return;
         }
 
-        StartCoroutine(GetPlayerStatsRequest(userId, token, onSuccess, onError));
+        StartCoroutine(GetPlayerStatsRequest(
+            userId,
+            token,
+            onSuccess,
+            onError
+        ));
     }
 
     private IEnumerator GetPlayerStatsRequest(
@@ -163,19 +158,19 @@ public class LoginManager : MonoBehaviour
         Action<PlayerStatsResponse> onSuccess,
         Action<string> onError)
     {
-        string url = backendUrl + "/player/stats/" + UnityWebRequest.EscapeURL(userId);
+        string url = backendUrl + "/player/stats/" +
+                     UnityWebRequest.EscapeURL(userId);
 
         using (UnityWebRequest request = UnityWebRequest.Get(url))
         {
-            request.SetRequestHeader("Authorization", "Bearer " + token);
+            request.SetRequestHeader(
+                "Authorization",
+                "Bearer " + token
+            );
 
             yield return request.SendWebRequest();
 
             string body = request.downloadHandler.text;
-
-            Debug.Log("[API] GET " + url);
-            Debug.Log("[API] HTTP Status: " + request.responseCode);
-            Debug.Log("[API] Response: " + body);
 
             if (request.result != UnityWebRequest.Result.Success ||
                 request.responseCode < 200 ||
@@ -185,16 +180,23 @@ public class LoginManager : MonoBehaviour
                     ? request.error
                     : body;
 
-                onError?.Invoke("Could not load player stats: " + error);
+                onError?.Invoke(
+                    "Could not load player stats: " + error
+                );
+
                 yield break;
             }
 
             PlayerStatsResponse stats =
                 JsonUtility.FromJson<PlayerStatsResponse>(body);
 
-            if (stats == null || string.IsNullOrEmpty(stats.user_id))
+            if (stats == null ||
+                string.IsNullOrEmpty(stats.user_id))
             {
-                onError?.Invoke("Invalid player stats response.");
+                onError?.Invoke(
+                    "Invalid player stats response."
+                );
+
                 yield break;
             }
 
@@ -202,11 +204,118 @@ public class LoginManager : MonoBehaviour
         }
     }
 
+    // ---------- HTTP ----------
+
+    private IEnumerator PostJson(
+        string path,
+        string json,
+        Action<string> onDone,
+        Action<string> onError)
+    {
+        using (UnityWebRequest request =
+               new UnityWebRequest(backendUrl + path, "POST"))
+        {
+            request.uploadHandler = new UploadHandlerRaw(
+                Encoding.UTF8.GetBytes(json)
+            );
+
+            request.downloadHandler =
+                new DownloadHandlerBuffer();
+
+            request.SetRequestHeader(
+                "Content-Type",
+                "application/json"
+            );
+
+            yield return request.SendWebRequest();
+
+            string body = request.downloadHandler.text;
+
+            if (request.result != UnityWebRequest.Result.Success ||
+                request.responseCode < 200 ||
+                request.responseCode >= 300)
+            {
+                string error = ExtractError(request);
+
+                onError?.Invoke(
+                    string.IsNullOrEmpty(error) ? body : error
+                );
+
+                yield break;
+            }
+
+            onDone?.Invoke(body);
+        }
+    }
+
+    private static string ExtractError(UnityWebRequest request)
+    {
+        try
+        {
+            ErrorBody body = JsonUtility.FromJson<ErrorBody>(
+                request.downloadHandler.text
+            );
+
+            if (body != null &&
+                !string.IsNullOrEmpty(body.detail))
+            {
+                return body.detail;
+            }
+        }
+        catch
+        {
+            // ‡πÉ‡∏ä‡πâ‡∏Ç‡πâ‡∏≠‡∏Ñ‡∏ß‡∏≤‡∏° Error ‡∏™‡∏≥‡∏£‡∏≠‡∏á
+        }
+
+        return request.error;
+    }
+
+    // ---------- Session ----------
+
+    private static void SaveSession(AuthResponse res)
+    {
+        PlayerPrefs.SetString("UserID", res.user_id);
+
+        if (!string.IsNullOrEmpty(res.email))
+        {
+            PlayerPrefs.SetString("Email", res.email);
+        }
+
+        if (!string.IsNullOrEmpty(res.access_token))
+        {
+            PlayerPrefs.SetString("AccessToken", res.access_token);
+            PlayerPrefs.SetString(
+                "RefreshToken",
+                res.refresh_token ?? ""
+            );
+        }
+
+        PlayerPrefs.Save();
+    }
+
     // ---------- DTOs ----------
 
-    [Serializable] class AuthRequest { public string email; public string password; }
-    [Serializable] class ErrorBody { public string detail; }
-    [Serializable] class StarterPlayerData { public string user_id; public string username; public string character; public string language; }
+    [Serializable]
+    private class AuthRequest
+    {
+        public string email;
+        public string password;
+    }
+
+    [Serializable]
+    private class ErrorBody
+    {
+        public string detail;
+    }
+
+    [Serializable]
+    private class StarterPlayerData
+    {
+        public string user_id;
+        public string username;
+        public string character;
+        public string language;
+    }
 
     [Serializable]
     public class AuthResponse
@@ -221,7 +330,6 @@ public class LoginManager : MonoBehaviour
         public bool needs_email_confirmation;
     }
 
-    // Player Stats
     [Serializable]
     public class PlayerStatsResponse
     {
