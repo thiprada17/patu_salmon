@@ -80,6 +80,14 @@ public class LoginManager : MonoBehaviour
                 }
 
                 SaveSession(res);
+
+                GameLogger.Info(
+                    "LoginManager",
+                    "Continue OK. UserID=" + res.user_id +
+                    " | New=" + res.is_new_user +
+                    " | HasProfile=" + res.has_profile
+                );
+
                 onSuccess?.Invoke(res);
             },
             onError

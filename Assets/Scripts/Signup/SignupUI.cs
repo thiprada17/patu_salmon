@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
@@ -97,9 +98,11 @@ public class SignupUI : MonoBehaviour
     {
         if (locked) return;
         if (signupButton != null) StartCoroutine(Punch(signupButton.transform));
+
         if (emailInput == null || passwordInput == null)
         {
-            Debug.LogError("SignupUI: Input field is missing."); return;
+            Debug.LogError("SignupUI: Input field is missing.");
+            return;
         }
 
         string email = emailInput.text.Trim();
@@ -138,7 +141,12 @@ public class SignupUI : MonoBehaviour
         locked = true;
         if (signupButton != null) signupButton.interactable = false;
 
-        LoginManager.Instance.Continue(email, password, OnContinueSuccess, OnContinueFailed);
+        LoginManager.Instance.Continue(
+            email,
+            password,
+            OnContinueSuccess,
+            OnContinueFailed
+        );
     }
 
     // ---------- callbacks จาก LoginManager ----------
@@ -150,17 +158,23 @@ public class SignupUI : MonoBehaviour
         ReleaseButton();
     }
 
-
     void ReleaseButton()
     {
         locked = false;
-        if (signupButton != null) signupButton.interactable = true;
+
+        if (signupButton != null)
+            signupButton.interactable = true;
     }
-
-
 
     public void OnContinueSuccess(LoginManager.AuthResponse res)
     {
+        if (res == null)
+        {
+            Debug.LogError("Continue failed: response is empty.");
+            ReleaseButton();
+            return;
+        }
+
         Debug.Log(
             $"Continue OK. new={res.is_new_user} profile={res.has_profile}"
         );
@@ -171,6 +185,11 @@ public class SignupUI : MonoBehaviour
             ReleaseButton();
             return;
         }
+
+        // Save login status for LoadingScreen.
+        PlayerPrefs.SetInt("IsNewUser", res.is_new_user ? 1 : 0);
+        PlayerPrefs.SetInt("HasProfile", res.has_profile ? 1 : 0);
+        PlayerPrefs.Save();
 
         if (res.is_new_user || !res.has_profile)
         {
@@ -195,7 +214,6 @@ public class SignupUI : MonoBehaviour
             );
         }
     }
-
 
     private void OnPlayerStatsLoaded(LoginManager.PlayerStatsResponse stats)
     {
@@ -235,7 +253,6 @@ public class SignupUI : MonoBehaviour
 
         ReleaseButton();
     }
-
 
     // ---------- UI helpers ----------
 
