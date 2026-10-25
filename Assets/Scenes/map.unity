@@ -4115,6 +4115,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   frameSalmon: {fileID: 1752108638}
   framePlatu: {fileID: 821191240}
+  usernameText: {fileID: 0}
   settingsSceneName: setting
   mapSceneName: Map
 --- !u!4 &706621762
@@ -4471,9 +4472,9 @@ MonoBehaviour:
   - entryType: 1
     normalDialogueIndex: 6
     tutorialStep: {fileID: 11400000, guid: c1bdf1c72d558ae4e9d5434659143018, type: 2}
-  - entryType: 0
+  - entryType: 1
     normalDialogueIndex: 7
-    tutorialStep: {fileID: 0}
+    tutorialStep: {fileID: 11400000, guid: 4cac14327c7d83344a2785fe573409e8, type: 2}
   - entryType: 0
     normalDialogueIndex: 8
     tutorialStep: {fileID: 0}
@@ -6278,6 +6279,7 @@ GameObject:
   m_Component:
   - component: {fileID: 950487797}
   - component: {fileID: 950487798}
+  - component: {fileID: 950487799}
   m_Layer: 0
   m_Name: BackgroundMusic
   m_TagString: Untagged
@@ -6397,6 +6399,18 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &950487799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 950487796}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9e6205bc852bec4b8099cb7573f3635, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &970034792
 GameObject:
   m_ObjectHideFlags: 0
