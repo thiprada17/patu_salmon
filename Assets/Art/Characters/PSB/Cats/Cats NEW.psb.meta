@@ -1845,7 +1845,7 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 9620, y: 251}
     spritePosition: {x: 514, y: 2565}
-  - name: Eye Closes - 1
+  - name: Eyes Closes - 1
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -2140,7 +2140,7 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 12583, y: -360}
     spritePosition: {x: 501, y: 2690}
-  - name: Eyes Close - 2
+  - name: Eyes Closes - 2
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -2435,7 +2435,7 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 12583, y: -126}
     spritePosition: {x: 501, y: 2690}
-  - name: Eyes Close - 3
+  - name: Eyes Closes - 3
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -2719,7 +2719,7 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 12389, y: 2785}
     spritePosition: {x: 501, y: 2865}
-  - name: Eyes Close - 4
+  - name: Eyes Closes - 4
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -12517,7 +12517,7 @@ ScriptedImporter:
     flatten: 0
     isImported: 1
     isVisible: 1
-  - name: Eyes Close
+  - name: Eyes Closes
     spriteName: 
     isGroup: 1
     parentIndex: -1
@@ -12527,8 +12527,8 @@ ScriptedImporter:
     flatten: 0
     isImported: 0
     isVisible: 1
-  - name: Eye Closes - 1
-    spriteName: Eye Closes - 1
+  - name: Eyes Closes - 1
+    spriteName: Eyes Closes - 1
     isGroup: 0
     parentIndex: 6
     spriteID: e05f4910f3341c241b2a6cce2881b61d
@@ -12537,8 +12537,8 @@ ScriptedImporter:
     flatten: 0
     isImported: 1
     isVisible: 1
-  - name: Eyes Close - 2
-    spriteName: Eyes Close - 2
+  - name: Eyes Closes - 2
+    spriteName: Eyes Closes - 2
     isGroup: 0
     parentIndex: 6
     spriteID: cbbf41518a3ae3e408495472e9a05329
@@ -12547,8 +12547,8 @@ ScriptedImporter:
     flatten: 0
     isImported: 1
     isVisible: 1
-  - name: Eyes Close - 3
-    spriteName: Eyes Close - 3
+  - name: Eyes Closes - 3
+    spriteName: Eyes Closes - 3
     isGroup: 0
     parentIndex: 6
     spriteID: 0b3f850085c4d09458920076dcd681ee
@@ -12557,8 +12557,8 @@ ScriptedImporter:
     flatten: 0
     isImported: 1
     isVisible: 1
-  - name: Eyes Close - 4
-    spriteName: Eyes Close - 4
+  - name: Eyes Closes - 4
+    spriteName: Eyes Closes - 4
     isGroup: 0
     parentIndex: 6
     spriteID: 92466a2691439774bbfbe1f072e92cae

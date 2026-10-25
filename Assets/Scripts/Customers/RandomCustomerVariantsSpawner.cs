@@ -13,6 +13,8 @@ public class RandomCustomerVariantsSpawner : MonoBehaviour
     [SerializeField] private SpriteResolver armL;
     [SerializeField] private SpriteResolver armR;
 
+    [SerializeField] private SpriteResolver tail;
+
     [Header("Variant Settings")]
     [SerializeField] private int variantCount = 4;
 
@@ -36,6 +38,9 @@ public class RandomCustomerVariantsSpawner : MonoBehaviour
         SetVariant(armL, "Arm L");
         SetVariant(armR, "Arm R");
 
+        //Optional Variant
+        SetVariant(tail, "Tail");
+
         Debug.Log(
             gameObject.name +
             " uses Variant " +
@@ -43,24 +48,30 @@ public class RandomCustomerVariantsSpawner : MonoBehaviour
         );
     }
 
+
     private void SetVariant(
         SpriteResolver resolver,
         string category)
     {
         if (resolver == null)
         {
-            Debug.LogWarning(
-                category + " Sprite Resolver is missing!"
-            );
+            // Tail is optional, so no warning is needed.
+            if (category != "Tail")
+            {
+                Debug.LogWarning(
+                    category + " Sprite Resolver is missing!"
+                );
+            }
+
             return;
         }
 
-        string label =
-            category + " - " + currentVariant;
+        string label = category + " - " + currentVariant;
 
         resolver.SetCategoryAndLabel(
             category,
             label
         );
     }
+
 }

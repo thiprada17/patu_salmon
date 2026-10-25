@@ -1,10 +1,12 @@
-﻿using System.Collections;
+﻿
+using System.Collections;
 using UnityEngine;
 
 public class CustomerSpawner : MonoBehaviour
 {
-    [Header("Customer")]
+    [Header("Customer Prefabs")]
     [SerializeField] private CustomerMovement customerPrefab;
+    [SerializeField] private CustomerMovement[] dogsPrefabs;
 
     [Header("Spawn")]
     [SerializeField] private Transform spawnPoint;
@@ -31,6 +33,10 @@ public class CustomerSpawner : MonoBehaviour
     [Header("Tutorial Settings")]
     [SerializeField, Min(1)] private int tutorialCustomerCount = 3;
 
+    [Header("Dog Spawn Settings")]
+    [SerializeField, Range(0f, 1f)]
+    private float dogSpawnChance = 0.25f;
+
     private int spawnedCount;
     private int targetCount;
     private bool tutorialMode;
@@ -53,26 +59,19 @@ public class CustomerSpawner : MonoBehaviour
             return;
         }
 
-        // DayManager will start each shift's spawn cycle.
+        // DayManager starts each shift.
     }
 
     private IEnumerator SpawnCustomers()
     {
-        while (true)
+        while (isSpawning)
         {
-            // Stop normal spawning while the tutorial has not started.
             if (tutorialMode && !TutorialSession.IsTutorialActive)
             {
                 yield return null;
                 continue;
             }
 
-            // Stop spawning once the shift timer reaches zero.
-            // DayManager should call StopSpawning() at shift end.
-            if (!isSpawning)
-                yield break;
-
-            // Wait if both queue slots are occupied.
             if (customerQueue.IsFull())
             {
                 yield return null;
@@ -80,16 +79,14 @@ public class CustomerSpawner : MonoBehaviour
             }
 
             SpawnCustomer();
-            spawnedCount++;
 
-            // Tutorial only needs its configured number of customers.
             if (tutorialMode && spawnedCount >= tutorialCustomerCount)
                 yield break;
 
-            float delay = GetSpawnDelay();
-
-            yield return new WaitForSeconds(delay);
+            yield return new WaitForSeconds(GetSpawnDelay());
         }
+
+        spawnCoroutine = null;
     }
 
     private float GetSpawnDelay()
@@ -106,7 +103,8 @@ public class CustomerSpawner : MonoBehaviour
             ? Mathf.Max(0, CoinManager.Instance.WorkDays)
             : 0;
 
-        float reduction = completedShifts * spawnTimeReductionPerShift;
+        float reduction =
+            completedShifts * spawnTimeReductionPerShift;
 
         float minDelay = Mathf.Max(
             minimumSpawnDelay,
@@ -123,8 +121,18 @@ public class CustomerSpawner : MonoBehaviour
 
     private void SpawnCustomer()
     {
+        CustomerMovement prefabToSpawn = GetRandomCustomerPrefab();
+
+        if (prefabToSpawn == null)
+        {
+            Debug.LogWarning(
+                "[CustomerSpawner] No valid customer prefab available."
+            );
+            return;
+        }
+
         CustomerMovement customer = Instantiate(
-            customerPrefab,
+            prefabToSpawn,
             spawnPoint.position,
             Quaternion.identity
         );
@@ -133,6 +141,8 @@ public class CustomerSpawner : MonoBehaviour
 
         if (joinedQueue)
         {
+            spawnedCount++;
+
             Debug.Log(
                 customer.name + " spawned and joined queue."
             );
@@ -140,14 +150,36 @@ public class CustomerSpawner : MonoBehaviour
         else
         {
             Debug.LogWarning(
-                customer.name +
-                " spawned but could not join queue."
+                customer.name + " could not join the queue."
             );
 
             Destroy(customer.gameObject);
-            spawnedCount--;
         }
     }
+
+
+    private CustomerMovement GetRandomCustomerPrefab()
+    {
+        bool hasDogs = dogsPrefabs != null && dogsPrefabs.Length > 0;
+
+        if (hasDogs && Random.value < 0.5f)
+        {
+            // 50% chance to spawn a dog.
+            for (int i = 0; i < dogsPrefabs.Length; i++)
+            {
+                CustomerMovement dog = dogsPrefabs[
+                    Random.Range(0, dogsPrefabs.Length)
+                ];
+
+                if (dog != null)
+                    return dog;
+            }
+        }
+
+        // 50% chance to spawn a cat.
+        return customerPrefab;
+    }
+
 
     public void BeginShift()
     {
@@ -155,7 +187,10 @@ public class CustomerSpawner : MonoBehaviour
             return;
 
         if (spawnCoroutine != null)
+        {
             StopCoroutine(spawnCoroutine);
+            spawnCoroutine = null;
+        }
 
         spawnedCount = 0;
         isSpawning = true;
@@ -191,6 +226,8 @@ public class CustomerSpawner : MonoBehaviour
             spawnCoroutine = null;
         }
 
-        Debug.Log("[CustomerSpawner] Spawning stopped for this shift.");
+        Debug.Log(
+            "[CustomerSpawner] Spawning stopped for this shift."
+        );
     }
 }
