@@ -37,7 +37,7 @@ public class Setting : MonoBehaviour
 
     [Header("Back")]
     [SerializeField] Button backButton;
-    [SerializeField] string backScene = "MainMenu";
+    //[SerializeField] string backScene = "MainMenu";
 
     
     [Header("Punch")]
@@ -89,7 +89,7 @@ public class Setting : MonoBehaviour
         if (backgroundButton != null) backgroundButton.onClick.AddListener(() => ToggleSound("BgmOn", backgroundValue, backgroundButton));
         if (languageButton != null) languageButton.onClick.AddListener(ToggleDropdown);
         if (logoutButton != null) logoutButton.onClick.AddListener(OnLogout);
-        if (backButton != null) backButton.onClick.AddListener(OnBack);
+        //if (backButton != null) backButton.onClick.AddListener(OnBack);
     }
 
     void Update()
@@ -97,7 +97,7 @@ public class Setting : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (dropdownPanel != null && dropdownPanel.activeSelf) CloseDropdown();
-            else OnBack();
+            //else OnBack();
         }
     }
 
@@ -211,15 +211,15 @@ public class Setting : MonoBehaviour
         }));
     }
 
-    void OnBack()
-    {
-        if (isBusy) return;
-        isBusy = true;
-        StartCoroutine(PunchThen(backButton.transform, () =>
-        {
-            SceneManager.LoadScene(backScene);
-        }));
-    }
+    //void OnBack()
+    //{
+    //    if (isBusy) return;
+    //    isBusy = true;
+    //    StartCoroutine(PunchThen(backButton.transform, () =>
+    //    {
+    //        SceneManager.LoadScene(backScene);
+    //    }));
+    //}
 
 
     IEnumerator Punch(Transform t)

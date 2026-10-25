@@ -91,6 +91,7 @@ public class DialogueController : MonoBehaviour
     private Coroutine typingCoroutine;
     private Coroutine autoCoroutine;
 
+    //Username Variable
     private string playerUsername;
 
     private bool wasGamePausedByDialogue;
@@ -117,7 +118,6 @@ public class DialogueController : MonoBehaviour
 
         UpdateAutoButton();
     }
-
 
 
     private void Start()
@@ -184,6 +184,7 @@ public class DialogueController : MonoBehaviour
         dialogueStarted = true;
         isTutorial = false;
 
+        //Get Player Usernmae From PlayerPrefs
         playerUsername = PlayerPrefs.GetString("Username", "Player");
 
         GameplayInputLock.Lock();
@@ -417,69 +418,29 @@ public class DialogueController : MonoBehaviour
 
         switch (targetID)
         {
-            case global::TutorialTargetID.CountryIcon:
-                tempCanvas.ShowCountryIcon();
-                break;
+            //========TEMP CANVAS========
+            //Map Icon & Popup
+            case global::TutorialTargetID.CountryIcon: tempCanvas.ShowCountryIcon(); break;
+            case global::TutorialTargetID.CountryWindow: tempCanvas.ShowCountryPopup(); break;
+            case global::TutorialTargetID.StartShift: tempCanvas.ShowCountryPopupGlow(); break;
 
-            case global::TutorialTargetID.CountryWindow:
-                tempCanvas.ShowCountryPopup();
-                break;
+            //Map Navbar
+            case global::TutorialTargetID.Wallet: tempCanvas.ShowCoin(); break;
+            case global::TutorialTargetID.Calendar: tempCanvas.ShowDay(); break;
 
-            case global::TutorialTargetID.StartShift:
-                tempCanvas.ShowCountryPopupGlow();
-                break;
+            //Main_Game
+            case global::TutorialTargetID.CoffeeGrinder: tempCanvas.ShowCoffeeGrinder(); break;
+            case global::TutorialTargetID.EspressoMachine: tempCanvas.ShowEspressoMachine(); break;
+            case global::TutorialTargetID.Milk: tempCanvas.ShowMilk(); break;
+            case global::TutorialTargetID.Cocoa: tempCanvas.ShowCocoa(); break;
+            case global::TutorialTargetID.CoffeePortfilter: tempCanvas.ShowCoffeePortfilter(); break;
+            case global::TutorialTargetID.Cup: tempCanvas.ShowCup(); break;
+            case global::TutorialTargetID.Mat: tempCanvas.ShowMat(); break;
+            case global::TutorialTargetID.Sink: tempCanvas.ShowSink(); break;
+            case global::TutorialTargetID.TrashBin: tempCanvas.ShowTrashBin(); break;
+            case global::TutorialTargetID.RecipePopup: tempCanvas.ShowRecipePopup(); break;
 
-            case global::TutorialTargetID.Wallet:
-                tempCanvas.ShowCoin();
-                break;
-
-            case global::TutorialTargetID.Calendar:
-                tempCanvas.ShowDay();
-                break;
-
-            case global::TutorialTargetID.CoffeeGrinder:
-                tempCanvas.ShowCoffeeGrinder();
-                break;
-
-            case global::TutorialTargetID.EspressoMachine:
-                tempCanvas.ShowEspressoMachine();
-                break;
-
-            case global::TutorialTargetID.Milk:
-                tempCanvas.ShowMilk();
-                break;
-
-            case global::TutorialTargetID.Cocoa:
-                tempCanvas.ShowCocoa();
-                break;
-
-            case global::TutorialTargetID.CoffeePortfilter:
-                tempCanvas.ShowCoffeePortfilter();
-                break;
-
-            case global::TutorialTargetID.Cup:
-                tempCanvas.ShowCup();
-                break;
-
-            case global::TutorialTargetID.Mat:
-                tempCanvas.ShowMat();
-                break;
-
-            case global::TutorialTargetID.Sink:
-                tempCanvas.ShowSink();
-                break;
-
-            case global::TutorialTargetID.TrashBin:
-                tempCanvas.ShowTrashBin();
-                break;
-
-            case global::TutorialTargetID.RecipePopup:
-                tempCanvas.ShowRecipePopup();
-                break;
-
-            default:
-                tempCanvas.HideAll();
-                break;
+            default: tempCanvas.HideAll(); break;
         }
     }
 
