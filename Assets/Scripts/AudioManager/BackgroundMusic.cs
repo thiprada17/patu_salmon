@@ -55,6 +55,11 @@ public class BackgroundMusic : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        // Additive scenes such as the recipe book are overlays. They should
+        // not replace or stop the music from the active gameplay scene.
+        if (mode == LoadSceneMode.Additive)
+            return;
+
         PlayTrackForScene(scene.name);
     }
 

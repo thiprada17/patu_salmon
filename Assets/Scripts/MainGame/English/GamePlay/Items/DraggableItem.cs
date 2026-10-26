@@ -152,6 +152,19 @@ public class DraggableItem : MonoBehaviour,
         }
 
         isDragging = false;
+
+        // Cups and portfilters must finish a drag in a station slot. Keep the
+        // previous valid position so releasing over the counter or another
+        // prop returns the item instead of leaving it wherever it was dropped.
+        bool mustBeInStationSlot =
+            GetComponent<Cup>() != null || GetComponent<Portfilter>() != null;
+
+        if (mustBeInStationSlot && !isAttached)
+        {
+            RejectDrop();
+            return;
+        }
+
         lastValidPosition = transform.position;
     }
 

@@ -187,13 +187,31 @@ public class DialogueController : MonoBehaviour
         //Get Player Usernmae From PlayerPrefs
         playerUsername = PlayerPrefs.GetString("Username", "Player");
 
-        GameplayInputLock.Lock();
-        inputLockAcquired = true;
+        bool allowGameplayDuringTutorial =
+            TutorialSession.IsTutorialActive && sceneName == "main_game";
 
-        PauseGameForDialogue();
+        if (!allowGameplayDuringTutorial)
+        {
+            GameplayInputLock.Lock();
+            inputLockAcquired = true;
+            PauseGameForDialogue();
+        }
 
         if (tutorialOverlay != null)
+        {
             tutorialOverlay.SetActive(true);
+
+            // The tutorial overlay is visual only in main_game. Let station
+            // and item input pass through it while the tutorial is active.
+            if (allowGameplayDuringTutorial)
+            {
+                CanvasGroup overlayGroup =
+                    tutorialOverlay.GetComponent<CanvasGroup>();
+
+                if (overlayGroup != null)
+                    overlayGroup.blocksRaycasts = false;
+            }
+        }
 
         if (dialogueRoot != null)
             dialogueRoot.SetActive(true);

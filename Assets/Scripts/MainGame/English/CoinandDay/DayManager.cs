@@ -37,6 +37,9 @@ public class DayManager : MonoBehaviour
         if (TutorialPanel != null)
             TutorialPanel.SetActive(TutorialSession.IsTutorialActive);
 
+        if (TutorialPanelancle != null)
+            TutorialPanelancle.SetActive(TutorialSession.IsTutorialActive);
+
         // Start spawning for the initial shift.
         if (customerSpawner != null)
             customerSpawner.BeginShift();
@@ -59,6 +62,9 @@ public class DayManager : MonoBehaviour
 
             if (TutorialPanel != null)
                 TutorialPanel.SetActive(true);
+
+            if (TutorialPanelancle != null)
+                TutorialPanelancle.SetActive(true);
 
             return;
         }

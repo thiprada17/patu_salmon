@@ -155,7 +155,7 @@ public class TutorialVisualController : MonoBehaviour
             overlayCanvas.sortingLayerID;
 
         targetCanvas.sortingOrder =
-            overlayCanvas.sortingOrder + 1;
+            Mathf.Max(overlayCanvas.sortingOrder, targetCanvas.sortingOrder) + 1;
 
         targetCanvas.enabled = true;
     }
