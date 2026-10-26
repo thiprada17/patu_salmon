@@ -78,7 +78,10 @@ public class AudioManager : MonoBehaviour
         PlayMusicForScene(currentScene);
 
         if (currentScene == "main_game")
-            RegisterSceneAudioSources();
+        {
+            RegisterSceneAudioSources(SceneManager.GetActiveScene());
+            ApplySFXVolume();
+        }
     }
 
     private void OnDestroy()
@@ -95,7 +98,10 @@ public class AudioManager : MonoBehaviour
         PlayMusicForScene(scene.name);
 
         if (scene.name == "main_game")
-            RegisterSceneAudioSources();
+        {
+            RegisterSceneAudioSources(scene);
+            ApplySFXVolume();
+        }
     }
 
     // ---------------- BGM ----------------
@@ -163,26 +169,32 @@ public class AudioManager : MonoBehaviour
 
     // ---------------- SFX REGISTRATION ----------------
 
-    private void RegisterSceneAudioSources()
+    private void RegisterSceneAudioSources(Scene scene)
     {
-        AudioSource[] sceneSources =
-            FindObjectsOfType<AudioSource>(true);
+        if (!scene.IsValid() || !scene.isLoaded)
+            return;
 
-        foreach (AudioSource source in sceneSources)
+        GameObject[] roots = scene.GetRootGameObjects();
+
+        foreach (GameObject root in roots)
         {
-            if (source == null ||
-                source == bgmSource ||
-                source == sfxSource ||
-                source.transform == transform ||
-                source.transform.IsChildOf(transform))
+            AudioSource[] sceneSources =
+                root.GetComponentsInChildren<AudioSource>(true);
+
+            foreach (AudioSource source in sceneSources)
             {
-                continue;
+                if (source == null ||
+                    source == bgmSource ||
+                    source == sfxSource ||
+                    source.transform == transform ||
+                    source.transform.IsChildOf(transform))
+                {
+                    continue;
+                }
+
+                RegisterStationSFX(source);
             }
-
-            RegisterStationSFX(source);
         }
-
-        ApplySFXVolume();
 
         Debug.Log(
             "AudioManager: Registered " +
@@ -254,6 +266,13 @@ public class AudioManager : MonoBehaviour
     public void SetSFXVolume(float volume)
     {
         sfxVolume = Mathf.Clamp01(volume);
+
+        // Register the Coffee Bar sources before applying the slider. This
+        // also covers sources on inactive station objects and scene reloads.
+        Scene mainGameScene = SceneManager.GetSceneByName("main_game");
+
+        if (mainGameScene.IsValid() && mainGameScene.isLoaded)
+            RegisterSceneAudioSources(mainGameScene);
 
         ApplySFXVolume();
 
