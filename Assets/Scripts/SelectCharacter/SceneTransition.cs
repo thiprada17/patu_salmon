@@ -7,25 +7,21 @@ public class SceneTransition : MonoBehaviour
 {
     public static SceneTransition Instance { get; private set; }
 
-    [Header("References")]
     [SerializeField] private Animator animator;
-    [SerializeField] private RectTransform planeRoot;
-    [SerializeField] private Transform planeAnimation;
 
-    [Header("Animation States")]
+    [Header("Layer 0: การเคลื่อนที่")]
     [SerializeField] private string inState = "flyin";
     [SerializeField] private string outState = "flyout";
     [SerializeField] private string idleState = "idle";
+
+    [Header("Layer 1: เครื่องบินขยับ (วนตลอด)")]
     [SerializeField] private string planeMoveState = "plane_move";
     [SerializeField] private int planeMoveLayer = 1;
 
-    [Header("Settings")]
+    [Header("Animation Settings")]
     [SerializeField] private float timeout = 5f;
 
-    private bool isRunning;
-    private string targetScene;
-    private string sourceScene;
-    private bool requestStarted;
+    private bool isLoading;
 
     private void Awake()
     {
@@ -36,152 +32,134 @@ public class SceneTransition : MonoBehaviour
         }
 
         Instance = this;
-
-        if (animator == null)
-            animator = GetComponentInChildren<Animator>(true);
-
-        if (planeRoot == null)
-            planeRoot = GetComponent<RectTransform>();
-
-        if (animator != null && planeAnimation == null)
-            planeAnimation = animator.transform;
+        DontDestroyOnLoad(gameObject);
 
         if (animator == null)
         {
-            GameLogger.Error("SceneTransition", "Animator is not assigned.");
+            GameLogger.Error(
+                "SceneTransition",
+                "Animator is not assigned."
+            );
             return;
         }
 
-        Play(0, idleState);
-        Play(planeMoveLayer, planeMoveState);
+        Play(idleState);
+        PlayPlaneMove();
     }
 
-    private void OnDestroy()
+    public void LoadScene(string sceneName)
     {
-        if (Instance == this)
-            Instance = null;
-    }
-
-    public void BeginTransition(string destination, string source)
-    {
-        if (isRunning || requestStarted)
-            return;
-
-        if (string.IsNullOrWhiteSpace(destination))
+        if (isLoading)
         {
-            GameLogger.Error("SceneTransition", "Destination scene is empty.");
+            GameLogger.Warn(
+                "SceneTransition",
+                "Scene transition is already running."
+            );
             return;
         }
 
-        targetScene = destination;
-        sourceScene = source;
-        requestStarted = true;
+        if (string.IsNullOrWhiteSpace(sceneName))
+        {
+            GameLogger.Error(
+                "SceneTransition",
+                "Scene name is empty."
+            );
+            return;
+        }
 
-        StartCoroutine(TransitionRoutine());
+        StartCoroutine(LoadRoutine(sceneName));
     }
 
-    private IEnumerator TransitionRoutine()
+    private IEnumerator LoadRoutine(string sceneName)
     {
-        isRunning = true;
+        isLoading = true;
 
-        // เครื่องบินบินเข้ามาบังฉากเดิม
-        Play(0, inState);
+        // 1. บินเข้ามาบังจอ
+        Play(inState);
         yield return WaitFinished(inState);
 
-        // โหลดฉากปลายทางไว้ด้านหลัง TransitionScene
-        AsyncOperation loadOperation =
-            SceneManager.LoadSceneAsync(targetScene, LoadSceneMode.Additive);
+        // 2. โหลด Scene ใหม่จนเสร็จ ขณะที่เครื่องบินบังจอ
+        AsyncOperation op = SceneManager.LoadSceneAsync(sceneName);
 
-        if (loadOperation == null)
+        if (op == null)
         {
             GameLogger.Error(
                 "SceneTransition",
-                "Cannot load destination: " + targetScene
+                "ไม่สามารถเริ่มโหลด Scene: " + sceneName
             );
 
-            isRunning = false;
-            requestStarted = false;
+            Play(idleState);
+            isLoading = false;
             yield break;
         }
 
-        while (!loadOperation.isDone)
+
+        while (!op.isDone)
+        {
             yield return null;
-
-        Scene destination = SceneManager.GetSceneByName(targetScene);
-
-        if (!destination.IsValid() || !destination.isLoaded)
-        {
-            GameLogger.Error(
-                "SceneTransition",
-                "Destination scene failed to load: " + targetScene
-            );
-
-            isRunning = false;
-            requestStarted = false;
-            yield break;
         }
 
-        SceneManager.SetActiveScene(destination);
-
-        // รอให้ฉากปลายทางเริ่ม Render
+        // รอให้ Scene ใหม่ผ่านช่วงเริ่มต้นหลายเฟรม
+        // เครื่องบินยังบังจออยู่ระหว่างรอ
+        yield return new WaitForEndOfFrame();
         yield return null;
         yield return new WaitForEndOfFrame();
+        yield return null;
 
-        // ปิดฉากต้นทางหลังโหลดฉากปลายทางสำเร็จแล้ว
-        Scene source = SceneManager.GetSceneByName(sourceScene);
-
-        if (source.IsValid() && source.isLoaded &&
-            source != destination && source != gameObject.scene)
-        {
-            AsyncOperation unloadSource =
-                SceneManager.UnloadSceneAsync(source);
-
-            if (unloadSource != null)
-            {
-                while (!unloadSource.isDone)
-                    yield return null;
-            }
-        }
-
-        // เครื่องบินบินออก เผยฉาก idcard
-        Play(0, outState);
+        // เริ่ม flyout เพียงครั้งเดียว
+        Play(outState);
         yield return WaitFinished(outState);
 
-        // ปิด TransitionScene หลังแอนิเมชันจบ
-        Scene transitionScene = gameObject.scene;
+        // กลับไป idle
+        Play(idleState);
+        isLoading = false;
 
-        if (transitionScene.IsValid() && transitionScene.isLoaded)
-        {
-            AsyncOperation unloadTransition =
-                SceneManager.UnloadSceneAsync(transitionScene);
-
-            if (unloadTransition != null)
-            {
-                while (!unloadTransition.isDone)
-                    yield return null;
-            }
-        }
     }
 
-    private bool Play(int layer, string stateName)
+    private void Play(string stateName)
     {
         if (animator == null)
-            return false;
+        {
+            GameLogger.Error(
+                "SceneTransition",
+                "Animator is not assigned."
+            );
+            return;
+        }
 
         int hash = Animator.StringToHash(stateName);
 
-        if (!animator.HasState(layer, hash))
+        if (!animator.HasState(0, hash))
         {
             GameLogger.Error(
                 "SceneTransition",
-                "State not found: " + stateName + " on layer " + layer
+                "ไม่พบ State: " + stateName
             );
-            return false;
+            return;
         }
 
-        animator.Play(hash, layer, 0f);
-        animator.Update(0f);
-        return true;
+        // เริ่ม Animation จากเฟรมแรกโดยไม่ใช้ CrossFade
+        animator.Play(hash, 0, 0f);
+    }
+
+    private void PlayPlaneMove()
+    {
+        if (animator == null)
+            return;
+
+        int hash = Animator.StringToHash(planeMoveState);
+
+        if (!animator.HasState(planeMoveLayer, hash))
+        {
+            GameLogger.Error(
+                "SceneTransition",
+                "ไม่พบ State: " + planeMoveState +
+                " ที่ Layer " + planeMoveLayer
+            );
+            return;
+        }
+
+        animator.Play(hash, planeMoveLayer, 0f);
     }
 
     private IEnumerator WaitFinished(string stateName)
@@ -192,13 +170,18 @@ public class SceneTransition : MonoBehaviour
         int hash = Animator.StringToHash(stateName);
         float elapsed = 0f;
 
+        // รอให้ Animator อัปเดต State หลังเรียก Play
         yield return null;
 
         while (elapsed < timeout)
         {
+            if (animator == null)
+                yield break;
+
             AnimatorStateInfo state =
                 animator.GetCurrentAnimatorStateInfo(0);
 
+            // รอจน Animation เล่นจบจริง
             if (state.shortNameHash == hash &&
                 state.normalizedTime >= 1f &&
                 !animator.IsInTransition(0))
@@ -212,7 +195,7 @@ public class SceneTransition : MonoBehaviour
 
         GameLogger.Warn(
             "SceneTransition",
-            "Animation timed out: " + stateName
+            "รอ Animation เกินเวลา: " + stateName
         );
     }
 }
