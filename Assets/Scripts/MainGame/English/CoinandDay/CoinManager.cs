@@ -81,6 +81,7 @@ public class CoinManager : MonoBehaviour
 
     private bool isLoading;
     private bool isSaving;
+    private int pendingExpenseWorkDay = -1;
 
     // เงินคงเหลือหลังบันทึกยอดของวันนี้แล้ว
     public int TotalCoins =>
@@ -112,13 +113,14 @@ public class CoinManager : MonoBehaviour
         GameLogger.Info("Economy", "CoinManager Start เริ่มทำงาน");
 
         UpdateNavbar();
-        StartCoroutine(LoadStats());
+        StartCoroutine(LoadStats(hasRefreshedSession: false));
     }
 
     // โหลดข้อมูลผู้เล่นจาก Backend
-    private IEnumerator LoadStats()
+    private IEnumerator LoadStats(bool hasRefreshedSession)
     {
         string userId = LoginManager.UserId;
+        string accessToken = PlayerPrefs.GetString("AccessToken", "");
 
         GameLogger.Info(
             "Economy",
@@ -132,17 +134,45 @@ public class CoinManager : MonoBehaviour
             yield break;
         }
 
+        if (string.IsNullOrEmpty(accessToken))
+        {
+            GameLogger.Error("Economy", "ไม่พบ Access Token");
+            yield break;
+        }
+
         isLoading = true;
 
         using (UnityWebRequest request = UnityWebRequest.Get(
             $"{backendUrl}/player/stats/{userId}"))
         {
             request.downloadHandler = new DownloadHandlerBuffer();
+            request.SetRequestHeader("Authorization", "Bearer " + accessToken);
 
             yield return request.SendWebRequest();
 
             if (request.result != UnityWebRequest.Result.Success)
             {
+                if (request.responseCode == 401 && !hasRefreshedSession)
+                {
+                    bool refreshFinished = false;
+                    bool refreshSucceeded = false;
+                    LoginManager.Instance.RefreshSession(success =>
+                    {
+                        refreshSucceeded = success;
+                        refreshFinished = true;
+                    });
+
+                    while (!refreshFinished)
+                        yield return null;
+
+                    isLoading = false;
+                    if (refreshSucceeded)
+                    {
+                        yield return LoadStats(hasRefreshedSession: true);
+                        yield break;
+                    }
+                }
+
                 GameLogger.Error(
                     "Economy",
                     $"โหลดข้อมูลไม่สำเร็จ: HTTP {request.responseCode} " +
@@ -289,10 +319,19 @@ public class CoinManager : MonoBehaviour
             return;
         }
 
-        StartCoroutine(SaveWorkDay(onComplete));
+        if (string.IsNullOrEmpty(PlayerPrefs.GetString("AccessToken", "")))
+        {
+            GameLogger.Error("Economy", "ไม่พบ Access Token ไม่สามารถบันทึกข้อมูลได้");
+            onComplete?.Invoke(false);
+            return;
+        }
+
+        StartCoroutine(SaveWorkDay(onComplete, hasRefreshedSession: false));
     }
 
-    private IEnumerator SaveWorkDay(Action<bool> onComplete)
+    private IEnumerator SaveWorkDay(
+        Action<bool> onComplete,
+        bool hasRefreshedSession)
     {
         isSaving = true;
 
@@ -300,21 +339,27 @@ public class CoinManager : MonoBehaviour
         bool isShiftEnd =
             daysPerShift > 0 && nextWorkDays % daysPerShift == 0;
 
-        // สุ่มค่าใช้จ่ายเฉพาะวันสุดท้ายของกะ
-        TicketExpense = 0;
-        RentExpense = 0;
-
         if (isShiftEnd)
         {
-            TicketExpense = UnityEngine.Random.Range(
-                minTicketExpense,
-                maxTicketExpense + 1
-            );
-
-            RentExpense = UnityEngine.Random.Range(
-                minRentExpense,
-                maxRentExpense + 1
-            );
+            // Keep charges fixed if this work day needs to be retried.
+            if (pendingExpenseWorkDay != nextWorkDays)
+            {
+                TicketExpense = UnityEngine.Random.Range(
+                    minTicketExpense,
+                    maxTicketExpense + 1
+                );
+                RentExpense = UnityEngine.Random.Range(
+                    minRentExpense,
+                    maxRentExpense + 1
+                );
+                pendingExpenseWorkDay = nextWorkDays;
+            }
+        }
+        else
+        {
+            TicketExpense = 0;
+            RentExpense = 0;
+            pendingExpenseWorkDay = -1;
         }
 
         GameLogger.Info(
@@ -368,6 +413,10 @@ public class CoinManager : MonoBehaviour
             request.uploadHandler = new UploadHandlerRaw(body);
             request.downloadHandler = new DownloadHandlerBuffer();
             request.SetRequestHeader(
+                "Authorization",
+                "Bearer " + PlayerPrefs.GetString("AccessToken", "")
+            );
+            request.SetRequestHeader(
                 "Content-Type",
                 "application/json"
             );
@@ -376,6 +425,27 @@ public class CoinManager : MonoBehaviour
 
             if (request.result != UnityWebRequest.Result.Success)
             {
+                if (request.responseCode == 401 && !hasRefreshedSession)
+                {
+                    bool refreshFinished = false;
+                    bool refreshSucceeded = false;
+                    LoginManager.Instance.RefreshSession(success =>
+                    {
+                        refreshSucceeded = success;
+                        refreshFinished = true;
+                    });
+
+                    while (!refreshFinished)
+                        yield return null;
+
+                    if (refreshSucceeded)
+                    {
+                        isSaving = false;
+                        yield return SaveWorkDay(onComplete, true);
+                        yield break;
+                    }
+                }
+
                 GameLogger.Error(
                     "Economy",
                     $"บันทึกข้อมูลไม่สำเร็จ: HTTP {request.responseCode} " +
@@ -409,7 +479,7 @@ public class CoinManager : MonoBehaviour
             WorkDays = result.work_days;
             CustomersServed = result.total_customers_served;
 
-            // Show the daily shift summary before clearing totals on day 10.
+            // Show today's totals before resetting the daily counters.
             ShowShiftSummary();
 
             // Reset daily earnings every day. Rent and ticket are only
@@ -419,6 +489,7 @@ public class CoinManager : MonoBehaviour
             PenaltyCoins = 0;
             TicketExpense = 0;
             RentExpense = 0;
+            pendingExpenseWorkDay = -1;
 
             // รีเซ็ตเฉพาะจำนวนลูกค้าของวันปัจจุบัน
             TodayCustomersServed = 0;

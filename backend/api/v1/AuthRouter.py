@@ -19,6 +19,26 @@ def get_auth_service():
     return AuthService()
 
 
+def get_authenticated_user(
+    authorization: str | None = Header(default=None),
+    service: AuthService = Depends(get_auth_service),
+):
+    if not authorization:
+        raise HTTPException(
+            status_code=401,
+            detail="Missing Authorization header",
+        )
+
+    scheme, _, access_token = authorization.partition(" ")
+    if scheme.lower() != "bearer" or not access_token.strip():
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid Authorization header",
+        )
+
+    return service.get_current_user(access_token.strip())
+
+
 class EmailLoginRequest(BaseModel):
     email: EmailStr
     password: str
@@ -52,24 +72,9 @@ def login_callback(
 
 @router.get("/me")
 def current_user(
-    authorization: str | None = Header(default=None),
-    service: AuthService = Depends(get_auth_service)
+    user: dict = Depends(get_authenticated_user),
 ):
-    if not authorization:
-        raise HTTPException(
-            status_code=401,
-            detail="Missing Authorization header"
-        )
-
-    if not authorization.startswith("Bearer "):
-        raise HTTPException(
-            status_code=401,
-            detail="Invalid Authorization header"
-        )
-
-    access_token = authorization.removeprefix("Bearer ").strip()
-
-    return service.get_current_user(access_token)
+    return user
 
 
 @router.post("/email")

@@ -1,7 +1,7 @@
 
 from uuid import UUID
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 
 from schemas.player import (
     StarterPlayerRequest,
@@ -12,6 +12,7 @@ from schemas.player import (
     FinishWorkDayResponse,
 )
 from services.player_service import PlayerService
+from api.v1.AuthRouter import get_authenticated_user
 
 
 router = APIRouter(prefix="/player", tags=["Player"])
@@ -22,7 +23,9 @@ router = APIRouter(prefix="/player", tags=["Player"])
 def create_starter_player(
     data: StarterPlayerRequest,
     service: PlayerService = Depends(PlayerService),
+    current_user: dict = Depends(get_authenticated_user),
 ):
+    _require_owner(str(data.user_id), current_user)
     return service.create_starter_player(
         user_id=str(data.user_id),
         username=data.username,
@@ -36,7 +39,9 @@ def create_starter_player(
 def create_stats_player(
     data: StatsPlayerRequest,
     service: PlayerService = Depends(PlayerService),
+    current_user: dict = Depends(get_authenticated_user),
 ):
+    _require_owner(str(data.user_id), current_user)
     return service.create_player_stats(user_id=str(data.user_id))
 
 
@@ -45,7 +50,9 @@ def create_stats_player(
 def get_player_stats(
     user_id: UUID,
     service: PlayerService = Depends(PlayerService),
+    current_user: dict = Depends(get_authenticated_user),
 ):
+    _require_owner(str(user_id), current_user)
     return service.get_player_stats(str(user_id))
 
 
@@ -54,11 +61,22 @@ def get_player_stats(
 def finish_work_day(
     data: FinishWorkDayRequest,
     service: PlayerService = Depends(PlayerService),
+    current_user: dict = Depends(get_authenticated_user),
 ):
+    _require_owner(str(data.user_id), current_user)
     return service.finish_work_day(
         user_id=str(data.user_id),
         coin=data.coin,
         work_days= data.work_days,
         total_customers_served=data.total_customers_served,
     )
+
+
+def _require_owner(requested_user_id: str, current_user: dict) -> None:
+    authenticated_user_id = str(current_user.get("user_id", ""))
+    if requested_user_id.casefold() != authenticated_user_id.casefold():
+        raise HTTPException(
+            status_code=403,
+            detail="You cannot access another player's data",
+        )
 

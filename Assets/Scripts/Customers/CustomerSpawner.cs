@@ -66,6 +66,13 @@ public class CustomerSpawner : MonoBehaviour
     {
         while (isSpawning)
         {
+            if (spawnedCount >= targetCount)
+            {
+                isSpawning = false;
+                spawnCoroutine = null;
+                yield break;
+            }
+
             if (tutorialMode && !TutorialSession.IsTutorialActive)
             {
                 yield return null;
@@ -162,9 +169,9 @@ public class CustomerSpawner : MonoBehaviour
     {
         bool hasDogs = dogsPrefabs != null && dogsPrefabs.Length > 0;
 
-        if (hasDogs && Random.value < 0.5f)
+        if (hasDogs && Random.value < dogSpawnChance)
         {
-            // 50% chance to spawn a dog.
+            // Use the configured chance to spawn a dog.
             for (int i = 0; i < dogsPrefabs.Length; i++)
             {
                 CustomerMovement dog = dogsPrefabs[
@@ -176,7 +183,7 @@ public class CustomerSpawner : MonoBehaviour
             }
         }
 
-        // 50% chance to spawn a cat.
+        // Otherwise spawn the regular customer.
         return customerPrefab;
     }
 

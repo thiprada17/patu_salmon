@@ -5,8 +5,7 @@ using TMPro;
 public class DayManager : MonoBehaviour
 {
     [Header("Day Settings")]
-    [SerializeField, Min(1)] private int dayDurationSeconds = 30
-        ;
+    [SerializeField, Min(1)] private int dayDurationSeconds = 300;
     [SerializeField] private TMP_Text timerText;
     [SerializeField] private GameObject TutorialPanel;
     [SerializeField] private GameObject TutorialPanelancle;
@@ -17,10 +16,12 @@ public class DayManager : MonoBehaviour
     [SerializeField] private ShiftEnd shiftEnd;
 
     [Header("Summary Settings")]
-    [SerializeField, Min(1)] private int summaryEveryShifts = 10;
+    [SerializeField, Min(1)] private int summaryEveryShifts = 1;
 
     private bool isDayEnding;
     private float timeRemaining;
+    private float saveRetryDelay = 2f;
+    private const float MaxSaveRetryDelay = 30f;
 
     private void Start()
     {
@@ -129,7 +130,7 @@ public class DayManager : MonoBehaviour
         if (CoinManager.Instance == null)
         {
             GameLogger.Error("DayManager", "CoinManager.Instance missing.");
-            isDayEnding = false;
+            yield return WaitBeforeRetry();
             yield break;
         }
 
@@ -153,9 +154,11 @@ public class DayManager : MonoBehaviour
         if (!saveSucceeded)
         {
             GameLogger.Error("DayManager", "Failed to save shift.");
-            isDayEnding = false;
+            yield return WaitBeforeRetry();
             yield break;
         }
+
+        saveRetryDelay = 2f;
 
         CoinManager.Instance.RefreshNavbar();
 
@@ -215,6 +218,13 @@ public class DayManager : MonoBehaviour
             "DayManager",
             "Next shift started."
         );
+    }
+
+    private IEnumerator WaitBeforeRetry()
+    {
+        yield return new WaitForSecondsRealtime(saveRetryDelay);
+        saveRetryDelay = Mathf.Min(saveRetryDelay * 2f, MaxSaveRetryDelay);
+        isDayEnding = false;
     }
 
 }

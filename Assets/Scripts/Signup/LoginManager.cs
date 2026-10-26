@@ -127,7 +127,8 @@ public class LoginManager : MonoBehaviour
             "/player/starter",
             json,
             _ => onSuccess?.Invoke(),
-            onError
+            onError,
+            requiresAuth: true
         ));
     }
 
@@ -158,6 +159,66 @@ public class LoginManager : MonoBehaviour
             onSuccess,
             onError
         ));
+    }
+
+    public void RefreshSession(Action<bool> onComplete)
+    {
+        string refreshToken = PlayerPrefs.GetString("RefreshToken", "");
+        if (string.IsNullOrEmpty(refreshToken))
+        {
+            onComplete?.Invoke(false);
+            return;
+        }
+
+        StartCoroutine(RefreshSessionRequest(refreshToken, onComplete));
+    }
+
+    private IEnumerator RefreshSessionRequest(
+        string refreshToken,
+        Action<bool> onComplete)
+    {
+        string json = JsonUtility.ToJson(
+            new RefreshRequest { refresh_token = refreshToken }
+        );
+
+        using (UnityWebRequest request =
+               new UnityWebRequest(backendUrl + "/auth/refresh", "POST"))
+        {
+            request.uploadHandler = new UploadHandlerRaw(
+                Encoding.UTF8.GetBytes(json)
+            );
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+
+            yield return request.SendWebRequest();
+
+            if (request.result != UnityWebRequest.Result.Success)
+            {
+                onComplete?.Invoke(false);
+                yield break;
+            }
+
+            RefreshResponse response = JsonUtility.FromJson<RefreshResponse>(
+                request.downloadHandler.text
+            );
+            if (response == null ||
+                string.IsNullOrEmpty(response.access_token) ||
+                string.IsNullOrEmpty(response.refresh_token))
+            {
+                onComplete?.Invoke(false);
+                yield break;
+            }
+
+            PlayerPrefs.SetString("AccessToken", response.access_token);
+            PlayerPrefs.SetString("RefreshToken", response.refresh_token);
+            if (!string.IsNullOrEmpty(response.user_id))
+                PlayerPrefs.SetString("UserID", response.user_id);
+            if (!string.IsNullOrEmpty(response.email))
+                PlayerPrefs.SetString("Email", response.email);
+            PlayerPrefs.Save();
+
+            onComplete?.Invoke(true);
+        }
     }
 
     private IEnumerator GetPlayerStatsRequest(
@@ -218,7 +279,8 @@ public class LoginManager : MonoBehaviour
         string path,
         string json,
         Action<string> onDone,
-        Action<string> onError)
+        Action<string> onError,
+        bool requiresAuth = false)
     {
         using (UnityWebRequest request =
                new UnityWebRequest(backendUrl + path, "POST"))
@@ -234,6 +296,21 @@ public class LoginManager : MonoBehaviour
                 "Content-Type",
                 "application/json"
             );
+
+            if (requiresAuth)
+            {
+                string accessToken = PlayerPrefs.GetString("AccessToken", "");
+                if (string.IsNullOrEmpty(accessToken))
+                {
+                    onError?.Invoke("Access token is missing. Please log in again.");
+                    yield break;
+                }
+
+                request.SetRequestHeader(
+                    "Authorization",
+                    "Bearer " + accessToken
+                );
+            }
 
             yield return request.SendWebRequest();
 
@@ -308,6 +385,21 @@ public class LoginManager : MonoBehaviour
     {
         public string email;
         public string password;
+    }
+
+    [Serializable]
+    private class RefreshRequest
+    {
+        public string refresh_token;
+    }
+
+    [Serializable]
+    private class RefreshResponse
+    {
+        public string user_id;
+        public string email;
+        public string access_token;
+        public string refresh_token;
     }
 
     [Serializable]
