@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
@@ -31,7 +30,6 @@ public class AudioManager : MonoBehaviour
     private const string BGM_VOLUME_KEY = "BGMVolume";
     private const string SFX_VOLUME_KEY = "SFXVolume";
 
-    // Keep each station's original volume.
     private readonly Dictionary<AudioSource, float> originalVolumes =
         new Dictionary<AudioSource, float>();
 
@@ -48,7 +46,6 @@ public class AudioManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        // Find AudioSources on the AudioManager if not assigned.
         AudioSource[] sources = GetComponents<AudioSource>();
 
         if (bgmSource == null && sources.Length > 0)
@@ -57,7 +54,6 @@ public class AudioManager : MonoBehaviour
         if (sfxSource == null && sources.Length > 1)
             sfxSource = sources[1];
 
-        // Load saved volume settings.
         bgmVolume = PlayerPrefs.GetFloat(BGM_VOLUME_KEY, 1f);
         sfxVolume = PlayerPrefs.GetFloat(SFX_VOLUME_KEY, 1f);
 
@@ -65,6 +61,10 @@ public class AudioManager : MonoBehaviour
         {
             bgmSource.loop = true;
             bgmSource.volume = bgmVolume;
+        }
+        else
+        {
+            Debug.LogError("AudioManager: Assign the BGM AudioSource!");
         }
 
         if (sfxSource != null)
@@ -74,7 +74,11 @@ public class AudioManager : MonoBehaviour
 
         SceneManager.sceneLoaded += OnSceneLoaded;
 
-        PlayMusicForScene(SceneManager.GetActiveScene().name);
+        string currentScene = SceneManager.GetActiveScene().name;
+        PlayMusicForScene(currentScene);
+
+        if (currentScene == "main_game")
+            RegisterSceneAudioSources();
     }
 
     private void OnDestroy()
@@ -90,10 +94,8 @@ public class AudioManager : MonoBehaviour
     {
         PlayMusicForScene(scene.name);
 
-        if (scene.name == "Main_Game")
-        {
+        if (scene.name == "main_game")
             RegisterSceneAudioSources();
-        }
     }
 
     // ---------------- BGM ----------------
@@ -102,18 +104,17 @@ public class AudioManager : MonoBehaviour
     {
         switch (sceneName)
         {
-            case "Opening":
+            case "opening":
                 return openingBGM;
 
-            case "Map":
-            case "Settings":
+            case "map":
+            case "setting":
                 return mapBGM;
 
-            case "Main_Game":
+            case "main_game":
                 return mainGameBGM;
 
             default:
-                // Keep the existing music in other scenes.
                 return currentClip;
         }
     }
@@ -126,10 +127,7 @@ public class AudioManager : MonoBehaviour
             return;
 
         if (bgmSource == null)
-        {
-            Debug.LogWarning("AudioManager: BGM AudioSource is missing.");
             return;
-        }
 
         currentClip = clip;
         bgmSource.clip = clip;
@@ -167,7 +165,6 @@ public class AudioManager : MonoBehaviour
 
     private void RegisterSceneAudioSources()
     {
-        // Include inactive station objects too.
         AudioSource[] sceneSources =
             FindObjectsOfType<AudioSource>(true);
 
@@ -176,6 +173,7 @@ public class AudioManager : MonoBehaviour
             if (source == null ||
                 source == bgmSource ||
                 source == sfxSource ||
+                source.transform == transform ||
                 source.transform.IsChildOf(transform))
             {
                 continue;
@@ -188,7 +186,7 @@ public class AudioManager : MonoBehaviour
 
         Debug.Log(
             "AudioManager: Registered " +
-            stationSFXSources.Count + " station SFX sources."
+            stationSFXSources.Count + " SFX AudioSources."
         );
     }
 
@@ -196,7 +194,9 @@ public class AudioManager : MonoBehaviour
     {
         if (source == null ||
             source == bgmSource ||
-            source == sfxSource)
+            source == sfxSource ||
+            source.transform == transform ||
+            source.transform.IsChildOf(transform))
         {
             return;
         }
@@ -223,13 +223,11 @@ public class AudioManager : MonoBehaviour
     {
         foreach (AudioSource source in stationSFXSources)
         {
-            if (source != null &&
-                source != bgmSource &&
-                source != sfxSource &&
-                !originalVolumes.ContainsKey(source))
-            {
+            if (source == null)
+                continue;
+
+            if (!originalVolumes.ContainsKey(source))
                 originalVolumes.Add(source, source.volume);
-            }
         }
     }
 
@@ -237,13 +235,20 @@ public class AudioManager : MonoBehaviour
 
     public void SetBGMVolume(float volume)
     {
-        bgmVolume = Mathf.Clamp01(volume);
+        volume = Mathf.Clamp01(volume);
 
-        if (bgmSource != null)
-            bgmSource.volume = bgmVolume;
+        // Control the AudioSource that actually plays the music.
+        if (BackgroundMusic.Instance != null)
+        {
+            BackgroundMusic.Instance.SetVolume(volume);
+        }
 
-        PlayerPrefs.SetFloat(BGM_VOLUME_KEY, bgmVolume);
+        bgmVolume = volume;
+
+        PlayerPrefs.SetFloat("BGMVolume", volume);
         PlayerPrefs.Save();
+
+        Debug.Log("AudioManager: BGM volume = " + volume);
     }
 
     public void SetSFXVolume(float volume)
@@ -254,6 +259,8 @@ public class AudioManager : MonoBehaviour
 
         PlayerPrefs.SetFloat(SFX_VOLUME_KEY, sfxVolume);
         PlayerPrefs.Save();
+
+        Debug.Log("AudioManager: SFX volume = " + sfxVolume);
     }
 
     private void ApplySFXVolume()
@@ -261,7 +268,6 @@ public class AudioManager : MonoBehaviour
         if (sfxSource != null)
             sfxSource.volume = sfxVolume;
 
-        // Remove destroyed sources and apply volume to registered ones.
         for (int i = stationSFXSources.Count - 1; i >= 0; i--)
         {
             AudioSource source = stationSFXSources[i];
@@ -282,14 +288,17 @@ public class AudioManager : MonoBehaviour
             return;
 
         if (originalVolumes.TryGetValue(source, out float baseVolume))
-        {
             source.volume = baseVolume * sfxVolume;
-        }
     }
 
     public float GetBGMVolume()
     {
-        return bgmVolume;
+        if (BackgroundMusic.Instance != null)
+        {
+            return BackgroundMusic.Instance.GetVolume();
+        }
+
+        return PlayerPrefs.GetFloat("BGMVolume", 1f);
     }
 
     public float GetSFXVolume()
@@ -304,6 +313,6 @@ public class AudioManager : MonoBehaviour
         if (clip == null || sfxSource == null)
             return;
 
-        sfxSource.PlayOneShot(clip, sfxVolume);
+        sfxSource.PlayOneShot(clip, 1f);
     }
 }
