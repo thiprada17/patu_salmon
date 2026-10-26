@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,9 +7,23 @@ public class SettingsAudioController : MonoBehaviour
     [SerializeField] private Slider sfxSlider;
     [SerializeField] private Slider bgmSlider;
 
+    private AudioManager audioManager;
+
+    private void OnEnable()
+    {
+        RefreshSliders();
+    }
+
     private void Start()
     {
-        if (AudioManager.Instance == null)
+        RefreshSliders();
+    }
+
+    private void RefreshSliders()
+    {
+        audioManager = AudioManager.Instance;
+
+        if (audioManager == null)
         {
             Debug.LogError(
                 "SettingsAudioController: AudioManager not found!"
@@ -26,49 +39,32 @@ public class SettingsAudioController : MonoBehaviour
             return;
         }
 
-        // Configure slider ranges.
         sfxSlider.minValue = 0f;
         sfxSlider.maxValue = 1f;
-
         bgmSlider.minValue = 0f;
         bgmSlider.maxValue = 1f;
 
-        // Display saved volume settings without triggering callbacks.
-        sfxSlider.SetValueWithoutNotify(
-            AudioManager.Instance.GetSFXVolume()
-        );
+        // Match the handles to the actual saved volume values.
+        sfxSlider.SetValueWithoutNotify(audioManager.GetSFXVolume());
+        bgmSlider.SetValueWithoutNotify(audioManager.GetBGMVolume());
 
-        bgmSlider.SetValueWithoutNotify(
-            AudioManager.Instance.GetBGMVolume()
-        );
+        // Prevent duplicate callbacks.
+        sfxSlider.onValueChanged.RemoveListener(audioManager.SetSFXVolume);
+        bgmSlider.onValueChanged.RemoveListener(audioManager.SetBGMVolume);
 
-        // Connect slider changes to the AudioManager.
-        sfxSlider.onValueChanged.AddListener(
-            AudioManager.Instance.SetSFXVolume
-        );
-
-        bgmSlider.onValueChanged.AddListener(
-            AudioManager.Instance.SetBGMVolume
-        );
+        sfxSlider.onValueChanged.AddListener(audioManager.SetSFXVolume);
+        bgmSlider.onValueChanged.AddListener(audioManager.SetBGMVolume);
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
-        if (AudioManager.Instance == null)
+        if (audioManager == null)
             return;
 
         if (sfxSlider != null)
-        {
-            sfxSlider.onValueChanged.RemoveListener(
-                AudioManager.Instance.SetSFXVolume
-            );
-        }
+            sfxSlider.onValueChanged.RemoveListener(audioManager.SetSFXVolume);
 
         if (bgmSlider != null)
-        {
-            bgmSlider.onValueChanged.RemoveListener(
-                AudioManager.Instance.SetBGMVolume
-            );
-        }
+            bgmSlider.onValueChanged.RemoveListener(audioManager.SetBGMVolume);
     }
 }

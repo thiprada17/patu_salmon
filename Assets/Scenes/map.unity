@@ -6414,6 +6414,7 @@ MonoBehaviour:
   audioSource: {fileID: 950487798}
   bgm1: {fileID: 8300000, guid: 2416c61e61af7af4499d65ee0a4b1467, type: 3}
   bgm2: {fileID: 8300000, guid: a8db7402a0ca1834684e8e13f448f160, type: 3}
+  bgm3: {fileID: 8300000, guid: 90a2ed6b43e07cd4199e4e319f7c4488, type: 3}
 --- !u!1 &970034792
 GameObject:
   m_ObjectHideFlags: 0
@@ -6585,6 +6586,7 @@ MonoBehaviour:
   mapBGM: {fileID: 8300000, guid: a8db7402a0ca1834684e8e13f448f160, type: 3}
   mainGameBGM: {fileID: 8300000, guid: 90a2ed6b43e07cd4199e4e319f7c4488, type: 3}
   sfxSource: {fileID: 0}
+  stationSFXSources: []
   bgmVolume: 1
   sfxVolume: 1
 --- !u!4 &995237369
