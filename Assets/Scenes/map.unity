@@ -6411,6 +6411,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9e6205bc852bec4b8099cb7573f3635, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioSource: {fileID: 950487798}
+  bgm1: {fileID: 8300000, guid: 2416c61e61af7af4499d65ee0a4b1467, type: 3}
+  bgm2: {fileID: 8300000, guid: a8db7402a0ca1834684e8e13f448f160, type: 3}
 --- !u!1 &970034792
 GameObject:
   m_ObjectHideFlags: 0
