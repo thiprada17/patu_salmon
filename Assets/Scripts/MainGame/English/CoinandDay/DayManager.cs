@@ -8,6 +8,7 @@ public class DayManager : MonoBehaviour
     [SerializeField, Min(1)] private int dayDurationSeconds = 30;
     [SerializeField] private TMP_Text timerText;
     [SerializeField] private GameObject TutorialPanel;
+    [SerializeField] private GameObject TutorialPanelancle;
 
     //Shift Manager
     [Header("Shift References")]
@@ -64,6 +65,10 @@ public class DayManager : MonoBehaviour
 
         if (TutorialPanel != null && TutorialPanel.activeSelf)
             TutorialPanel.SetActive(false);
+
+
+        if (TutorialPanelancle != null && TutorialPanelancle.activeSelf)
+            TutorialPanelancle.SetActive(false);
 
         if (isDayEnding)
             return;

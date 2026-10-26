@@ -13,6 +13,7 @@ public static class TutorialSession
     private const int TutorialCustomerLimit = 3;
 
     public static GameObject TutorialPanel;
+    public static GameObject TutorialPanelancle;
 
     // True when the third tutorial customer has been served
     // and the tutorial is waiting for that customer to leave.
@@ -95,8 +96,13 @@ public static class TutorialSession
         Debug.Log(
             "[TutorialSession] Final customer left. Returning to map."
         );
-        if (TutorialPanel != null)
+
+        if (TutorialPanel != null && TutorialPanelancle != null)
+        {
             TutorialPanel.SetActive(false);
+            TutorialPanelancle.SetActive(false);
+        }
+    
         SceneManager.LoadScene("map");
     }
 
