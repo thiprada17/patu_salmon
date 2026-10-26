@@ -3266,7 +3266,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 1852599099772028583, guid: 8c511b4a33bb0b8428cff07a4969127f, type: 3}
+  m_Sprite: {fileID: 3657582004280761125, guid: 61444fc59fc803648bee459c9a0d3c32, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -4423,8 +4423,8 @@ MonoBehaviour:
   autoButton: {fileID: 531939124}
   autoButtonText: {fileID: 970034793}
   autoButtonImage: {fileID: 531939125}
-  autoOffSprite: {fileID: 1852599099772028583, guid: 8c511b4a33bb0b8428cff07a4969127f, type: 3}
-  autoOnSprite: {fileID: -1307664305451782276, guid: b5a9445a2d8809541a661216e7ec0e8a, type: 3}
+  autoOffSprite: {fileID: 3657582004280761125, guid: 61444fc59fc803648bee459c9a0d3c32, type: 3}
+  autoOnSprite: {fileID: 2750691858815301303, guid: 363bc2c65f659b44a9a033f4fa79e6c0, type: 3}
   dialogueLines:
   - "Hello, <color=#F87400>{player_name}</color>! you probably wonder why you\u2019re
     here."
@@ -6461,8 +6461,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281302004
-  m_fontColor: {r: 0.9568628, g: 0.48235297, b: 0.18431373, a: 1}
+    rgba: 4278205806
+  m_fontColor: {r: 0.43137258, g: 0.2392157, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -6551,6 +6551,57 @@ RectTransform:
   m_AnchoredPosition: {x: 0.0000019073, y: -61.83}
   m_SizeDelta: {x: 167.48, y: 25.65}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &995237367
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 995237369}
+  - component: {fileID: 995237368}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &995237368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 995237367}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b61d3e17490d924a8f2b67bbd0f9f93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bgmSource: {fileID: 950487798}
+  openingBGM: {fileID: 8300000, guid: 2416c61e61af7af4499d65ee0a4b1467, type: 3}
+  mapBGM: {fileID: 8300000, guid: a8db7402a0ca1834684e8e13f448f160, type: 3}
+  mainGameBGM: {fileID: 8300000, guid: 90a2ed6b43e07cd4199e4e319f7c4488, type: 3}
+  sfxSource: {fileID: 0}
+  bgmVolume: 1
+  sfxVolume: 1
+--- !u!4 &995237369
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 995237367}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.6302724, y: 0.6767411, z: 85.28944}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1010059575
 GameObject:
   m_ObjectHideFlags: 0
@@ -12669,3 +12720,4 @@ SceneRoots:
   - {fileID: 706621762}
   - {fileID: 1145316544}
   - {fileID: 950487797}
+  - {fileID: 995237369}
