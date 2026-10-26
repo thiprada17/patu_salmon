@@ -50,7 +50,7 @@ public class CoinManager : MonoBehaviour
     // ยอดเงินที่บันทึกไว้ใน Backend
     public int SavedCoins { get; private set; }
 
-    // รายได้และค่าปรับสะสมตลอดกะ
+    // รายได้และค่าปรับของวันปัจจุบัน
     public int OrderCoins { get; private set; }
     public int TipCoins { get; private set; }
     public int PenaltyCoins { get; private set; }
@@ -61,27 +61,30 @@ public class CoinManager : MonoBehaviour
     // จำนวนลูกค้าที่เสิร์ฟในวันปัจจุบัน
     public int TodayCustomersServed { get; private set; }
 
+    // รายได้และค่าปรับของวันปัจจุบัน สำหรับแสดงในหน้าสรุปรายวัน
+    public int TodayOrderCoins { get; private set; }
+    public int TodayTipCoins { get; private set; }
+    public int TodayPenaltyCoins { get; private set; }
+    public int TodayNetEarning =>
+        TodayOrderCoins + TodayTipCoins - TodayPenaltyCoins;
+
     // จำนวนวันที่ทำงานสะสม
     public int WorkDays { get; private set; }
 
-    // ยอดรายได้สุทธิสะสมตลอดกะ
+    // ยอดรายได้สุทธิของวันปัจจุบัน
     public int ShiftCoins => OrderCoins + TipCoins - PenaltyCoins;
 
-    // ยอดรายได้สุทธิหลังหักค่าใช้จ่ายเมื่อจบกะ
+    // ยอดรายได้สุทธิของวันนี้หลังหักค่าใช้จ่าย (มีเฉพาะวันครบ 10 วัน)
     public int TotalShiftEarning =>
         OrderCoins + TipCoins - PenaltyCoins
         - TicketExpense - RentExpense;
 
-    // ยอดสุทธิของกะที่ถูกนับเข้า SavedCoins ไปแล้ว
-    // ใช้ป้องกันการบวกยอดสะสมซ้ำในวันถัดไป
-    private int savedShiftCoins;
-
     private bool isLoading;
     private bool isSaving;
 
-    // เงินรวม = เงินที่บันทึกแล้ว + ยอดกะที่ยังไม่ได้บันทึก
+    // เงินคงเหลือหลังบันทึกยอดของวันนี้แล้ว
     public int TotalCoins =>
-        Mathf.Max(0, SavedCoins + ShiftCoins - savedShiftCoins);
+        Mathf.Max(0, SavedCoins + ShiftCoins);
 
     private void Awake()
     {
@@ -227,6 +230,8 @@ public class CoinManager : MonoBehaviour
         // รายได้สะสมตลอดกะ ไม่รีเซ็ตทุกวัน
         OrderCoins += price;
         TipCoins += tip;
+        TodayOrderCoins += price;
+        TodayTipCoins += tip;
         TodayCustomersServed++;
 
         UpdateNavbar();
@@ -249,6 +254,7 @@ public class CoinManager : MonoBehaviour
     public void ApplyAngryPenalty()
     {
         PenaltyCoins += angryPenalty;
+        TodayPenaltyCoins += angryPenalty;
 
         UpdateNavbar();
 
@@ -319,16 +325,12 @@ public class CoinManager : MonoBehaviour
             $"TipCoins={TipCoins} | " +
             $"PenaltyCoins={PenaltyCoins} | " +
             $"ShiftCoins={ShiftCoins} | " +
-            $"SavedShiftCoins={savedShiftCoins} | " +
             $"Ticket={TicketExpense} | Rent={RentExpense}"
         );
 
-        // บวกเฉพาะยอดกะส่วนที่ยังไม่เคยบันทึก
-        int unSavedShiftCoins = ShiftCoins - savedShiftCoins;
-
         int finalCoins = Mathf.Max(
             0,
-            SavedCoins + unSavedShiftCoins
+            SavedCoins + ShiftCoins
             - TicketExpense - RentExpense
         );
 
@@ -407,30 +409,22 @@ public class CoinManager : MonoBehaviour
             WorkDays = result.work_days;
             CustomersServed = result.total_customers_served;
 
-            if (isShiftEnd)
-            {
-                // ต้องแสดงสรุปก่อนรีเซ็ตยอดสะสม
-                ShowShiftSummary();
+            // Show the daily shift summary before clearing totals on day 10.
+            ShowShiftSummary();
 
-                OrderCoins = 0;
-                TipCoins = 0;
-                PenaltyCoins = 0;
-
-                // เริ่มกะใหม่
-                savedShiftCoins = 0;
-
-                TicketExpense = 0;
-                RentExpense = 0;
-            }
-            else
-            {
-                // ยอดสะสมของกะถูกบันทึกใน SavedCoins แล้ว
-                // จึงจำยอดปัจจุบันไว้เพื่อไม่ให้บวกซ้ำในวันถัดไป
-                savedShiftCoins = ShiftCoins;
-            }
+            // Reset daily earnings every day. Rent and ticket are only
+            // deducted on days where isShiftEnd is true.
+            OrderCoins = 0;
+            TipCoins = 0;
+            PenaltyCoins = 0;
+            TicketExpense = 0;
+            RentExpense = 0;
 
             // รีเซ็ตเฉพาะจำนวนลูกค้าของวันปัจจุบัน
             TodayCustomersServed = 0;
+            TodayOrderCoins = 0;
+            TodayTipCoins = 0;
+            TodayPenaltyCoins = 0;
 
             UpdateNavbar();
 

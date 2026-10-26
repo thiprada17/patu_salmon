@@ -5,7 +5,8 @@ using TMPro;
 public class DayManager : MonoBehaviour
 {
     [Header("Day Settings")]
-    [SerializeField, Min(1)] private int dayDurationSeconds = 30;
+    [SerializeField, Min(1)] private int dayDurationSeconds = 30
+        ;
     [SerializeField] private TMP_Text timerText;
     [SerializeField] private GameObject TutorialPanel;
     [SerializeField] private GameObject TutorialPanelancle;
@@ -183,12 +184,16 @@ public class DayManager : MonoBehaviour
                     "[DayManager] ShiftEnd reference is missing!"
                 );
             }
+            else if (!shiftEnd.IsShowingSummary)
+            {
+                Debug.LogWarning(
+                    "[DayManager] The shift summary was not opened by CoinManager."
+                );
+            }
             else
             {
-                shiftEnd.gameObject.SetActive(true);
-                shiftEnd.ShowSummary();
-
-                // Wait for the Continue button.
+                // CoinManager opens the summary before clearing shift totals.
+                // Wait here without opening it a second time.
                 while (shiftEnd != null &&
                        shiftEnd.IsShowingSummary)
                 {

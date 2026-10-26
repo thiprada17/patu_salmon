@@ -1169,6 +1169,13 @@ MonoBehaviour:
   firerplatu: {fileID: 933767291}
   firersalmon: {fileID: 1452895327}
   shiftSummaryPopup: {fileID: 748708792}
+  approvalStamp: {fileID: 69771508}
+  panelOpenDuration: 0.32
+  stampDelay: 0.12
+  stampZoomDuration: 0.16
+  stampImpactDuration: 0.11
+  stampSettleDuration: 0.14
+  stampStartOffset: 180
 --- !u!4 &276356387
 Transform:
   m_ObjectHideFlags: 0
