@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: f96a3b62cae60da4d91069ac0bcd9a0e
+guid: b93bca902df3dbe4c87fc02ab1ff85e1
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 3931107667102305272
-    second: Rectangle 143_0
+      213: 2750691858815301303
+    second: PlayingButton_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -110,6 +110,19 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
     buildTarget: iOS
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -126,13 +139,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Rectangle 143_0
+      name: PlayingButton_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 268
-        height: 504
+        width: 130
+        height: 130
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +154,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8fb827768991e8630800000000000000
-      internalID: 3931107667102305272
+      spriteID: 7b6be3bfbab6c2620800000000000000
+      internalID: 2750691858815301303
       vertices: []
       indices: 
       edges: []
@@ -161,7 +174,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Rectangle 143_0: 3931107667102305272
+      PlayingButton_0: 2750691858815301303
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

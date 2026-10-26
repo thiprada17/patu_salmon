@@ -1,21 +1,38 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PauseManager : MonoBehaviour
 {
     [SerializeField]
     private GameObject pausePanel;
 
-    private bool isPaused = false;
+    [SerializeField, Min(1)]
+    private int pausePanelSortingOrder = 100;
 
+    private bool isPaused = false;
 
     private void Start()
     {
-
         Time.timeScale = 1f;
 
         if (pausePanel != null)
         {
+            Canvas panelCanvas = pausePanel.GetComponent<Canvas>();
+            if (panelCanvas == null)
+                panelCanvas = pausePanel.AddComponent<Canvas>();
+
+            panelCanvas.overrideSorting = true;
+            panelCanvas.sortingLayerName = "Popup";
+            panelCanvas.sortingOrder = pausePanelSortingOrder;
+
+            if (pausePanel.GetComponent<GraphicRaycaster>() == null)
+                pausePanel.AddComponent<GraphicRaycaster>();
+
             pausePanel.SetActive(false);
+        }
+        else
+        {
+            Debug.LogError("PauseManager: Pause Panel is not assigned.");
         }
     }
 
@@ -42,6 +59,7 @@ public class PauseManager : MonoBehaviour
         if (pausePanel != null)
         {
             pausePanel.SetActive(true);
+            pausePanel.transform.SetAsLastSibling();
         }
 
         Debug.Log("Game Paused");
