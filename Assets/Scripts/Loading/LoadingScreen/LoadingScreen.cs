@@ -25,12 +25,7 @@ public class LoadingScreen : MonoBehaviour
 
     private bool isSending;
     private bool isReadyToEnterGame;
-    private bool hasAuthResponse;
     private float loadingStartTime;
-
-    private LoginManager.AuthResponse authResponse;
-
-    public static LoginManager.AuthResponse PendingAuthResponse { get; set; }
 
     private void Awake()
     {
@@ -44,13 +39,6 @@ public class LoadingScreen : MonoBehaviour
                 infoBoard.sprite = infoSprites[0];
             else if (character == "salmon" && infoSprites.Length > 1)
                 infoBoard.sprite = infoSprites[1];
-        }
-
-        if (PendingAuthResponse != null)
-        {
-            authResponse = PendingAuthResponse;
-            PendingAuthResponse = null;
-            hasAuthResponse = true;
         }
     }
 
@@ -75,12 +63,6 @@ public class LoadingScreen : MonoBehaviour
         SceneManager.LoadScene(nextScene);
     }
 
-    public void SetAuthResponse(LoginManager.AuthResponse response)
-    {
-        authResponse = response;
-        hasAuthResponse = response != null;
-    }
-
     public void SendPlayerData()
     {
         if (isSending || isReadyToEnterGame)
@@ -95,67 +77,12 @@ public class LoadingScreen : MonoBehaviour
             return;
         }
 
-        if (!PlayerPrefs.HasKey("IsNewUser") ||
-            !PlayerPrefs.HasKey("HasProfile"))
-        {
-            GameLogger.Error(
-                "Loading",
-                "Login status is missing. Cannot determine whether starter data should be sent."
-            );
-
-            SetLoadingText("Login information missing. Please log in again.");
-            return;
-        }
-
-        bool isNewUser = PlayerPrefs.GetInt("IsNewUser") == 1;
-        bool hasProfile = PlayerPrefs.GetInt("HasProfile") == 1;
-
-        if (!isNewUser || hasProfile)
-        {
-            GameLogger.Info(
-                "Loading",
-                "Existing player detected. Skipping starter data."
-            );
-
-            PrepareToEnterGame();
-            return;
-        }
-
-        // ต้องมีผล Login เพื่อแยกผู้ใช้เก่ากับผู้ใช้ใหม่
-        if (!hasAuthResponse || authResponse == null)
-        {
-            GameLogger.Error(
-                "Loading",
-                "Login response is missing. Cannot determine whether starter data should be sent."
-            );
-            SetLoadingText("Unable to verify player profile.");
-            return;
-        }
-
-        // ผู้ใช้เก่าหรือมี Profile อยู่แล้ว ไม่ต้องส่ง Starter Player Data
-        if (!authResponse.is_new_user || authResponse.has_profile)
-        {
-            GameLogger.Info(
-                "Loading",
-                "Existing player detected (new=" + authResponse.is_new_user +
-                ", profile=" + authResponse.has_profile +
-                "). Skipping starter player data."
-            );
-
-            PrepareToEnterGame();
-            return;
-        }
-
         string savedUserId =
             PlayerPrefs.GetString("StarterPlayerSavedUserID", "");
 
         if (savedUserId == userId)
         {
-            GameLogger.Info(
-                "Loading",
-                "Starter player already saved for this user. Skipping save."
-            );
-
+            GameLogger.Info("Loading", "Starter player already saved. Skipping save.");
             PrepareToEnterGame();
             return;
         }
@@ -172,6 +99,13 @@ public class LoadingScreen : MonoBehaviour
             return;
         }
 
+        if (LoginManager.Instance == null)
+        {
+            GameLogger.Error("Loading", "LoginManager instance not found.");
+            SetLoadingText("Login service unavailable. Please try again.");
+            return;
+        }
+
         isSending = true;
         SetLoadingText("Saving player data...");
 
@@ -184,10 +118,7 @@ public class LoadingScreen : MonoBehaviour
                 PlayerPrefs.SetString("StarterPlayerSavedUserID", userId);
                 PlayerPrefs.Save();
 
-                GameLogger.Info(
-                    "Loading",
-                    "Starter player data saved successfully."
-                );
+                GameLogger.Info("Loading", "Starter player data saved successfully.");
 
                 PrepareToEnterGame();
             },
@@ -195,11 +126,7 @@ public class LoadingScreen : MonoBehaviour
             {
                 isSending = false;
 
-                GameLogger.Error(
-                    "Loading",
-                    "Failed to save starter player: " + error
-                );
-
+                GameLogger.Error("Loading", "Failed to save starter player: " + error);
                 SetLoadingText("Failed to save data. Please try again.");
             }
         );
@@ -244,7 +171,6 @@ public class LoadingScreen : MonoBehaviour
 
                     float start = i * hopGap;
                     float p = (elapsed - start) / hopTime;
-
                     float offset = p > 0f && p < 1f
                         ? Mathf.Sin(p * Mathf.PI) * hopHeight
                         : 0f;
