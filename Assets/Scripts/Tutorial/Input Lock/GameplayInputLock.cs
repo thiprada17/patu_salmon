@@ -3,17 +3,25 @@ using UnityEngine;
 
 public static class GameplayInputLock
 {
-    public static bool IsLocked { get; private set; }
+    private static bool isDialogueLocked;
+    private static bool isPauseLocked;
+
+    public static bool IsLocked => isDialogueLocked || isPauseLocked;
 
     public static void Lock()
     {
-        IsLocked = true;
+        isDialogueLocked = true;
         Debug.Log("Gameplay LOCKED");
     }
 
     public static void Unlock()
     {
-        IsLocked = false;
+        isDialogueLocked = false;
         Debug.Log("Gameplay UNLOCKED");
+    }
+
+    public static void SetPauseLocked(bool locked)
+    {
+        isPauseLocked = locked;
     }
 }

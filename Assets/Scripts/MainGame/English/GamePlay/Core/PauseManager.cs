@@ -16,6 +16,7 @@ public class PauseManager : MonoBehaviour
     private void Start()
     {
         Time.timeScale = 1f;
+        GameplayInputLock.SetPauseLocked(false);
 
         if (pausePanel != null)
         {
@@ -82,6 +83,7 @@ public class PauseManager : MonoBehaviour
     public void PauseGame()
     {
         isPaused = true;
+        GameplayInputLock.SetPauseLocked(true);
 
         Time.timeScale = 0f;
 
@@ -101,6 +103,7 @@ public class PauseManager : MonoBehaviour
     public void ResumeGame()
     {
         isPaused = false;
+        GameplayInputLock.SetPauseLocked(false);
 
         Time.timeScale = 1f;
 
@@ -110,5 +113,13 @@ public class PauseManager : MonoBehaviour
         }
 
         Debug.Log("Game Resumed");
+    }
+
+    private void OnDestroy()
+    {
+        GameplayInputLock.SetPauseLocked(false);
+
+        if (isPaused)
+            Time.timeScale = 1f;
     }
 }
