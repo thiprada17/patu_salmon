@@ -1,7 +1,6 @@
-﻿
 using UnityEngine;
 
-public class CoffeeMachinePortSlot : MonoBehaviour
+public class CoffeeMachinePortSlot : MonoBehaviour, IStationSnapTarget
 {
     [Header("Slot Setup")]
     [SerializeField] private Transform attachPoint;
@@ -10,81 +9,54 @@ public class CoffeeMachinePortSlot : MonoBehaviour
 
     private Portfilter attachedPortfilter;
 
-    private void OnTriggerEnter2D(Collider2D other)
+    public Transform AttachPoint => attachPoint;
+
+    public bool CanAccept(DraggableItem item)
     {
-        Portfilter portfilter = other.GetComponent<Portfilter>();
+        return item != null && item.GetComponent<Portfilter>() != null &&
+               attachPoint != null && coffeeMachine != null &&
+               (attachedPortfilter == null || attachedPortfilter == item.GetComponent<Portfilter>());
+    }
 
-        if (portfilter == null)
-            return;
+    public bool TryAttach(DraggableItem item)
+    {
+        if (!CanAccept(item)) return false;
+        Portfilter portfilter = item.GetComponent<Portfilter>();
+        if (attachedPortfilter == portfilter) return true;
 
-        // ป้องกันการ Attach ซ้ำ
-        if (attachedPortfilter == portfilter)
-            return;
-
-        // แจ้ง Grinder ให้ปล่อย Portfilter ก่อน
         if (grinder != null)
-        {
             grinder.RemovePortfilter(portfilter);
-        }
 
-        // ถ้ามี Portfilter ตัวเดิม ให้เคลียร์สถานะก่อน
         if (attachedPortfilter != null)
         {
+            DraggableItem previous = attachedPortfilter.GetComponent<DraggableItem>();
+            if (previous != null) previous.SetAttached(false, this);
             coffeeMachine.RemovePortfilter(attachedPortfilter);
         }
 
         attachedPortfilter = portfilter;
+        portfilter.transform.position = attachPoint.position;
+        item.SetAttached(true, this);
+        coffeeMachine.AttachPortfilter(portfilter);
+        return true;
+    }
 
-        // ย้าย Portfilter ไปยังตำแหน่ง Slot
-        if (attachPoint != null)
-        {
-            portfilter.transform.position = attachPoint.position;
-        }
-
-        DraggableItem draggable =
-            portfilter.GetComponent<DraggableItem>();
-
-        if (draggable != null)
-        {
-            draggable.SetAttached(true);
-        }
-
-        if (coffeeMachine != null)
-        {
-            coffeeMachine.AttachPortfilter(portfilter);
-        }
-
-        GameLogger.DebugLog(
-            "CoffeeMachinePortSlot",
-            "Portfilter attached to Coffee Machine slot."
-        );
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        Portfilter portfilter = other.GetComponentInParent<Portfilter>();
+        if (portfilter != null)
+            TryAttach(portfilter.GetComponent<DraggableItem>());
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        Portfilter portfilter = other.GetComponent<Portfilter>();
-
+        Portfilter portfilter = other.GetComponentInParent<Portfilter>();
         if (portfilter == null || attachedPortfilter != portfilter)
             return;
 
         attachedPortfilter = null;
-
-        DraggableItem draggable =
-            portfilter.GetComponent<DraggableItem>();
-
-        if (draggable != null)
-        {
-            draggable.SetAttached(false);
-        }
-
-        if (coffeeMachine != null)
-        {
-            coffeeMachine.RemovePortfilter(portfilter);
-        }
-
-        GameLogger.DebugLog(
-            "CoffeeMachinePortSlot",
-            "Portfilter removed from Coffee Machine slot."
-        );
+        DraggableItem draggable = portfilter.GetComponent<DraggableItem>();
+        if (draggable != null) draggable.SetAttached(false, this);
+        if (coffeeMachine != null) coffeeMachine.RemovePortfilter(portfilter);
     }
 }

@@ -1,75 +1,47 @@
 using UnityEngine;
 
-public class CoffeeCupSlot : MonoBehaviour
+public class CoffeeCupSlot : MonoBehaviour, IStationSnapTarget
 {
-    [SerializeField]
-    private Transform attachPoint;
+    [SerializeField] private Transform attachPoint;
+    [SerializeField] private CoffeeMachine coffeeMachine;
 
-    [SerializeField]
-    private CoffeeMachine coffeeMachine;
+    public Transform AttachPoint => attachPoint;
+
+    public bool CanAccept(DraggableItem item)
+    {
+        Cup cup = item != null ? item.GetComponent<Cup>() : null;
+        return cup != null && !cup.IsFinished() &&
+               attachPoint != null && coffeeMachine != null;
+    }
+
+    public bool TryAttach(DraggableItem item)
+    {
+        if (!CanAccept(item))
+            return false;
+
+        Cup cup = item.GetComponent<Cup>();
+        cup.transform.position = attachPoint.position;
+        item.SetAttached(true, this);
+        coffeeMachine.AttachCup(cup);
+        return true;
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         Cup cup = other.GetComponentInParent<Cup>();
-
-        if (cup == null)
-            return;
-
-        if (other != cup.AttachCollider)
-            return;
-
-        if (cup.IsFinished())
-            return;
-
-        // เช็ก Attach Point
-        if (attachPoint == null)
-        {
-            GameLogger.Warn("Cocoa", "ยังไม่ได้ใส่ Attach Point");
-            return;
-        }
-
-        // ย้าย Cup ไปตำแหน่ง Attach Point
-        cup.transform.position = attachPoint.position;
-
-        // บอก DraggableItem ว่าตอนนี้ติด Slot แล้ว
-        DraggableItem draggable = cup.GetComponent<DraggableItem>();
-
-        if (draggable != null)
-        {
-            draggable.SetAttached(true);
-        }
-
-        // บอก CoffeeMachine ว่ามี Portfilter อยู่
-        coffeeMachine.AttachCup(cup);
-
-        GameLogger.DebugLog("Cocoa", "cup attached to Coffee machine");
+        if (cup != null && other == cup.AttachCollider)
+            TryAttach(cup.GetComponent<DraggableItem>());
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
         Cup cup = other.GetComponentInParent<Cup>();
-
-        if (cup == null)
+        if (cup == null || other != cup.AttachCollider || cup.IsFinished())
             return;
 
-        // ต้องเป็น AttachCollider เท่านั้น
-        if (other != cup.AttachCollider)
-            return;
-
-        if (cup.IsFinished())
-            return;
-
-        // บอก DraggableItem ว่าหลุดจาก Slot แล้ว
         DraggableItem draggable = cup.GetComponent<DraggableItem>();
-
         if (draggable != null)
-        {
-            draggable.SetAttached(false);
-        }
-
-        // บอก CoffeeMachine ว่าเอา Portfilter ออกแล้ว
+            draggable.SetAttached(false, this);
         coffeeMachine.RemoveCup(cup);
-
-        GameLogger.DebugLog("Cocoa", "cup removed from Coffee machine");
     }
 }

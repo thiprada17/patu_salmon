@@ -1,4 +1,4 @@
-﻿
+
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -197,6 +197,13 @@ public class CupDispenser : MonoBehaviour
 
         foreach (Cup cup in keysToRemove)
             spawnSide.Remove(cup);
+    }
+
+    public bool IsSlotOccupiedByOther(string slot, Cup cup)
+    {
+        if (slot == "L") return leftCup != null && leftCup != cup;
+        if (slot == "R") return rightCup != null && rightCup != cup;
+        return false;
     }
 
     public bool IsSlotOccupied(string slot)

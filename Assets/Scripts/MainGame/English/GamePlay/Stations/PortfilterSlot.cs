@@ -1,35 +1,32 @@
 using UnityEngine;
 
-public class PortfilterSlot : MonoBehaviour
+public class PortfilterSlot : MonoBehaviour, IStationSnapTarget
 {
-    [SerializeField]
-    private Transform attachPoint;
+    [SerializeField] private Transform attachPoint;
+
+    public Transform AttachPoint => attachPoint;
+
+    public bool CanAccept(DraggableItem item)
+    {
+        return item != null && item.GetComponent<Portfilter>() != null &&
+               attachPoint != null && GetComponentInParent<Grinder>() != null;
+    }
+
+    public bool TryAttach(DraggableItem item)
+    {
+        if (!CanAccept(item)) return false;
+        Portfilter portfilter = item.GetComponent<Portfilter>();
+        Grinder grinder = GetComponentInParent<Grinder>();
+        portfilter.transform.position = attachPoint.position;
+        item.SetAttached(true, this);
+        grinder.AttachPortfilter(portfilter);
+        return true;
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Portfilter portfilter = other.GetComponent<Portfilter>();
-
-        if (portfilter == null)
-            return;
-
-        // ย้าย Portfilter ไปที่ AttachPoint
-        portfilter.transform.position = attachPoint.position;
-
-        // บอกว่า Portfilter ติดอยู่กับ Slot
-        DraggableItem draggable = portfilter.GetComponent<DraggableItem>();
-
-        if (draggable != null)
-        {
-            draggable.SetAttached(true);
-        }
-
-        // ส่ง Portfilter ให้ Grinder
-        Grinder grinder = GetComponentInParent<Grinder>();
-
-        if (grinder != null)
-        {
-            grinder.AttachPortfilter(portfilter);
-        }
-        GameLogger.DebugLog("Portfilter", "Portfilter attached to Grinder!");
+        Portfilter portfilter = other.GetComponentInParent<Portfilter>();
+        if (portfilter != null)
+            TryAttach(portfilter.GetComponent<DraggableItem>());
     }
 }

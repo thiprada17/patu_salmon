@@ -1,80 +1,41 @@
 using UnityEngine;
 
-public class MilkCupSlot : MonoBehaviour
+public class MilkCupSlot : MonoBehaviour, IStationSnapTarget
 {
-    [SerializeField]
-    private Transform attachPoint;
+    [SerializeField] private Transform attachPoint;
+    [SerializeField] private Milk milk;
 
-    [SerializeField]
-    private Milk milk;
+    public Transform AttachPoint => attachPoint;
 
+    public bool CanAccept(DraggableItem item)
+    {
+        Cup cup = item != null ? item.GetComponent<Cup>() : null;
+        return cup != null && !cup.IsFinished() && attachPoint != null && milk != null;
+    }
+
+    public bool TryAttach(DraggableItem item)
+    {
+        if (!CanAccept(item)) return false;
+        Cup cup = item.GetComponent<Cup>();
+        cup.transform.position = attachPoint.position;
+        item.SetAttached(true, this);
+        milk.AttachCup(cup);
+        return true;
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         Cup cup = other.GetComponentInParent<Cup>();
-
-        if (cup == null)
-            return;
-
-        if (other != cup.AttachCollider)
-            return;
-
-        if (cup.IsFinished())
-            return;
-
-        // เช็ก Attach Point
-        if (attachPoint == null)
-        {
-            GameLogger.Warn("Milk", "ยังไม่ได้ใส่ Attach Point");
-            return;
-        }
-
-        // ย้าย Cup ไปตำแหน่ง Attach Point
-        cup.transform.position = attachPoint.position;
-
-        // บอก DraggableItem ว่าตอนนี้ติด Slot แล้ว
-        DraggableItem draggable = cup.GetComponent<DraggableItem>();
-
-        if (draggable != null)
-        {
-            draggable.SetAttached(true);
-        }
-
-        // บอก Cocoa ว่ามี Cup อยู่
-        milk.AttachCup(cup);
-
-        GameLogger.DebugLog("Milk", "Cup attached to milk");
+        if (cup != null && other == cup.AttachCollider)
+            TryAttach(cup.GetComponent<DraggableItem>());
     }
-
 
     private void OnTriggerExit2D(Collider2D other)
     {
         Cup cup = other.GetComponentInParent<Cup>();
-
-        if (cup == null)
-            return;
-
-        // ต้องเป็น AttachCollider เท่านั้น
-        if (other != cup.AttachCollider)
-            return;
-
-        if (cup.IsFinished())
-            return;
-
-        // บอก DraggableItem ว่าหลุดจาก Slot แล้ว
+        if (cup == null || other != cup.AttachCollider || cup.IsFinished()) return;
         DraggableItem draggable = cup.GetComponent<DraggableItem>();
-
-        if (draggable != null)
-        {
-            draggable.SetAttached(false);
-        }
-
-        // บอก Cocoa ว่าเอา Cup ออกแล้ว
-        if (milk != null)
-        {
-            milk.RemoveCup(cup);
-        }
-
-        GameLogger.DebugLog("Milk", "Cup removed from milk");
+        if (draggable != null) draggable.SetAttached(false, this);
+        milk.RemoveCup(cup);
     }
 }

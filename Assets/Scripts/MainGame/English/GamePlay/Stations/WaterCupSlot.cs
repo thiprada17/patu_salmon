@@ -1,77 +1,41 @@
 using UnityEngine;
 
-public class WaterCupSlot : MonoBehaviour
+public class WaterCupSlot : MonoBehaviour, IStationSnapTarget
 {
-    [SerializeField]
-    private Transform attachPoint;
+    [SerializeField] private Transform attachPoint;
+    [SerializeField] private Water water;
 
-    [SerializeField]
-    private Water water;
+    public Transform AttachPoint => attachPoint;
+
+    public bool CanAccept(DraggableItem item)
+    {
+        Cup cup = item != null ? item.GetComponent<Cup>() : null;
+        return cup != null && !cup.IsFinished() && attachPoint != null && water != null;
+    }
+
+    public bool TryAttach(DraggableItem item)
+    {
+        if (!CanAccept(item)) return false;
+        Cup cup = item.GetComponent<Cup>();
+        cup.transform.position = attachPoint.position;
+        item.SetAttached(true, this);
+        water.AttachCup(cup);
+        return true;
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         Cup cup = other.GetComponentInParent<Cup>();
-
-        if (cup == null)
-            return;
-
-        if (other != cup.AttachCollider)
-            return;
-
-        if (cup.IsFinished())
-            return;
-
-        // เช็ก Attach Point
-        if (attachPoint == null)
-        {
-            GameLogger.DebugLog("Water", "ยังไม่ได้ใส่ Attach Point");
-            return;
-        }
-
-        // ย้าย Cup ไปตำแหน่ง Attach Point
-        cup.transform.position = attachPoint.position;
-
-        // บอก DraggableItem ว่าตอนนี้ติด Slot แล้ว
-        DraggableItem draggable = cup.GetComponent<DraggableItem>();
-
-        if (draggable != null)
-        {
-            draggable.SetAttached(true);
-        }
-
-        water.AttachCup(cup);
-
-        GameLogger.DebugLog("Water", "Cup attached to water");
+        if (cup != null && other == cup.AttachCollider)
+            TryAttach(cup.GetComponent<DraggableItem>());
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
         Cup cup = other.GetComponentInParent<Cup>();
-
-        if (cup == null)
-            return;
-
-        // ต้องเป็น AttachCollider เท่านั้น
-        if (other != cup.AttachCollider)
-            return;
-
-        if (cup.IsFinished())
-            return;
-
-        // บอก DraggableItem ว่าหลุดจาก Slot แล้ว
+        if (cup == null || other != cup.AttachCollider || cup.IsFinished()) return;
         DraggableItem draggable = cup.GetComponent<DraggableItem>();
-
-        if (draggable != null)
-        {
-            draggable.SetAttached(false);
-        }
-
-        // บอก Water ว่าเอา Cup ออกแล้ว
-        if (water != null)
-        {
-            water.RemoveCup(cup);
-        }
-
-        GameLogger.DebugLog("Water", "Cup removed from water");
+        if (draggable != null) draggable.SetAttached(false, this);
+        water.RemoveCup(cup);
     }
 }
