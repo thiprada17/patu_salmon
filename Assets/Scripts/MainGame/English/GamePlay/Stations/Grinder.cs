@@ -228,7 +228,9 @@ public class Grinder : MonoBehaviour
             transform.localPosition =
                 originalPosition + new Vector3(x, y, 0f);
 
-            elapsed += Time.deltaTime;
+            // Shake is visual feedback and must finish even while gameplay
+            // time is paused by a tutorial dialogue or pause panel.
+            elapsed += Time.unscaledDeltaTime;
             yield return null;
         }
 

@@ -47,6 +47,11 @@ public static class TutorialSession
         tutorialCustomersServed = 0;
         IsTutorialActive = true;
 
+        // Gameplay must remain interactive during the main-game tutorial.
+        // Clear a lock left by a previously opened modal/tutorial scene.
+        GameplayInputLock.Unlock();
+        Time.timeScale = 1f;
+
         Debug.Log("[TutorialSession] Tutorial started.");
     }
 

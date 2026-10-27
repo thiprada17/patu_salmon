@@ -1,4 +1,5 @@
 import logging 
+import httpx
 from fastapi import HTTPException
 
 from services.google_auth_service import (
@@ -149,6 +150,23 @@ class AuthService:
                     "email": email,
                     "password": password,
                 })
+            except httpx.TimeoutException:
+                # A read timeout is ambiguous: Supabase may have created the
+                # account even though its response did not reach this server.
+                # Let the client retry /auth/continue; it checks for an
+                # existing account and will sign in if signup already landed.
+                logger.warning(
+                    "Supabase email signup timed out for %s",
+                    email,
+                    exc_info=True,
+                )
+                raise HTTPException(
+                    status_code=504,
+                    detail=(
+                        "Authentication service timed out. "
+                        "Please try again."
+                    ),
+                )
             except Exception:
                 logger.exception("Supabase email signup failed")
                 raise HTTPException(

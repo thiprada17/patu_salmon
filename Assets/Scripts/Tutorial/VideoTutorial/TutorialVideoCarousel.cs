@@ -63,7 +63,9 @@ public class TutorialVideoCarousel : MonoBehaviour
     private void Awake()
     {
         // Remember the previous time scale.
-        previousTimeScale = Time.timeScale;
+        previousTimeScale = Time.timeScale > 0f
+            ? Time.timeScale
+            : 1f;
 
         // Pause gameplay and block gameplay input.
         Time.timeScale = 0f;

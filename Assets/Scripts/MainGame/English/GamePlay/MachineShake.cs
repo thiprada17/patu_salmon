@@ -31,7 +31,7 @@ public class MachineShake : MonoBehaviour
             float x = Random.Range(-shakeAmount, shakeAmount);
             transform.localPosition = originalPosition + new Vector3(x, 0f, 0f);
 
-            elapsed += Time.deltaTime;
+            elapsed += Time.unscaledDeltaTime;
             yield return null;
         }
 

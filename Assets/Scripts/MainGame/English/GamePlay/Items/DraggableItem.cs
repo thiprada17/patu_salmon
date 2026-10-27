@@ -103,36 +103,38 @@ public class DraggableItem : MonoBehaviour,
 
     private void Update()
     {
-        if (!GameplayInputLock.IsLocked)
+        if (GameplayInputLock.IsLocked)
         {
-            wasLockedLastFrame = false;
+            if (!wasLockedLastFrame)
+            {
+                positionBeforeLock = transform.position;
+                wasLockedLastFrame = true;
+            }
+
+            isDragging = false;
+            if (rejectRoutine != null)
+            {
+                StopCoroutine(rejectRoutine);
+                rejectRoutine = null;
+            }
+
+            SetPhysicsKinematic();
+            transform.position = positionBeforeLock;
+            dragTargetPosition = positionBeforeLock;
             return;
         }
 
-        if (!wasLockedLastFrame)
-        {
-            positionBeforeLock = transform.position;
-            wasLockedLastFrame = true;
-        }
+        wasLockedLastFrame = false;
 
-        isDragging = false;
-        if (rejectRoutine != null)
+        // Move while the pointer is held from Update, not FixedUpdate.
+        // FixedUpdate stops when timeScale is zero, which left tutorial drags
+        // frozen after a paused video/tutorial scene.
+        if (isDragging && !isAttached)
         {
-            StopCoroutine(rejectRoutine);
-            rejectRoutine = null;
-        }
-
-        SetPhysicsKinematic();
-        transform.position = positionBeforeLock;
-        dragTargetPosition = positionBeforeLock;
-    }
-
-    private void FixedUpdate()
-    {
-        if (isDragging && !isAttached && body != null &&
-            !GameplayInputLock.IsLocked)
-        {
-            body.MovePosition(dragTargetPosition);
+            if (body != null)
+                body.position = dragTargetPosition;
+            else
+                transform.position = dragTargetPosition;
         }
     }
 

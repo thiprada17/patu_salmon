@@ -70,10 +70,38 @@ public class MenuButtonLoader : MonoBehaviour
         if (IsBlockedDuringTutorial(sceneName))
             return;
 
-        if (SceneManager.GetSceneByName(sceneName).isLoaded) return;
+        Scene existingScene = SceneManager.GetSceneByName(sceneName);
+        if (existingScene.isLoaded)
+        {
+            if (TutorialSession.IsTutorialActive)
+                BringOverlayAboveTutorial(existingScene);
+            return;
+        }
 
         Time.timeScale = 1f;
         SceneManager.LoadScene(sceneName, LoadSceneMode.Additive);
+
+        if (TutorialSession.IsTutorialActive)
+            BringOverlayAboveTutorial(SceneManager.GetSceneByName(sceneName));
+    }
+
+    private static void BringOverlayAboveTutorial(Scene overlayScene)
+    {
+        if (!overlayScene.IsValid() || !overlayScene.isLoaded)
+            return;
+
+        const int tutorialOverlaySortingOrder = 30;
+        foreach (GameObject root in overlayScene.GetRootGameObjects())
+        {
+            Canvas[] canvases = root.GetComponentsInChildren<Canvas>(true);
+            foreach (Canvas canvas in canvases)
+            {
+                canvas.overrideSorting = true;
+                canvas.sortingOrder = Mathf.Max(
+                    canvas.sortingOrder,
+                    tutorialOverlaySortingOrder);
+            }
+        }
     }
 
     private bool IsBlockedDuringTutorial(string sceneName)

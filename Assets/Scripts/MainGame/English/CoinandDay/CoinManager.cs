@@ -82,6 +82,9 @@ public class CoinManager : MonoBehaviour
     private bool isLoading;
     private bool isSaving;
     private int pendingExpenseWorkDay = -1;
+    private int pendingSyncDays;
+    private string localStateKey;
+    private bool hasUnsentProgress;
 
     // เงินคงเหลือหลังบันทึกยอดของวันนี้แล้ว
     public int TotalCoins =>
@@ -102,6 +105,15 @@ public class CoinManager : MonoBehaviour
 
         Instance = this;
 
+        // Keep an offline checkpoint per account so switching users on the
+        // same device cannot mix their unsubmitted daily earnings.
+        string userId = LoginManager.UserId;
+        if (!string.IsNullOrEmpty(userId))
+        {
+            localStateKey = "CoinManager.LocalState." + userId;
+            LoadLocalState();
+        }
+
         GameLogger.Info(
             "CoinManager",
             "Awake ทำงานแล้ว ตั้งค่า Instance สำเร็จ"
@@ -114,6 +126,61 @@ public class CoinManager : MonoBehaviour
 
         UpdateNavbar();
         StartCoroutine(LoadStats(hasRefreshedSession: false));
+    }
+
+    private void LoadLocalState()
+    {
+        if (string.IsNullOrEmpty(localStateKey) ||
+            !PlayerPrefs.HasKey(localStateKey))
+            return;
+
+        LocalCoinState state = JsonUtility.FromJson<LocalCoinState>(
+            PlayerPrefs.GetString(localStateKey, ""));
+        if (state == null)
+            return;
+
+        SavedCoins = state.savedCoins;
+        WorkDays = state.workDays;
+        CustomersServed = state.customersServed;
+        OrderCoins = state.orderCoins;
+        TipCoins = state.tipCoins;
+        PenaltyCoins = state.penaltyCoins;
+        TodayOrderCoins = state.todayOrderCoins;
+        TodayTipCoins = state.todayTipCoins;
+        TodayPenaltyCoins = state.todayPenaltyCoins;
+        TodayCustomersServed = state.todayCustomersServed;
+        TicketExpense = state.ticketExpense;
+        RentExpense = state.rentExpense;
+        pendingExpenseWorkDay = state.pendingExpenseWorkDay;
+        pendingSyncDays = state.pendingSyncDays;
+        hasUnsentProgress = state.hasUnsentProgress;
+    }
+
+    private void SaveLocalState()
+    {
+        if (string.IsNullOrEmpty(localStateKey))
+            return;
+
+        LocalCoinState state = new LocalCoinState
+        {
+            orderCoins = OrderCoins,
+            tipCoins = TipCoins,
+            penaltyCoins = PenaltyCoins,
+            todayOrderCoins = TodayOrderCoins,
+            todayTipCoins = TodayTipCoins,
+            todayPenaltyCoins = TodayPenaltyCoins,
+            todayCustomersServed = TodayCustomersServed,
+            ticketExpense = TicketExpense,
+            rentExpense = RentExpense,
+            pendingExpenseWorkDay = pendingExpenseWorkDay,
+            savedCoins = SavedCoins,
+            workDays = WorkDays,
+            customersServed = CustomersServed,
+            pendingSyncDays = pendingSyncDays,
+            hasUnsentProgress = hasUnsentProgress
+        };
+        PlayerPrefs.SetString(localStateKey, JsonUtility.ToJson(state));
+        PlayerPrefs.Save();
     }
 
     // โหลดข้อมูลผู้เล่นจาก Backend
@@ -199,12 +266,16 @@ public class CoinManager : MonoBehaviour
                 yield break;
             }
 
-            SavedCoins = data.coin;
-            WorkDays = data.work_days;
-            CustomersServed = data.total_customers_served;
-
-            // เริ่มนับลูกค้าของวันปัจจุบันใหม่
-            TodayCustomersServed = 0;
+            // If this device has unsubmitted completed days, its checkpoint
+            // includes newer progress than the backend. Keep it until batch
+            // sync succeeds. Otherwise refresh the persisted base from server.
+            if (!hasUnsentProgress)
+            {
+                SavedCoins = data.coin;
+                WorkDays = data.work_days;
+                CustomersServed = data.total_customers_served;
+                SaveLocalState();
+            }
 
             UpdateNavbar();
 
@@ -264,6 +335,9 @@ public class CoinManager : MonoBehaviour
         TodayTipCoins += tip;
         TodayCustomersServed++;
 
+        hasUnsentProgress = true;
+        SaveLocalState();
+
         UpdateNavbar();
 
         //if (earningPopup != null)
@@ -286,6 +360,9 @@ public class CoinManager : MonoBehaviour
         PenaltyCoins += angryPenalty;
         TodayPenaltyCoins += angryPenalty;
 
+        hasUnsentProgress = true;
+        SaveLocalState();
+
         UpdateNavbar();
 
         GameLogger.Info(
@@ -304,24 +381,6 @@ public class CoinManager : MonoBehaviour
                 "กำลังโหลดหรือบันทึกข้อมูลอยู่"
             );
 
-            onComplete?.Invoke(false);
-            return;
-        }
-
-        if (string.IsNullOrEmpty(LoginManager.UserId))
-        {
-            GameLogger.Error(
-                "Economy",
-                "ไม่พบ UserID ไม่สามารถบันทึกข้อมูลได้"
-            );
-
-            onComplete?.Invoke(false);
-            return;
-        }
-
-        if (string.IsNullOrEmpty(PlayerPrefs.GetString("AccessToken", "")))
-        {
-            GameLogger.Error("Economy", "ไม่พบ Access Token ไม่สามารถบันทึกข้อมูลได้");
             onComplete?.Invoke(false);
             return;
         }
@@ -362,153 +421,130 @@ public class CoinManager : MonoBehaviour
             pendingExpenseWorkDay = -1;
         }
 
-        GameLogger.Info(
-            "Economy",
-            $"ตรวจเงินก่อนบันทึก | " +
-            $"SavedCoins={SavedCoins} | " +
-            $"OrderCoins={OrderCoins} | " +
-            $"TipCoins={TipCoins} | " +
-            $"PenaltyCoins={PenaltyCoins} | " +
-            $"ShiftCoins={ShiftCoins} | " +
-            $"Ticket={TicketExpense} | Rent={RentExpense}"
-        );
+        // Persist the chosen rent/ticket amounts before committing the day,
+        // so a local interruption cannot roll back the pending deduction.
+        SaveLocalState();
 
-        int finalCoins = Mathf.Max(
+        int completedDayEarnings = ShiftCoins;
+        int completedDayCustomers = TodayCustomersServed;
+
+        // End the day locally first. This is the authoritative live state;
+        // backend sync is deliberately batched and cannot make a day repeat.
+        SavedCoins = Mathf.Max(
             0,
-            SavedCoins + ShiftCoins
-            - TicketExpense - RentExpense
-        );
+            SavedCoins + completedDayEarnings - TicketExpense - RentExpense);
+        WorkDays = nextWorkDays;
+        CustomersServed += completedDayCustomers;
+        pendingSyncDays++;
+        hasUnsentProgress = true;
+
+        ShowShiftSummary();
+
+        OrderCoins = 0;
+        TipCoins = 0;
+        PenaltyCoins = 0;
+        TicketExpense = 0;
+        RentExpense = 0;
+        pendingExpenseWorkDay = -1;
+        TodayCustomersServed = 0;
+        TodayOrderCoins = 0;
+        TodayTipCoins = 0;
+        TodayPenaltyCoins = 0;
+        SaveLocalState();
+        UpdateNavbar();
 
         GameLogger.Info(
             "Economy",
-            $"ยอดที่จะส่ง Backend = {finalCoins}"
+            $"จบวันในเครื่อง | วัน={WorkDays} | เหรียญ={SavedCoins} | " +
+            $"ลูกค้า={CustomersServed} | รอ Sync={pendingSyncDays} วัน"
         );
 
-        GameLogger.Info(
-            "Economy",
-            $"จบกะ={isShiftEnd} | " +
-            $"CoinsBefore={TotalCoins} | CoinsAfter={finalCoins}"
-        );
+        // Send one aggregate request every ten completed work days. If it
+        // fails, keep the checkpoint and include it in the next batch.
+        if (daysPerShift > 0 && WorkDays % daysPerShift == 0)
+            StartCoroutine(SyncStats(hasRefreshedSession));
+
+        isSaving = false;
+        onComplete?.Invoke(true);
+        yield break;
+    }
+
+    private IEnumerator SyncStats(bool hasRefreshedSession)
+    {
+        if (pendingSyncDays <= 0)
+            yield break;
+
+        if (string.IsNullOrEmpty(LoginManager.UserId) ||
+            string.IsNullOrEmpty(PlayerPrefs.GetString("AccessToken", "")))
+        {
+            GameLogger.Warn("Economy",
+                "ยังไม่มี session สำหรับ Batch sync; คงยอดไว้ในเครื่อง");
+            yield break;
+        }
 
         FinishWorkDayRequest data = new FinishWorkDayRequest
         {
             user_id = LoginManager.UserId,
-            coin = finalCoins,
-            work_days = nextWorkDays,
-            total_customers_served =
-                CustomersServed + TodayCustomersServed
+            coin = SavedCoins,
+            work_days = WorkDays,
+            total_customers_served = CustomersServed
         };
-
-        string json = JsonUtility.ToJson(data);
-        byte[] body = Encoding.UTF8.GetBytes(json);
-
-        GameLogger.Info(
-            "Economy",
-            $"กำลังบันทึกผลวัน: {json}"
-        );
+        byte[] body = Encoding.UTF8.GetBytes(JsonUtility.ToJson(data));
 
         using (UnityWebRequest request = new UnityWebRequest(
             $"{backendUrl}/player/stats/day", "POST"))
         {
             request.uploadHandler = new UploadHandlerRaw(body);
             request.downloadHandler = new DownloadHandlerBuffer();
-            request.SetRequestHeader(
-                "Authorization",
-                "Bearer " + PlayerPrefs.GetString("AccessToken", "")
-            );
-            request.SetRequestHeader(
-                "Content-Type",
-                "application/json"
-            );
-
+            request.SetRequestHeader("Authorization",
+                "Bearer " + PlayerPrefs.GetString("AccessToken", ""));
+            request.SetRequestHeader("Content-Type", "application/json");
             yield return request.SendWebRequest();
 
             if (request.result != UnityWebRequest.Result.Success)
             {
-                if (request.responseCode == 401 && !hasRefreshedSession)
+                if (request.responseCode == 401 && !hasRefreshedSession &&
+                    LoginManager.Instance != null)
                 {
-                    bool refreshFinished = false;
-                    bool refreshSucceeded = false;
+                    bool finished = false;
+                    bool succeeded = false;
                     LoginManager.Instance.RefreshSession(success =>
                     {
-                        refreshSucceeded = success;
-                        refreshFinished = true;
+                        succeeded = success;
+                        finished = true;
                     });
-
-                    while (!refreshFinished)
-                        yield return null;
-
-                    if (refreshSucceeded)
+                    while (!finished) yield return null;
+                    if (succeeded)
                     {
-                        isSaving = false;
-                        yield return SaveWorkDay(onComplete, true);
+                        yield return SyncStats(true);
                         yield break;
                     }
                 }
 
-                GameLogger.Error(
-                    "Economy",
-                    $"บันทึกข้อมูลไม่สำเร็จ: HTTP {request.responseCode} " +
-                    $"{request.downloadHandler.text}"
-                );
-
-                isSaving = false;
-                onComplete?.Invoke(false);
+                GameLogger.Warn("Economy",
+                    $"Batch sync ยังไม่สำเร็จ; เก็บยอดไว้ในเครื่อง: " +
+                    $"HTTP {request.responseCode} {request.downloadHandler.text}");
                 yield break;
             }
 
             FinishWorkDayResponse result =
-                JsonUtility.FromJson<FinishWorkDayResponse>(
-                    request.downloadHandler.text
-                );
-
+                JsonUtility.FromJson<FinishWorkDayResponse>(request.downloadHandler.text);
             if (result == null)
             {
-                GameLogger.Error(
-                    "Economy",
-                    "อ่านผลการบันทึกไม่สำเร็จ"
-                );
-
-                isSaving = false;
-                onComplete?.Invoke(false);
+                GameLogger.Warn("Economy",
+                    "อ่านผล Batch sync ไม่ได้; เก็บ checkpoint ไว้ในเครื่อง");
                 yield break;
             }
 
-            // อัปเดตยอดที่บันทึกสำเร็จแล้ว
             SavedCoins = result.coin;
             WorkDays = result.work_days;
             CustomersServed = result.total_customers_served;
-
-            // Show today's totals before resetting the daily counters.
-            ShowShiftSummary();
-
-            // Reset daily earnings every day. Rent and ticket are only
-            // deducted on days where isShiftEnd is true.
-            OrderCoins = 0;
-            TipCoins = 0;
-            PenaltyCoins = 0;
-            TicketExpense = 0;
-            RentExpense = 0;
-            pendingExpenseWorkDay = -1;
-
-            // รีเซ็ตเฉพาะจำนวนลูกค้าของวันปัจจุบัน
-            TodayCustomersServed = 0;
-            TodayOrderCoins = 0;
-            TodayTipCoins = 0;
-            TodayPenaltyCoins = 0;
-
+            pendingSyncDays = 0;
+            hasUnsentProgress = false;
+            SaveLocalState();
             UpdateNavbar();
-
-            GameLogger.Info(
-                "Economy",
-                $"บันทึกสำเร็จ | วัน={WorkDays} | " +
-                $"เหรียญ={SavedCoins} | ลูกค้า={CustomersServed} | " +
-                $"จบกะ={isShiftEnd}"
-            );
+            GameLogger.Info("Economy", $"Batch sync สำเร็จ | วัน={WorkDays}");
         }
-
-        isSaving = false;
-        onComplete?.Invoke(true);
     }
 
     // แสดงสรุปกะเพียงครั้งเดียว
@@ -571,6 +607,26 @@ public class CoinManager : MonoBehaviour
         {
             daysText.text = WorkDays.ToString();
         }
+    }
+
+    [Serializable]
+    private class LocalCoinState
+    {
+        public int savedCoins;
+        public int workDays;
+        public int customersServed;
+        public int pendingSyncDays;
+        public int orderCoins;
+        public int tipCoins;
+        public int penaltyCoins;
+        public int todayOrderCoins;
+        public int todayTipCoins;
+        public int todayPenaltyCoins;
+        public int todayCustomersServed;
+        public int ticketExpense;
+        public int rentExpense;
+        public int pendingExpenseWorkDay;
+        public bool hasUnsentProgress;
     }
 
     [Serializable]

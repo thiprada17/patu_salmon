@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -57,6 +58,14 @@ public class LoginManager : MonoBehaviour
         Action<AuthResponse> onSuccess,
         Action<string> onError)
     {
+        email = email != null ? email.Trim() : string.Empty;
+        if (string.IsNullOrWhiteSpace(email) ||
+            string.IsNullOrWhiteSpace(password))
+        {
+            onError?.Invoke("Email and password are required.");
+            return;
+        }
+
         string json = JsonUtility.ToJson(
             new AuthRequest
             {
@@ -349,8 +358,37 @@ public class LoginManager : MonoBehaviour
         }
         catch
         {
-            // ใช้ข้อความ Error สำรอง
+            // FastAPI validation errors use detail as an array, so parse
+            // those separately below.
         }
+
+        try
+        {
+            ValidationErrorBody validation = JsonUtility.FromJson<ValidationErrorBody>(
+                request.downloadHandler.text
+            );
+
+            if (validation != null && validation.detail != null &&
+                validation.detail.Length > 0)
+            {
+                List<string> messages = new List<string>();
+                foreach (ValidationErrorDetail item in validation.detail)
+                {
+                    if (item != null && !string.IsNullOrEmpty(item.msg))
+                        messages.Add(item.msg);
+                }
+
+                if (messages.Count > 0)
+                    return "Invalid request: " + string.Join("; ", messages);
+            }
+        }
+        catch
+        {
+            // Use UnityWebRequest's error as the final fallback.
+        }
+
+        if (request.responseCode == 504)
+            return "Authentication service timed out. Please try again.";
 
         return request.error;
     }
@@ -406,6 +444,18 @@ public class LoginManager : MonoBehaviour
     private class ErrorBody
     {
         public string detail;
+    }
+
+    [Serializable]
+    private class ValidationErrorBody
+    {
+        public ValidationErrorDetail[] detail;
+    }
+
+    [Serializable]
+    private class ValidationErrorDetail
+    {
+        public string msg;
     }
 
     [Serializable]

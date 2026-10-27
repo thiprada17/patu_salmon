@@ -25,9 +25,9 @@ public class TutorialTransition : MonoBehaviour
     {
         isLoading = true;
 
-        // Keep gameplay paused while the tutorial video is active.
-        Time.timeScale = 0f;
-
+        // TutorialVideoCarousel pauses gameplay after it captures the current
+        // time scale. Pausing here first would make it capture zero and leave
+        // the main game frozen after the video scene closes.
         Scene tutorialScene =
             SceneManager.GetSceneByName(tutorialSceneName);
 

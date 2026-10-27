@@ -21,11 +21,20 @@ public class DayManager : MonoBehaviour
     private bool isDayEnding;
     private float timeRemaining;
     private float saveRetryDelay = 2f;
+    private float timerCheckpointRemaining;
+    private string timerStateKey;
     private const float MaxSaveRetryDelay = 30f;
 
     private void Start()
     {
-        timeRemaining = dayDurationSeconds;
+        string userId = LoginManager.UserId;
+        timerStateKey = string.IsNullOrEmpty(userId)
+            ? "DayManager.TimeRemaining"
+            : "DayManager.TimeRemaining." + userId;
+        timeRemaining = PlayerPrefs.HasKey(timerStateKey)
+            ? Mathf.Clamp(PlayerPrefs.GetFloat(timerStateKey), 0f, dayDurationSeconds)
+            : dayDurationSeconds;
+        timerCheckpointRemaining = timeRemaining;
 
         if (customerSpawner == null)
             customerSpawner = FindFirstObjectByType<CustomerSpawner>();
@@ -52,6 +61,34 @@ public class DayManager : MonoBehaviour
         );
 
         UpdateTimerText();
+    }
+
+    private void OnDisable()
+    {
+        SaveTimerState();
+    }
+
+    private void OnApplicationPause(bool paused)
+    {
+        if (paused)
+            SaveTimerState();
+    }
+
+    private void OnApplicationQuit()
+    {
+        SaveTimerState();
+    }
+
+    private void SaveTimerState()
+    {
+        if (string.IsNullOrEmpty(timerStateKey) ||
+            TutorialSession.IsTutorialActive || isDayEnding)
+            return;
+
+        PlayerPrefs.SetFloat(timerStateKey,
+            Mathf.Clamp(timeRemaining, 0f, dayDurationSeconds));
+        PlayerPrefs.Save();
+        timerCheckpointRemaining = timeRemaining;
     }
 
     private void Update()
@@ -82,6 +119,11 @@ public class DayManager : MonoBehaviour
             return;
 
         timeRemaining -= Time.deltaTime;
+
+        // Persist at one-second intervals, plus on pause/scene exit, so
+        // leaving for the map does not restart the current day's timer.
+        if (Mathf.Abs(timeRemaining - timerCheckpointRemaining) >= 1f)
+            SaveTimerState();
 
         if (timeRemaining <= 0f)
         {
@@ -213,6 +255,7 @@ public class DayManager : MonoBehaviour
             customerSpawner.BeginShift();
 
         isDayEnding = false;
+        SaveTimerState();
 
         GameLogger.Info(
             "DayManager",

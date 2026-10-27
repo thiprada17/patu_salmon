@@ -190,7 +190,14 @@ public class DialogueController : MonoBehaviour
         bool allowGameplayDuringTutorial =
             TutorialSession.IsTutorialActive && sceneName == "main_game";
 
-        if (!allowGameplayDuringTutorial)
+        if (allowGameplayDuringTutorial)
+        {
+            // Tutorial gameplay is intentionally interactive. A modal or a
+            // previous tutorial scene may have left the static lock behind.
+            GameplayInputLock.Unlock();
+            Time.timeScale = 1f;
+        }
+        else
         {
             GameplayInputLock.Lock();
             inputLockAcquired = true;
