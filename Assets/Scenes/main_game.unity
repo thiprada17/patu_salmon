@@ -6547,7 +6547,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attachPoint: {fileID: 1802881276}
   coffeeMachine: {fileID: 1654308364}
-  grinder: {fileID: 0}
+  grinder: {fileID: 814097943}
 --- !u!61 &770898823
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -6582,7 +6582,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.059948593, y: -0.12991711}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -6592,7 +6592,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.49043673, y: 0.74016577}
   m_EdgeRadius: 0
 --- !u!1 &780540228
 GameObject:
@@ -6723,7 +6723,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.7000122, y: -138.90009}
+  m_AnchoredPosition: {x: 0.7000122, y: -122}
   m_SizeDelta: {x: 115.899994, y: 115.9}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &793073742
@@ -8499,7 +8499,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -572.3, y: -841.9}
+  m_AnchoredPosition: {x: -572.3, y: -627}
   m_SizeDelta: {x: 1978.7, y: 3697.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!210 &919988831
@@ -8964,8 +8964,8 @@ MonoBehaviour:
   arrowOpenPosition: {x: 0.417376, y: 38}
   icon3ClosedPosition: {x: -2.999939, y: 196}
   icon3OpenPosition: {x: -2.999939, y: 72}
-  icon4ClosedPosition: {x: 0.7000122, y: 197}
-  icon4OpenPosition: {x: 0.7000122, y: -138.9001}
+  icon4ClosedPosition: {x: 0.7000122, y: 34}
+  icon4OpenPosition: {x: 0.7000122, y: -122}
   duration: 0.25
 --- !u!1 &979556901
 GameObject:
@@ -10208,6 +10208,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1229446101}
   - component: {fileID: 1229446102}
+  - component: {fileID: 1229446103}
   m_Layer: 5
   m_Name: Tabbar
   m_TagString: Untagged
@@ -10249,6 +10250,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1229446100}
   m_CullTransparentMesh: 1
+--- !u!210 &1229446103
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1229446100}
+  m_Enabled: 1
+  m_SortingLayerID: 619361283
+  m_SortingLayer: 14
+  m_SortingOrder: 10
+  m_SortAtRoot: 0
 --- !u!1 &1247516595
 GameObject:
   m_ObjectHideFlags: 0
