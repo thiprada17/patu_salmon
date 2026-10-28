@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stepID: MAIN_005
   order: 5
-  dialogue: 'Then the important part of making espresso is this one right here: <color=#F87400>Coffee
+  dialogue: 'Then the important part of making espresso is: <color=#F87400>Coffee
     Portfilter</color> puts it in a coffee grinder to get coffee ground then puts
     it in the coffee machine to get espresso.'
   targetID: 15

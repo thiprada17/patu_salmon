@@ -4520,16 +4520,21 @@ MonoBehaviour:
   - This is your profile where you can see your <color=#F87400>ID card</color>.
   - Oh! And communication is very important! you might want to <color=#F87400>remember</color>
     the name of each tool, ingredients and menu.
-  - you can view all your <color=#F87400>vocabulary collection</color> here.
+  - You can view all your vocabulary here in the <color=#F87400>Dictionary</color>
   - To start working you simply have to tap on the <color=#F87400>Country Icon</color>.
   - The window will appear and show all the information about this place.
   - Then click the <color=#F87400>start shift</color> right here to begin your start
     <color=#F87400>shift</color>!
   - Sometimes we might want to keep track of our customers in <color=#F87400>customer
     collections</color>. Who knows? They could be our regular in the future.
-  - Task
-  - Gacha
-  - Mail
+  - "<color=#F87400>Daily Reward</color> is where you can get your daily salary but
+    it\u2019ll be not much, though use it wisely."
+  - This is a <color=#F87400>Gacha</color> you can use your earnings to spend on
+    this to get new clothes if you want.
+  - "This is a <color=#F87400>Mail Box</color>. Sometimes you might receive my letter
+    or bonus well\u2026that also based on your performance as well."
+  - "Lets waste no time <color=#F87400>{player_name}</color>. I\u2019ll get you to
+    your workplace."
   dialogueSequence:
   - entryType: 0
     normalDialogueIndex: 0
@@ -4582,6 +4587,9 @@ MonoBehaviour:
   - entryType: 1
     normalDialogueIndex: 16
     tutorialStep: {fileID: 11400000, guid: bd3fd77e13e71554b9ff3caaf5992960, type: 2}
+  - entryType: 0
+    normalDialogueIndex: 17
+    tutorialStep: {fileID: 0}
   typingSpeed: 0.025
   autoAdvanceDelay: 2.5
   tutorialVisuals: {fileID: 71261913}
@@ -8383,6 +8391,8 @@ MonoBehaviour:
   Sink: {fileID: 0}
   TrashBin: {fileID: 0}
   RecipePopup: {fileID: 0}
+  Map: {fileID: 0}
+  Setting: {fileID: 0}
 --- !u!1 &1243226972
 GameObject:
   m_ObjectHideFlags: 0

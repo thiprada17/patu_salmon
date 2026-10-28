@@ -5380,9 +5380,9 @@ MonoBehaviour:
     or else you\u2019ll make a mess."
   - Then these are the other ingredients. There is <color=#F87400>Milk</color>.
   - <color=#F87400>Cocoa</color>.
-  - 'Then the important part of making espresso is this one right here: <color=#F87400>Coffee
-    Portfilter</color> puts it in a coffee grinder to get coffee ground then puts
-    it in the coffee machine to get espresso.'
+  - 'Then the important part of making espresso is: <color=#F87400>Coffee Portfilter</color>
+    puts it in a coffee grinder to get coffee ground then puts it in the coffee machine
+    to get espresso.'
   - These are the <color=#F87400>Cups</color>. DO NOT BREAK IT! Or you'll get a fine.
   - To prevent making any mess like knocking the cups out of the counter. The <color=#F87400>Mat</color>
     will prevent that from happening.
@@ -5390,8 +5390,8 @@ MonoBehaviour:
   - "If you make the wrong order don\u2019t be afraid to throw them off to the <color=#F87400>Trash
     Bin</color>."
   - You could go back to the <color=#F87400>Map</color> anytime you like.Even when
-    you are in the middle of the shift. However you have to start your shift over
-    if you come out during your shift time.
+    you are in the middle of the shift. However, the time of your shift will continue
+    right after you leave.
   - You can set the music volume anytime through the <color=#F87400>Setting</color>.
     Isn't that great?
   - "This is a <color=#F87400>Recipe Book</color>. I don\u2019t expect you to remember
@@ -8497,7 +8497,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -572.3, y: -627}
+  m_AnchoredPosition: {x: -572.3, y: -857}
   m_SizeDelta: {x: 1978.7, y: 3697.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!210 &919988831
@@ -11715,7 +11715,7 @@ MonoBehaviour:
   spawnTimeReductionPerShift: 0.1
   minimumSpawnDelay: 0.75
   tutorialCustomerCount: 3
-  dogSpawnChance: 0.25
+  dogSpawnChance: 0.375
 --- !u!1 &1452895327
 GameObject:
   m_ObjectHideFlags: 0
@@ -15237,7 +15237,7 @@ Transform:
   m_GameObject: {fileID: 2018560225}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.0014798567, y: 1.9573531, z: 16.052046}
+  m_LocalPosition: {x: -0, y: 1.9573531, z: 16.052046}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

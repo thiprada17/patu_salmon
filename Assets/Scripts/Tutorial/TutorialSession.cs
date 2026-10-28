@@ -3,11 +3,19 @@ using UnityEngine.SceneManagement;
 
 public static class TutorialSession
 {
+    private const string TutorialCompletedKey =
+        "TutorialCompleted";
+
     public static bool IsInitialized { get; private set; }
     public static bool IsFirstTimePlayer { get; private set; }
     public static bool IsTutorialActive { get; private set; }
 
     public static bool ShowCongratulationsOnMap { get; private set; }
+
+    // True if the tutorial was completed in a previous session
+    // or during the current session.
+    public static bool HasCompletedTutorial =>
+        PlayerPrefs.GetInt(TutorialCompletedKey, 0) == 1;
 
     private static int tutorialCustomersServed;
     private const int TutorialCustomerLimit = 3;
@@ -15,8 +23,6 @@ public static class TutorialSession
     public static GameObject TutorialPanel;
     public static GameObject TutorialPanelancle;
 
-    // True when the third tutorial customer has been served
-    // and the tutorial is waiting for that customer to leave.
     public static bool IsFinalTutorialCustomer =>
         IsTutorialActive &&
         tutorialCustomersServed >= TutorialCustomerLimit;
@@ -24,20 +30,25 @@ public static class TutorialSession
     public static void Initialize(int workDays)
     {
         IsInitialized = true;
-        IsFirstTimePlayer = workDays == 0;
+
+        // Show the tutorial only if it has not been completed
+        // and the player has not completed a workday.
+        IsFirstTimePlayer =
+            !HasCompletedTutorial && workDays == 0;
+
         IsTutorialActive = false;
         ShowCongratulationsOnMap = false;
         tutorialCustomersServed = 0;
 
         Debug.Log(
             $"[TutorialSession] work_days={workDays}, " +
+            $"HasCompletedTutorial={HasCompletedTutorial}, " +
             $"FirstTimePlayer={IsFirstTimePlayer}"
         );
     }
 
     public static void StartTutorial()
     {
-
         if (!IsInitialized || !IsFirstTimePlayer)
             return;
 
@@ -47,8 +58,6 @@ public static class TutorialSession
         tutorialCustomersServed = 0;
         IsTutorialActive = true;
 
-        // Gameplay must remain interactive during the main-game tutorial.
-        // Clear a lock left by a previously opened modal/tutorial scene.
         GameplayInputLock.Unlock();
         Time.timeScale = 1f;
 
@@ -60,7 +69,6 @@ public static class TutorialSession
         if (!IsTutorialActive)
             return;
 
-        // Do not count beyond the tutorial limit.
         if (tutorialCustomersServed >= TutorialCustomerLimit)
             return;
 
@@ -94,12 +102,17 @@ public static class TutorialSession
             return;
         }
 
+        // Save completion permanently on this device.
+        PlayerPrefs.SetInt(TutorialCompletedKey, 1);
+        PlayerPrefs.Save();
+
         IsTutorialActive = false;
         IsFirstTimePlayer = false;
         ShowCongratulationsOnMap = true;
 
         Debug.Log(
-            "[TutorialSession] Final customer left. Returning to map."
+            "[TutorialSession] Tutorial completed and saved. " +
+            "Returning to map."
         );
 
         if (TutorialPanel != null && TutorialPanelancle != null)
@@ -107,12 +120,15 @@ public static class TutorialSession
             TutorialPanel.SetActive(false);
             TutorialPanelancle.SetActive(false);
         }
-    
+
         SceneManager.LoadScene("map");
     }
 
     public static void CompleteTutorial()
     {
+        // This method only deactivates the tutorial.
+        // It does not mark it completed because the final customer
+        // may not have left yet.
         IsTutorialActive = false;
 
         Debug.Log("[TutorialSession] Tutorial deactivated.");
@@ -121,6 +137,16 @@ public static class TutorialSession
     public static void ConsumeCongratulationsPopup()
     {
         ShowCongratulationsOnMap = false;
+    }
+
+    public static void ResetTutorialCompletion()
+    {
+        // Use only when intentionally allowing the tutorial
+        // to be played again, such as during testing.
+        PlayerPrefs.DeleteKey(TutorialCompletedKey);
+        PlayerPrefs.Save();
+
+        Debug.Log("[TutorialSession] Tutorial completion reset.");
     }
 
     public static void ResetSession()
