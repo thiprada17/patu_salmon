@@ -1095,7 +1095,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 619361283
-  m_SortingOrder: 21
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!114 &227678950
 MonoBehaviour:
@@ -8481,7 +8481,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &919988830
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11245,6 +11245,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d81d0df23b461a4aaa90fbffb46f5ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stationSnapRadius: 1.25
   shakeDuration: 0.25
   shakeMagnitude: 0.08
   returnDuration: 0.2
