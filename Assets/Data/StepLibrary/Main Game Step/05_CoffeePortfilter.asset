@@ -14,11 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stepID: MAIN_005
   order: 5
-  dialogue: Coffee Portfilter
+  dialogue: 'Then the important part of making espresso is this one right here: <color=#F87400>Coffee
+    Portfilter</color> puts it in a coffee grinder to get coffee ground then puts
+    it in the coffee machine to get espresso.'
   targetID: 15
   targetPreviewSprite: {fileID: 21300000, guid: 8ea0a13bd2a759447b75d54a078e7c9f, type: 2}
   handPointerSprite: {fileID: -3128333450448496134, guid: df1291d40e0e374438b6dd3bd5970b6a, type: 3}
-  handOffset: {x: 0, y: 55}
+  handOffset: {x: -140, y: -150}
   handTilt: 1
   handAnimation: 1
   waitForTargetClick: 0

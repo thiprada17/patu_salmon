@@ -449,7 +449,6 @@ GameObject:
   - component: {fileID: 132248844}
   - component: {fileID: 132248843}
   - component: {fileID: 132248842}
-  - component: {fileID: 132248845}
   m_Layer: 5
   m_Name: MapButton
   m_TagString: Untagged
@@ -570,19 +569,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 132248840}
   m_CullTransparentMesh: 1
---- !u!114 &132248845
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 132248840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5124da06bbbdf4d4db4519b22defd09a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetID: 21
 --- !u!1 &144742369
 GameObject:
   m_ObjectHideFlags: 0
@@ -2379,7 +2365,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 1852599099772028583, guid: 8c511b4a33bb0b8428cff07a4969127f, type: 3}
+  m_Sprite: {fileID: 3657582004280761125, guid: 61444fc59fc803648bee459c9a0d3c32, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5091,8 +5077,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281302004
-  m_fontColor: {r: 0.9568628, g: 0.48235297, b: 0.18431373, a: 1}
+    rgba: 4278205806
+  m_fontColor: {r: 0.43137258, g: 0.2392157, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -5381,23 +5367,43 @@ MonoBehaviour:
   autoButton: {fileID: 379755253}
   autoButtonText: {fileID: 645267312}
   autoButtonImage: {fileID: 379755250}
-  autoOffSprite: {fileID: 1852599099772028583, guid: 8c511b4a33bb0b8428cff07a4969127f, type: 3}
-  autoOnSprite: {fileID: -1307664305451782276, guid: b5a9445a2d8809541a661216e7ec0e8a, type: 3}
+  autoOffSprite: {fileID: 3657582004280761125, guid: 61444fc59fc803648bee459c9a0d3c32, type: 3}
+  autoOnSprite: {fileID: 2750691858815301303, guid: 363bc2c65f659b44a9a033f4fa79e6c0, type: 3}
   dialogueLines:
-  - Coffee Grinder
-  - Espresso Machine
-  - Milk
-  - Cocoa
-  - Coffee Potfilter
-  - Cup
-  - Mat
-  - Sink
-  - Trash Bin
-  - Map
-  - Setting
-  - Recipe Book
-  - Recipe Popup
-  - Light Bulb
+  - "Welcome again <color=#F87400>{player_name}</color>! This is your workspace.
+    A special caf\xE9 where you\u2019ll make the menu follow what custom order!"
+  - "Well\u2026now that I think about it. It's not that special."
+  - Well...AHEM! Whatever, this is your workspace.
+  - This is <color=#F87400>Coffee Grinder</color>, the first step of making one shot
+    of espresso.
+  - "<color=#F87400>Coffee Machine</color>, don\u2019t forget to put glass below
+    or else you\u2019ll make a mess."
+  - Then these are the other ingredients. There is <color=#F87400>Milk</color>.
+  - <color=#F87400>Cocoa</color>.
+  - 'Then the important part of making espresso is this one right here: <color=#F87400>Coffee
+    Portfilter</color> puts it in a coffee grinder to get coffee ground then puts
+    it in the coffee machine to get espresso.'
+  - These are the <color=#F87400>Cups</color>. DO NOT BREAK IT! Or you'll get a fine.
+  - To prevent making any mess like knocking the cups out of the counter. The <color=#F87400>Mat</color>
+    will prevent that from happening.
+  - And here is sink which you can get <color=#F87400>Water</color> from here.
+  - "If you make the wrong order don\u2019t be afraid to throw them off to the <color=#F87400>Trash
+    Bin</color>."
+  - You could go back to the <color=#F87400>Map</color> anytime you like.Even when
+    you are in the middle of the shift. However you have to start your shift over
+    if you come out during your shift time.
+  - You can set the music volume anytime through the <color=#F87400>Setting</color>.
+    Isn't that great?
+  - "This is a <color=#F87400>Recipe Book</color>. I don\u2019t expect you to remember
+    how to make the menu right away so I provide this recipe book for you to follow."
+  - Here is what inside the book.
+  - "In case you don\u2019t know what the customer is saying you can use this <color=#F87400>Light
+    Bulb</color> to help you translate! Though it is limited, use it wisely."
+  - "Don\u2019t forget this is a <color=#F87400>probationary period</color>. So these
+    customers can wait for you to make a correct menu for them. Don\u2019t rush and
+    try to learn!"
+  - Oh and I have the <color=#F87400>VDO</color>. You can watch it to visualize what
+    you have to do in each step. Good Luck <color=#F87400>{player_name}</color>!
   dialogueSequence:
   - entryType: 0
     normalDialogueIndex: 0
@@ -5450,6 +5456,12 @@ MonoBehaviour:
   - entryType: 1
     normalDialogueIndex: 16
     tutorialStep: {fileID: 11400000, guid: 6e56f91398d1fba46ac6f3e30b2604cb, type: 2}
+  - entryType: 0
+    normalDialogueIndex: 17
+    tutorialStep: {fileID: 0}
+  - entryType: 0
+    normalDialogueIndex: 18
+    tutorialStep: {fileID: 0}
   typingSpeed: 0.025
   autoAdvanceDelay: 2.5
   tutorialVisuals: {fileID: 594821748}
@@ -6738,7 +6750,6 @@ GameObject:
   - component: {fileID: 793073746}
   - component: {fileID: 793073745}
   - component: {fileID: 793073744}
-  - component: {fileID: 793073747}
   m_Layer: 5
   m_Name: SettingButton
   m_TagString: Untagged
@@ -6859,19 +6870,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 793073742}
   m_CullTransparentMesh: 1
---- !u!114 &793073747
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 793073742}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5124da06bbbdf4d4db4519b22defd09a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  targetID: 22
 --- !u!1 &807658077
 GameObject:
   m_ObjectHideFlags: 0
@@ -9070,6 +9068,8 @@ RectTransform:
   - {fileID: 761139902}
   - {fileID: 1691078993}
   - {fileID: 1057515670}
+  - {fileID: 1081738473}
+  - {fileID: 1408485114}
   m_Father: {fileID: 592556040}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -9728,6 +9728,95 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1079840043}
+  m_CullTransparentMesh: 1
+--- !u!1 &1081738472
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1081738473}
+  - component: {fileID: 1081738476}
+  - component: {fileID: 1081738475}
+  - component: {fileID: 1081738474}
+  m_Layer: 0
+  m_Name: MapTemp
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &1081738473
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1081738472}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 995540029}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 546.7, y: 1132.31}
+  m_SizeDelta: {x: 173.75, y: 152.98}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1081738474
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1081738472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5124da06bbbdf4d4db4519b22defd09a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetID: 21
+--- !u!114 &1081738475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1081738472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: -570865233535416175, guid: bcb50bac4905380478775a60d1f3125f, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1081738476
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1081738472}
   m_CullTransparentMesh: 1
 --- !u!1 &1082464062
 GameObject:
@@ -11141,6 +11230,95 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1408485113
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1408485114}
+  - component: {fileID: 1408485117}
+  - component: {fileID: 1408485116}
+  - component: {fileID: 1408485115}
+  m_Layer: 0
+  m_Name: SettingTemp
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &1408485114
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1408485113}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 995540029}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 538.44, y: 943.04}
+  m_SizeDelta: {x: 174.98, y: 174.02}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1408485115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1408485113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5124da06bbbdf4d4db4519b22defd09a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetID: 22
+--- !u!114 &1408485116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1408485113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: -3673394119038681628, guid: bcb50bac4905380478775a60d1f3125f, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1408485117
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1408485113}
+  m_CullTransparentMesh: 1
 --- !u!1 &1408859711
 GameObject:
   m_ObjectHideFlags: 0
@@ -13111,6 +13289,7 @@ MonoBehaviour:
   usaPopupGlow: {fileID: 0}
   Coin: {fileID: 0}
   Day: {fileID: 0}
+  Profile: {fileID: 0}
   CoffeeGrinder: {fileID: 1228486392}
   EspressoMachine: {fileID: 357490428}
   Milk: {fileID: 1315199280}
@@ -13121,6 +13300,8 @@ MonoBehaviour:
   Sink: {fileID: 761139901}
   TrashBin: {fileID: 1691078992}
   RecipePopup: {fileID: 1057515669}
+  Map: {fileID: 1081738472}
+  Setting: {fileID: 1408485113}
 --- !u!4 &1734783837
 Transform:
   m_ObjectHideFlags: 0

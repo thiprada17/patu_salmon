@@ -10,6 +10,8 @@ public class TempCanvasController : MonoBehaviour
     [SerializeField] private GameObject Coin;
     [SerializeField] private GameObject Day;
 
+    [SerializeField] private GameObject Profile; //Use Default profile as Salmon
+
     //Main Game
     [SerializeField] private GameObject CoffeeGrinder;
     [SerializeField] private GameObject EspressoMachine;
@@ -23,6 +25,10 @@ public class TempCanvasController : MonoBehaviour
 
     [SerializeField] private GameObject RecipePopup;
 
+    //Main Game tab bar
+    [SerializeField] private GameObject Map;
+    [SerializeField] private GameObject Setting;
+
     private void Awake()
     {
         HideAll();
@@ -30,50 +36,29 @@ public class TempCanvasController : MonoBehaviour
 
     public void HideAll()
     {
-        if (usaIcon != null)
-            usaIcon.SetActive(false);
+        //Map
+        if (usaIcon != null) usaIcon.SetActive(false);
+        if (usaPopup != null) usaPopup.SetActive(false);
+        if (usaPopup != null) usaPopupGlow.SetActive(false);
+        if (Coin != null) Coin.SetActive(false);
+        if (Day != null) Day.SetActive(false);
+        if (Profile != null) Profile.SetActive(false);
 
-        if (usaPopup != null)
-            usaPopup.SetActive(false);
+        //Main Game
+        if (CoffeeGrinder != null) CoffeeGrinder.SetActive(false);
+        if (EspressoMachine != null) EspressoMachine.SetActive(false);
+        if (Milk != null) Milk.SetActive(false);
+        if (Cocoa != null) Cocoa.SetActive(false);
+        if (CoffeePortfilter != null) CoffeePortfilter.SetActive(false);
+        if (Cup != null) Cup.SetActive(false);
+        if (Mat != null) Mat.SetActive(false);
+        if (Sink != null) Sink.SetActive(false);
+        if (TrashBin != null) TrashBin.SetActive(false);
+        if (RecipePopup != null) RecipePopup.SetActive(false);
 
-        if (usaPopup != null)
-            usaPopupGlow.SetActive(false);
-
-        if (Coin != null)
-            Coin.SetActive(false);
-
-        if (Day != null)
-            Day.SetActive(false);
-
-        if (CoffeeGrinder != null)
-            CoffeeGrinder.SetActive(false);
-
-        if (EspressoMachine != null)
-            EspressoMachine.SetActive(false);
-
-        if (Milk != null)
-            Milk.SetActive(false);
-
-        if (Cocoa != null)
-            Cocoa.SetActive(false);
-
-        if (CoffeePortfilter != null)
-            CoffeePortfilter.SetActive(false);
-
-        if (Cup != null)
-            Cup.SetActive(false);
-
-        if (Mat != null)
-            Mat.SetActive(false);
-
-        if (Sink != null)
-            Sink.SetActive(false);
-
-        if (TrashBin != null)
-            TrashBin.SetActive(false);
-
-        if (RecipePopup != null)
-            RecipePopup.SetActive(false);
+        //Main Game Tabbar
+        if (Map != null) Map.SetActive(false);
+        if (Setting  != null) Setting.SetActive(false);
     }
 
     //Map Element
@@ -130,6 +115,16 @@ public class TempCanvasController : MonoBehaviour
             Day.SetActive(true);
         else
             Debug.LogWarning("Day Bar is not assigned.");
+    }
+
+    public void ShowProfile()
+    {
+        HideAll();
+
+        if (Profile != null)
+            Profile.SetActive(true);
+        else
+            Debug.LogWarning("Profile is not assigned.");
     }
 
     //USA - Main Game Element
@@ -231,5 +226,25 @@ public class TempCanvasController : MonoBehaviour
             RecipePopup.SetActive(true);
         else
             Debug.LogWarning("Recipe Popup is not assigned.");
+    }
+
+    public void ShowMap()
+    {
+        HideAll();
+
+        if (Map != null)
+            Map.SetActive(true);
+        else
+            Debug.LogWarning("Map is not assigned.");
+    }
+
+    public void ShowSetting()
+    {
+        HideAll();
+
+        if (Setting != null)
+            Setting.SetActive(true);
+        else
+            Debug.LogWarning("Setting is not assigned.");
     }
 }

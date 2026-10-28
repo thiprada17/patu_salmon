@@ -448,6 +448,7 @@ public class DialogueController : MonoBehaviour
             case global::TutorialTargetID.CountryIcon: tempCanvas.ShowCountryIcon(); break;
             case global::TutorialTargetID.CountryWindow: tempCanvas.ShowCountryPopup(); break;
             case global::TutorialTargetID.StartShift: tempCanvas.ShowCountryPopupGlow(); break;
+            case global::TutorialTargetID.Profile: tempCanvas.ShowProfile(); break;
 
             //Map Navbar
             case global::TutorialTargetID.Wallet: tempCanvas.ShowCoin(); break;
@@ -464,6 +465,10 @@ public class DialogueController : MonoBehaviour
             case global::TutorialTargetID.Sink: tempCanvas.ShowSink(); break;
             case global::TutorialTargetID.TrashBin: tempCanvas.ShowTrashBin(); break;
             case global::TutorialTargetID.RecipePopup: tempCanvas.ShowRecipePopup(); break;
+
+            //Main_Game
+            case global::TutorialTargetID.Map: tempCanvas.ShowMap(); break;
+            case global::TutorialTargetID.Setting: tempCanvas.ShowSetting(); break;
 
             default: tempCanvas.HideAll(); break;
         }
