@@ -281,6 +281,52 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &201698775
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 201698777}
+  - component: {fileID: 201698776}
+  m_Layer: 0
+  m_Name: PersistentBlackBars
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &201698776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 201698775}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afdde4b0f0f1e1549a8399e18432a101, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetWidth: 9
+  targetHeight: 19.5
+--- !u!4 &201698777
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 201698775}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.3330693, y: 1.1880232, z: 45.448147}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &210282987
 GameObject:
   m_ObjectHideFlags: 0
@@ -441,12 +487,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 2960, y: 1440}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -1397,7 +1443,6 @@ GameObject:
   - component: {fileID: 1084071947}
   - component: {fileID: 1084071950}
   - component: {fileID: 1084071951}
-  - component: {fileID: 1084071952}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1537,20 +1582,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetWidth: 9
   targetHeight: 19.5
---- !u!114 &1084071952
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1084071946}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fdce30f33edbec244adbd92336bd5006, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  phoneWidth: 9
-  phoneHeight: 19.5
 --- !u!1 &1212716877
 GameObject:
   m_ObjectHideFlags: 0
@@ -2885,3 +2916,4 @@ SceneRoots:
   - {fileID: 1228624892}
   - {fileID: 804003710}
   - {fileID: 1705768841}
+  - {fileID: 201698777}

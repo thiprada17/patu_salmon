@@ -3607,7 +3607,6 @@ GameObject:
   - component: {fileID: 519420029}
   - component: {fileID: 519420030}
   - component: {fileID: 519420033}
-  - component: {fileID: 519420035}
   - component: {fileID: 519420034}
   m_Layer: 0
   m_Name: Main Camera
@@ -3764,20 +3763,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetWidth: 9
   targetHeight: 19.5
---- !u!114 &519420035
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fdce30f33edbec244adbd92336bd5006, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  phoneWidth: 9
-  phoneHeight: 19.5
 --- !u!1 &576298900
 GameObject:
   m_ObjectHideFlags: 0
