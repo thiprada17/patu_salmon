@@ -1,29 +1,17 @@
-
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.InputSystem;
 
 public class BackButtonTemp : MonoBehaviour
 {
-    [SerializeField] private string sceneName = "signup";
+    private void Start()
+    {
+        Debug.Log("BackButtonTemp is running!");
+    }
 
     public void GoBack()
     {
-        SceneManager.LoadScene(sceneName);
-    }
+        Debug.Log("BACK BUTTON CLICKED!");
 
-    void Update()
-    {
-        if (Keyboard.current != null &&
-            Keyboard.current.escapeKey.wasPressedThisFrame)
-        {
-            GoBack();
-        }
-
-        if (Keyboard.current != null &&
-            Keyboard.current.escapeKey.wasPressedThisFrame)
-        {
-            return;
-        }
+        SceneManager.LoadScene("map");
     }
 }
