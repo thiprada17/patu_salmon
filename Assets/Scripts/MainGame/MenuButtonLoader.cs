@@ -63,7 +63,10 @@ public class MenuButtonLoader : MonoBehaviour
 
         Time.timeScale = 1f;
         string currentScene = SceneManager.GetActiveScene().name;
-        if ((currentScene == "map" && sceneName == "main_game") ||
+        if (sceneName == "setting" &&
+            (currentScene == "map" || currentScene == "main_game"))
+            SettingsNavigation.OpenFrom(currentScene);
+        else if ((currentScene == "map" && sceneName == "main_game") ||
             (currentScene == "main_game" && sceneName == "map"))
             MapGameLoading.Load(sceneName);
         else

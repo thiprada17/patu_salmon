@@ -61,12 +61,12 @@ public class ProfileManager : MonoBehaviour
     public void OpenSettings()
     {
         Debug.Log("[ProfileManager] Opening Settings scene.");
-        SceneManager.LoadScene(settingsSceneName);
+        SettingsNavigation.OpenFrom(SceneManager.GetActiveScene().name);
     }
 
     public void CloseSettings()
     {
-        Debug.Log("[ProfileManager] Returning to Map scene.");
-        SceneManager.LoadScene(mapSceneName);
+        Debug.Log("[ProfileManager] Returning to previous scene.");
+        SettingsNavigation.GoBack();
     }
 }

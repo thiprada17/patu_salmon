@@ -7,7 +7,8 @@ public static class SettingsNavigation
 
     public static void OpenFrom(string sourceScene)
     {
-        returnScene = sourceScene;
+        if (sourceScene == "map" || sourceScene == "main_game")
+            returnScene = sourceScene;
 
         Debug.Log("Opening Settings. Return scene saved: " + returnScene);
 
@@ -18,6 +19,8 @@ public static class SettingsNavigation
     {
         Debug.Log("Back pressed. Returning to: " + returnScene);
 
-        SceneManager.LoadScene(returnScene);
+        string sceneToLoad = returnScene;
+        returnScene = "map";
+        SceneManager.LoadScene(sceneToLoad);
     }
 }

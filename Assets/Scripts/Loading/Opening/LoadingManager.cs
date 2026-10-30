@@ -68,6 +68,10 @@ public class LoadingManager : MonoBehaviour
             while (!resourceLoading.IsCheckDone)
                 yield return null;
 
+            // Keep the opening screen available while the policy modal is open.
+            while (PolicyPopup.IsOpen)
+                yield return null;
+
             isLoadingDone = true;
 
             if (resourceLoading.IsSessionValid)

@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class BackButtonTemp : MonoBehaviour
 {
@@ -12,6 +11,6 @@ public class BackButtonTemp : MonoBehaviour
     {
         Debug.Log("BACK BUTTON CLICKED!");
 
-        SceneManager.LoadScene("map");
+        SettingsNavigation.GoBack();
     }
 }
