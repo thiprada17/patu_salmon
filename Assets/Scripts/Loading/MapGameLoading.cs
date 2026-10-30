@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -13,6 +14,12 @@ public sealed class MapGameLoading : MonoBehaviour
     [SerializeField] private RectTransform[] textBubbles = new RectTransform[3];
     [SerializeField, Min(0.05f)] private float popDuration = 0.32f;
     [SerializeField, Min(0f)] private float bubbleStagger = 0.18f;
+    [Header("Loading Text")]
+    [SerializeField] private TMP_Text loadingText;
+    [SerializeField, Min(0f)] private float textHopHeight = 10f;
+    [SerializeField, Min(0.01f)] private float textHopDuration = 0.25f;
+    [SerializeField, Min(0f)] private float textHopGap = 0.045f;
+    [SerializeField, Min(0f)] private float textHopRest = 0.4f;
 
     public static void Load(string sceneName)
     {
@@ -28,7 +35,67 @@ public sealed class MapGameLoading : MonoBehaviour
     private void Start()
     {
         DontDestroyOnLoad(gameObject);
+        SetDestinationText();
+        if (loadingText != null)
+            StartCoroutine(HopLoadingText());
+
         StartCoroutine(LoadDestination());
+    }
+
+    private void SetDestinationText()
+    {
+        if (loadingText == null)
+            return;
+
+        loadingText.text = destinationScene == "map"
+            ? "Flying to Town Map..."
+            : "Flying to Work place...";
+    }
+
+    private IEnumerator HopLoadingText()
+    {
+        while (loadingText != null)
+        {
+            loadingText.ForceMeshUpdate();
+            int characterCount = loadingText.textInfo.characterCount;
+            float cycleDuration = textHopGap * characterCount + textHopDuration;
+            float elapsed = 0f;
+
+            while (elapsed < cycleDuration && loadingText != null)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                loadingText.ForceMeshUpdate();
+                TMP_TextInfo info = loadingText.textInfo;
+
+                for (int i = 0; i < info.characterCount; i++)
+                {
+                    if (!info.characterInfo[i].isVisible)
+                        continue;
+
+                    float progress = (elapsed - i * textHopGap) / textHopDuration;
+                    float offset = progress > 0f && progress < 1f
+                        ? Mathf.Sin(progress * Mathf.PI) * textHopHeight
+                        : 0f;
+
+                    int materialIndex = info.characterInfo[i].materialReferenceIndex;
+                    int vertexIndex = info.characterInfo[i].vertexIndex;
+                    Vector3[] vertices = info.meshInfo[materialIndex].vertices;
+                    for (int vertex = 0; vertex < 4; vertex++)
+                        vertices[vertexIndex + vertex] += Vector3.up * offset;
+                }
+
+                for (int i = 0; i < info.meshInfo.Length; i++)
+                {
+                    info.meshInfo[i].mesh.vertices = info.meshInfo[i].vertices;
+                    loadingText.UpdateGeometry(info.meshInfo[i].mesh, i);
+                }
+
+                yield return null;
+            }
+
+            if (textHopRest > 0f)
+                yield return new WaitForSecondsRealtime(textHopRest);
+        }
     }
 
     private IEnumerator LoadDestination()

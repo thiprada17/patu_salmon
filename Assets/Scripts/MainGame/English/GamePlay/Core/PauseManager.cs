@@ -8,7 +8,7 @@ public class PauseManager : MonoBehaviour
     private GameObject pausePanel;
 
     [SerializeField, Min(1)]
-    private int pausePanelSortingOrder = 32767;
+    private int pausePanelSortingOrder = int.MaxValue;
 
     private bool isPaused = false;
     private Canvas panelCanvas;
