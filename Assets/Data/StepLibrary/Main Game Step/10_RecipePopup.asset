@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stepID: MAIN_010
   order: 10
-  dialogue: Recipe Popup
+  dialogue: Here is what inside the book.
   targetID: 20
   targetPreviewSprite: {fileID: 21300000, guid: 0cc663abf2a4bde4dbf7cf3b00c47b00, type: 3}
   handPointerSprite: {fileID: -3128333450448496134, guid: df1291d40e0e374438b6dd3bd5970b6a, type: 3}
-  handOffset: {x: 0, y: 55}
+  handOffset: {x: -320, y: -600}
   handTilt: 1
   handAnimation: 1
   waitForTargetClick: 0

@@ -2292,6 +2292,43 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 315097823}
   m_CullTransparentMesh: 1
+--- !u!1 &319742426
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 319742427}
+  m_Layer: 5
+  m_Name: Profile
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &319742427
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 319742426}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 821191241}
+  - {fileID: 1752108639}
+  m_Father: {fileID: 1218590715}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &320261749
 GameObject:
   m_ObjectHideFlags: 0
@@ -3108,12 +3145,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 2960, y: 1440}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -3718,7 +3755,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &646230793
+--- !u!1 &642140381
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3726,43 +3763,86 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 646230794}
-  - component: {fileID: 646230795}
+  - component: {fileID: 642140382}
+  - component: {fileID: 642140385}
+  - component: {fileID: 642140384}
+  - component: {fileID: 642140383}
   m_Layer: 5
   m_Name: Profile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &646230794
+  m_IsActive: 0
+--- !u!224 &642140382
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 646230793}
+  m_GameObject: {fileID: 642140381}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 821191241}
-  - {fileID: 1752108639}
-  m_Father: {fileID: 1218590715}
+  m_Children: []
+  m_Father: {fileID: 1629980624}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 24, y: -6}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: -493.05, y: 1187.09}
+  m_SizeDelta: {x: 197.89, y: 232.61}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &646230795
+--- !u!114 &642140383
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 642140381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5124da06bbbdf4d4db4519b22defd09a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetID: 7
+--- !u!114 &642140384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 642140381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: -651322373666030022, guid: 384c9fa52e4c7bb478fc8d172ab162c3, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &642140385
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 646230793}
+  m_GameObject: {fileID: 642140381}
   m_CullTransparentMesh: 1
 --- !u!1 &646497710
 GameObject:
@@ -4440,16 +4520,21 @@ MonoBehaviour:
   - This is your profile where you can see your <color=#F87400>ID card</color>.
   - Oh! And communication is very important! you might want to <color=#F87400>remember</color>
     the name of each tool, ingredients and menu.
-  - you can view all your <color=#F87400>vocabulary collection</color> here.
+  - You can view all your vocabulary here in the <color=#F87400>Dictionary</color>
   - To start working you simply have to tap on the <color=#F87400>Country Icon</color>.
   - The window will appear and show all the information about this place.
   - Then click the <color=#F87400>start shift</color> right here to begin your start
     <color=#F87400>shift</color>!
   - Sometimes we might want to keep track of our customers in <color=#F87400>customer
     collections</color>. Who knows? They could be our regular in the future.
-  - Task
-  - Gacha
-  - Mail
+  - "<color=#F87400>Daily Reward</color> is where you can get your daily salary but
+    it\u2019ll be not much, though use it wisely."
+  - This is a <color=#F87400>Gacha</color> you can use your earnings to spend on
+    this to get new clothes if you want.
+  - "This is a <color=#F87400>Mail Box</color>. Sometimes you might receive my letter
+    or bonus well\u2026that also based on your performance as well."
+  - "Lets waste no time <color=#F87400>{player_name}</color>. I\u2019ll get you to
+    your workplace."
   dialogueSequence:
   - entryType: 0
     normalDialogueIndex: 0
@@ -4502,6 +4587,9 @@ MonoBehaviour:
   - entryType: 1
     normalDialogueIndex: 16
     tutorialStep: {fileID: 11400000, guid: bd3fd77e13e71554b9ff3caaf5992960, type: 2}
+  - entryType: 0
+    normalDialogueIndex: 17
+    tutorialStep: {fileID: 0}
   typingSpeed: 0.025
   autoAdvanceDelay: 2.5
   tutorialVisuals: {fileID: 71261913}
@@ -5061,16 +5149,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 821191240}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -15260.559}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 646230794}
+  m_Father: {fileID: 319742427}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -519.5, y: 1198.8}
+  m_AnchoredPosition: {x: -495.50003, y: 1192.7999}
   m_SizeDelta: {x: 198.39, y: 233.97}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &821191242
@@ -7895,6 +7983,7 @@ GameObject:
   - component: {fileID: 1155961653}
   - component: {fileID: 1155961656}
   - component: {fileID: 1155961657}
+  - component: {fileID: 1155961658}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -8038,6 +8127,20 @@ MonoBehaviour:
   zoomSpeed: 1
   minZoom: 3
   maxZoom: 10
+--- !u!114 &1155961658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1155961652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ecaa929a8fef84478808e2f187c4a34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetWidth: 9
+  targetHeight: 19.5
 --- !u!1 &1199766746
 GameObject:
   m_ObjectHideFlags: 0
@@ -8172,7 +8275,7 @@ RectTransform:
   - {fileID: 1750503937}
   - {fileID: 339239408}
   - {fileID: 693472162}
-  - {fileID: 646230794}
+  - {fileID: 319742427}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -8292,6 +8395,7 @@ MonoBehaviour:
   usaPopupGlow: {fileID: 2097875388}
   Coin: {fileID: 1432273216}
   Day: {fileID: 208981706}
+  Profile: {fileID: 642140381}
   CoffeeGrinder: {fileID: 0}
   EspressoMachine: {fileID: 0}
   Milk: {fileID: 0}
@@ -8302,6 +8406,8 @@ MonoBehaviour:
   Sink: {fileID: 0}
   TrashBin: {fileID: 0}
   RecipePopup: {fileID: 0}
+  Map: {fileID: 0}
+  Setting: {fileID: 0}
 --- !u!1 &1243226972
 GameObject:
   m_ObjectHideFlags: 0
@@ -10109,6 +10215,7 @@ RectTransform:
   - {fileID: 2097875392}
   - {fileID: 1432273220}
   - {fileID: 208981710}
+  - {fileID: 642140382}
   m_Father: {fileID: 1065549801}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -10910,16 +11017,16 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1752108638}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -15260.559}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 646230794}
+  m_Father: {fileID: 319742427}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -519.5, y: 1198.8}
+  m_AnchoredPosition: {x: -495.50003, y: 1192.7999}
   m_SizeDelta: {x: 198.39, y: 233.97}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1752108640

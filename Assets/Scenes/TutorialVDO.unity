@@ -983,7 +983,8 @@ MonoBehaviour:
   topics:
   - topicName: One shot of Espresso
     headerSprite: {fileID: -909721114268010337, guid: 313af875268f9cb4a9273adbcc3fa6e9, type: 3}
-    description: Making Espresso by using this and that and those and these
+    description: Take the cup and drag them to the coffee machine, grind the coffee
+      in the coffee grinder. Then take the coffee portfilter to the coffee machine.
     pages:
     - clip: {fileID: 32900000, guid: a41ba878057cda64e9711c98606ef9a8, type: 3}
       title: Espresso - 1
@@ -995,7 +996,8 @@ MonoBehaviour:
       title: Espresso - 4
   - topicName: Other Ingredients
     headerSprite: {fileID: 1604321798395290546, guid: 33ebba90d9c796445836e8382bc2f3d6, type: 3}
-    description: Get other ingredients by using this and that and those and these
+    description: Take other Ingredients like Milk, Cocoa, and Water by dragging the
+      cup to that station then pump!
     pages:
     - clip: {fileID: 32900000, guid: f5651d34f931c6c4d8994ef82e38de7d, type: 3}
       title: Milk
@@ -1005,7 +1007,9 @@ MonoBehaviour:
       title: Water
   - topicName: Making & Serve
     headerSprite: {fileID: 55008611408315619, guid: 0b35607070c3ae64b804fd6430b1b009, type: 3}
-    description: Customer get by using this and that and those and these
+    description: "Once you get all the ingredients, drag the cup to the mat, it\u2019ll
+      turn those into the right menu then you can serve! And be careful of the Angry
+      customer."
     pages:
     - clip: {fileID: 32900000, guid: 4e377d9af8e88d4419e9ecff57080d94, type: 3}
       title: making & serve

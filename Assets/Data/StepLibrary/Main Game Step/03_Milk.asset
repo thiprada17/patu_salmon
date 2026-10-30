@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stepID: MAIN_003
   order: 3
-  dialogue: Milk
+  dialogue: Then these are the other ingredients. There is <color=#F87400>Milk</color>.
   targetID: 13
   targetPreviewSprite: {fileID: 21300000, guid: 6918f8e1179ca934c98bc1660d7b2ac7, type: 2}
   handPointerSprite: {fileID: -3128333450448496134, guid: df1291d40e0e374438b6dd3bd5970b6a, type: 3}
-  handOffset: {x: 0, y: 55}
+  handOffset: {x: -155, y: -150}
   handTilt: 1
   handAnimation: 1
   waitForTargetClick: 0

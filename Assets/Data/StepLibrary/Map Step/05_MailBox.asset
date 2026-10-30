@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stepID: NAV_005
   order: 5
-  speakerName: Mysterious <color=#F87400>FOX</color>
-  dialogue: Mail Box
+  dialogue: "This is a <color=#F87400>Mail Box</color>. Sometimes you might receive
+    my letter or bonus well\u2026that also based on your performance as well."
   targetID: 4
   targetPreviewSprite: {fileID: -9161841346683250307, guid: e7086a9c5e454f245acfaa68c81c5b92, type: 3}
   handPointerSprite: {fileID: -3128333450448496134, guid: df1291d40e0e374438b6dd3bd5970b6a, type: 3}
@@ -23,3 +23,6 @@ MonoBehaviour:
   handTilt: 1
   handAnimation: 1
   waitForTargetClick: 0
+  useCustomDialoguePosition: 0
+  dialoguePosition: {x: 0, y: 0}
+  hideSpeaker: 0

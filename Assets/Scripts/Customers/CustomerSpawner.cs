@@ -1,5 +1,4 @@
-﻿
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 public class CustomerSpawner : MonoBehaviour
@@ -15,9 +14,13 @@ public class CustomerSpawner : MonoBehaviour
     [SerializeField] private CustomerQueue customerQueue;
 
     [Header("Difficulty Progression")]
+    [Tooltip("Kept for compatibility with existing shift progression.")]
     [SerializeField, Min(1)] private int startingCustomerCount = 5;
+
+    [Tooltip("Kept for compatibility with existing shift progression.")]
     [SerializeField, Min(0)] private int extraCustomersPerShift = 1;
 
+    [Header("Spawn Timing")]
     [Tooltip("Minimum delay between customer spawns.")]
     [SerializeField, Min(0.1f)] private float startingMinSpawnTime = 2f;
 
@@ -38,11 +41,11 @@ public class CustomerSpawner : MonoBehaviour
     private float dogSpawnChance = 0.25f;
 
     private int spawnedCount;
-    private int targetCount;
     private bool tutorialMode;
+    private bool isSpawning;
+    private bool shiftSpawningStopped;
 
     private Coroutine spawnCoroutine;
-    private bool isSpawning;
 
     private void Start()
     {
@@ -59,36 +62,45 @@ public class CustomerSpawner : MonoBehaviour
             return;
         }
 
-        // DayManager starts each shift.
+        // DayManager should call BeginShift() when the shift starts.
     }
 
     private IEnumerator SpawnCustomers()
     {
         while (isSpawning)
         {
-            if (spawnedCount >= targetCount)
+            // Preserve the tutorial's limited customer count.
+            if (tutorialMode && spawnedCount >= tutorialCustomerCount)
             {
-                isSpawning = false;
-                spawnCoroutine = null;
+                FinishSpawning();
                 yield break;
             }
 
+            // Pause tutorial spawning while the tutorial is inactive.
             if (tutorialMode && !TutorialSession.IsTutorialActive)
             {
                 yield return null;
                 continue;
             }
 
+            // Wait until there is room in the queue.
             if (customerQueue.IsFull())
             {
                 yield return null;
                 continue;
             }
 
+            int previousCount = spawnedCount;
+
             SpawnCustomer();
 
-            if (tutorialMode && spawnedCount >= tutorialCustomerCount)
-                yield break;
+            // If no customer was spawned successfully, avoid
+            // repeatedly retrying every frame.
+            if (spawnedCount == previousCount)
+            {
+                yield return new WaitForSeconds(0.5f);
+                continue;
+            }
 
             yield return new WaitForSeconds(GetSpawnDelay());
         }
@@ -151,19 +163,20 @@ public class CustomerSpawner : MonoBehaviour
             spawnedCount++;
 
             Debug.Log(
-                customer.name + " spawned and joined queue."
+                "[CustomerSpawner] " + customer.name +
+                " spawned. Total this shift: " + spawnedCount
             );
         }
         else
         {
             Debug.LogWarning(
-                customer.name + " could not join the queue."
+                "[CustomerSpawner] " + customer.name +
+                " could not join the queue."
             );
 
             Destroy(customer.gameObject);
         }
     }
-
 
     private CustomerMovement GetRandomCustomerPrefab()
     {
@@ -171,7 +184,7 @@ public class CustomerSpawner : MonoBehaviour
 
         if (hasDogs && Random.value < dogSpawnChance)
         {
-            // Use the configured chance to spawn a dog.
+            // Choose a valid dog prefab.
             for (int i = 0; i < dogsPrefabs.Length; i++)
             {
                 CustomerMovement dog = dogsPrefabs[
@@ -183,16 +196,15 @@ public class CustomerSpawner : MonoBehaviour
             }
         }
 
-        // Otherwise spawn the regular customer.
         return customerPrefab;
     }
-
 
     public void BeginShift()
     {
         if (!enabled)
             return;
 
+        // Prevent duplicate spawning coroutines.
         if (spawnCoroutine != null)
         {
             StopCoroutine(spawnCoroutine);
@@ -201,30 +213,38 @@ public class CustomerSpawner : MonoBehaviour
 
         spawnedCount = 0;
         isSpawning = true;
+        shiftSpawningStopped = false;
 
         tutorialMode =
             TutorialSession.IsInitialized &&
             TutorialSession.IsFirstTimePlayer;
 
-        if (tutorialMode)
-        {
-            targetCount = tutorialCustomerCount;
-        }
-        else
-        {
-            int completedShifts = CoinManager.Instance != null
-                ? Mathf.Max(0, CoinManager.Instance.WorkDays)
-                : 0;
-
-            targetCount = startingCustomerCount +
-                completedShifts * extraCustomersPerShift;
-        }
+        Debug.Log(
+            "[CustomerSpawner] Shift started. " +
+            "Tutorial: " + tutorialMode
+        );
 
         spawnCoroutine = StartCoroutine(SpawnCustomers());
     }
 
+    private void FinishSpawning()
+    {
+        isSpawning = false;
+        spawnCoroutine = null;
+
+        Debug.Log(
+            "[CustomerSpawner] Tutorial spawning finished. " +
+            "Customers spawned: " + spawnedCount
+        );
+    }
+
+    // Call this when the shift timer reaches zero.
     public void StopSpawning()
     {
+        if (shiftSpawningStopped)
+            return;
+
+        shiftSpawningStopped = true;
         isSpawning = false;
 
         if (spawnCoroutine != null)
@@ -234,7 +254,27 @@ public class CustomerSpawner : MonoBehaviour
         }
 
         Debug.Log(
-            "[CustomerSpawner] Spawning stopped for this shift."
+            "[CustomerSpawner] Shift ended. " +
+            "Total customers spawned: " + spawnedCount
         );
+    }
+
+    public int GetSpawnedCount()
+    {
+        return spawnedCount;
+    }
+
+    // Retained for compatibility with existing scripts.
+    public int GetTargetCount()
+    {
+        return tutorialMode ? tutorialCustomerCount : -1;
+    }
+
+    public bool HasFinishedSpawning()
+    {
+        // For regular shifts, spawning finishes when the timer
+        // calls StopSpawning(). For tutorials, it can finish at
+        // the tutorial customer limit.
+        return !isSpawning;
     }
 }
