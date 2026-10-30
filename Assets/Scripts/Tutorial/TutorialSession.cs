@@ -121,7 +121,7 @@ public static class TutorialSession
             TutorialPanelancle.SetActive(false);
         }
 
-        SceneManager.LoadScene("map");
+        MapGameLoading.Load("map");
     }
 
     public static void CompleteTutorial()

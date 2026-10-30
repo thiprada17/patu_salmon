@@ -62,7 +62,12 @@ public class MenuButtonLoader : MonoBehaviour
             return;
 
         Time.timeScale = 1f;
-        SceneManager.LoadScene(sceneName);
+        string currentScene = SceneManager.GetActiveScene().name;
+        if ((currentScene == "map" && sceneName == "main_game") ||
+            (currentScene == "main_game" && sceneName == "map"))
+            MapGameLoading.Load(sceneName);
+        else
+            SceneManager.LoadScene(sceneName);
     }
 
     public void LoadSceneOverlay(string sceneName)

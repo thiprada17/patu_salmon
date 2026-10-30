@@ -117,6 +117,7 @@ public class BackgroundMusic : MonoBehaviour
 
         // BGM 2: Map and Settings
         if (sceneName == "map" ||
+            sceneName == "MapGameLoading" ||
             sceneName == "setting")
         {
             return 2;

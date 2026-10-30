@@ -750,7 +750,7 @@ public class DialogueController : MonoBehaviour
             TutorialSession.StartTutorial();
         }
 
-        SceneManager.LoadScene("main_game");
+        MapGameLoading.Load("main_game");
     }
 
 }

@@ -114,6 +114,7 @@ public class AudioManager : MonoBehaviour
                 return openingBGM;
 
             case "map":
+            case "MapGameLoading":
             case "setting":
                 return mapBGM;
 
