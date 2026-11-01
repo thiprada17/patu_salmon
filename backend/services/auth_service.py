@@ -19,8 +19,8 @@ class AuthService:
         pass
 
     # สร้าง URL Login Google
-    def google_login(self):
-        return {"login_url": create_google_login_url()}
+    def google_login(self, platform: str = "web"):
+        return {"login_url": create_google_login_url(platform)}
 
     # รับ code จาก Google แลกเป็น Token
     def google_callback(self, code: str):
