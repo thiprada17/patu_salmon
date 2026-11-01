@@ -124,6 +124,17 @@ public class TransitionLauncher : MonoBehaviour
             yield break;
         }
 
+        Camera sourceCamera = Camera.main;
+        controller.SetRenderCamera(sourceCamera);
+
+        if (sourceCamera == null)
+        {
+            GameLogger.Warn(
+                "TransitionLauncher",
+                "No active Main Camera found for TransitionScene Canvas."
+            );
+        }
+
         SceneManager.SetActiveScene(transition);
 
         controller.BeginTransition(targetScene, source.name);

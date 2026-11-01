@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
+using UnityEngine.Rendering;
 
 public class CardSelect : MonoBehaviour
 {
@@ -14,6 +15,10 @@ public class CardSelect : MonoBehaviour
     [Header("Selection")]
     [SerializeField] private GameObject glow;
     [SerializeField] private float delay = 0.2f;
+    [SerializeField] private float glowFadeInDuration = 0.12f;
+    [SerializeField] private float glowFadeOutDuration = 0.28f;
+    [SerializeField] private float selectedCardPunchScale = 1.08f;
+    [SerializeField] private float selectedCardPunchDuration = 0.4f;
 
     [Header("Card Animators")]
     [SerializeField] private Animator salmonAnimator;
@@ -112,6 +117,23 @@ public class CardSelect : MonoBehaviour
     // เรียกจากปุ่ม Select ใน Inspector ได้
     public void SelectCard()
     {
+        SelectCard(characterName);
+    }
+
+    public void SelectSalmonCard()
+    {
+        GameLogger.Info("CardSelect", "Salmon select button pressed.");
+        SelectCard("salmon");
+    }
+
+    public void SelectPlatuCard()
+    {
+        GameLogger.Info("CardSelect", "Platu select button pressed.");
+        SelectCard("platu");
+    }
+
+    private void SelectCard(string selectedCharacter)
+    {
         if (isSelecting || activeSelection != null)
             return;
 
@@ -124,10 +146,10 @@ public class CardSelect : MonoBehaviour
             return;
         }
 
-        bool isSalmon = characterName.Trim()
+        bool isSalmon = selectedCharacter.Trim()
             .Equals("salmon", StringComparison.OrdinalIgnoreCase);
 
-        bool isPlatu = characterName.Trim()
+        bool isPlatu = selectedCharacter.Trim()
             .Equals("platu", StringComparison.OrdinalIgnoreCase);
 
         if (!isSalmon && !isPlatu)
@@ -142,15 +164,12 @@ public class CardSelect : MonoBehaviour
         activeSelection = this;
         isSelecting = true;
 
-        PlayerPrefs.SetString(
-            "SelectedCharacter",
-            isSalmon ? "salmon" : "platu"
-        );
+        PlayerPrefs.SetString("SelectedCharacter", isSalmon ? "salmon" : "platu");
         PlayerPrefs.Save();
 
         GameLogger.Info(
             "CardSelect",
-            "Selected character: " + characterName
+            "Selected character: " + selectedCharacter
         );
 
         StartCoroutine(SelectRoutine(isSalmon));
@@ -158,10 +177,20 @@ public class CardSelect : MonoBehaviour
 
     private IEnumerator SelectRoutine(bool isSalmon)
     {
-        if (glow != null)
-            glow.SetActive(true);
+        Animator selectedAnimator = isSalmon ? salmonAnimator : platuAnimator;
+        GameObject selectedGlow = FindGlow(selectedAnimator) ?? glow;
 
-        yield return new WaitForSeconds(delay);
+        BringCardToFront(selectedAnimator);
+
+        if (selectedGlow != null)
+        {
+            selectedGlow.SetActive(true);
+            StartCoroutine(FadeGlow(selectedGlow, true, glowFadeInDuration));
+        }
+
+        StartCoroutine(PunchCard(selectedAnimator.transform));
+
+        yield return new WaitForSecondsRealtime(delay);
 
         string salmonState = isSalmon
             ? salmonCenterState
@@ -187,7 +216,129 @@ public class CardSelect : MonoBehaviour
         // รอจนกว่าแอนิเมชันทั้งสองจะเล่นจบ
         yield return WaitForAnimations(salmonState, platuState);
 
+        if (selectedGlow != null)
+            yield return FadeGlow(selectedGlow, false, glowFadeOutDuration);
+
         LoadNextScene();
+    }
+
+    private GameObject FindGlow(Animator cardAnimator)
+    {
+        if (cardAnimator == null)
+            return null;
+
+        foreach (Transform child in cardAnimator.GetComponentsInChildren<Transform>(true))
+        {
+            if (child.name.StartsWith("glow", StringComparison.OrdinalIgnoreCase))
+                return child.gameObject;
+        }
+
+        return null;
+    }
+
+    private void BringCardToFront(Animator cardAnimator)
+    {
+        if (cardAnimator == null)
+            return;
+
+        SortingGroup sortingGroup = cardAnimator.GetComponent<SortingGroup>();
+        if (sortingGroup == null)
+            sortingGroup = cardAnimator.gameObject.AddComponent<SortingGroup>();
+
+        sortingGroup.sortingOrder = 1000;
+    }
+
+    private IEnumerator PunchCard(Transform card)
+    {
+        if (card == null)
+            yield break;
+
+        Vector3 originalScale = card.localScale;
+        Vector3 peakScale = originalScale * selectedCardPunchScale;
+        float halfDuration = Mathf.Max(0.01f, selectedCardPunchDuration * 0.45f);
+        float returnDuration = Mathf.Max(0.01f, selectedCardPunchDuration * 0.55f);
+
+        yield return ScaleCard(card, originalScale, peakScale, halfDuration);
+        yield return ScaleCard(card, peakScale, originalScale, returnDuration);
+        card.localScale = originalScale;
+    }
+
+    private IEnumerator ScaleCard(Transform card, Vector3 from, Vector3 to, float duration)
+    {
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float progress = Mathf.Clamp01(elapsed / duration);
+            float eased = progress * progress * (3f - 2f * progress);
+            card.localScale = Vector3.LerpUnclamped(from, to, eased);
+            yield return null;
+        }
+
+        card.localScale = to;
+    }
+
+    private IEnumerator FadeGlow(GameObject targetGlow, bool fadeIn, float duration)
+    {
+        if (targetGlow == null)
+            yield break;
+
+        SpriteRenderer[] renderers = targetGlow.GetComponentsInChildren<SpriteRenderer>(true);
+        if (renderers.Length == 0)
+        {
+            if (!fadeIn)
+                targetGlow.SetActive(false);
+            yield break;
+        }
+
+        float[] startAlphas = new float[renderers.Length];
+        float[] endAlphas = new float[renderers.Length];
+
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            Color color = renderers[i].color;
+            endAlphas[i] = fadeIn ? color.a : 0f;
+            startAlphas[i] = fadeIn ? 0f : color.a;
+            if (fadeIn)
+            {
+                color.a = 0f;
+                renderers[i].color = color;
+            }
+        }
+
+        float elapsed = 0f;
+        float fadeDuration = Mathf.Max(0.01f, duration);
+        while (elapsed < fadeDuration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float progress = Mathf.Clamp01(elapsed / fadeDuration);
+            float eased = progress * progress * (3f - 2f * progress);
+
+            for (int i = 0; i < renderers.Length; i++)
+            {
+                if (renderers[i] == null)
+                    continue;
+
+                Color color = renderers[i].color;
+                color.a = Mathf.Lerp(startAlphas[i], endAlphas[i], eased);
+                renderers[i].color = color;
+            }
+
+            yield return null;
+        }
+
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            if (renderers[i] == null)
+                continue;
+
+            Color color = renderers[i].color;
+            color.a = endAlphas[i];
+            renderers[i].color = color;
+        }
+
+        if (!fadeIn)
+            targetGlow.SetActive(false);
     }
 
     private bool PlayState(Animator animator, string stateName)

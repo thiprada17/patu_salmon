@@ -876,6 +876,7 @@ GameObject:
   m_Component:
   - component: {fileID: 979897734}
   - component: {fileID: 979897735}
+  - component: {fileID: 979897736}
   m_Layer: 0
   m_Name: IMG_0882_0
   m_TagString: Untagged
@@ -892,7 +893,7 @@ Transform:
   m_GameObject: {fileID: 979897733}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.99, y: 2.57, z: 4.9473557}
+  m_LocalPosition: {x: 2.99, y: 2.57, z: 4.947356}
   m_LocalScale: {x: 0.31610522, y: 0.31610522, z: 0.31610522}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -953,6 +954,28 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &979897736
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 979897733}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 11857c7147e043443aab748df84fbc9d, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1020801131
 GameObject:
   m_ObjectHideFlags: 0
@@ -963,6 +986,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1020801132}
   - component: {fileID: 1020801133}
+  - component: {fileID: 1020801134}
   m_Layer: 0
   m_Name: IMG_0883_0
   m_TagString: Untagged
@@ -979,7 +1003,7 @@ Transform:
   m_GameObject: {fileID: 1020801131}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.48, y: -0.49, z: 4.9473557}
+  m_LocalPosition: {x: -0.48, y: -0.49, z: 4.947356}
   m_LocalScale: {x: 0.31610522, y: 0.31610522, z: 0.31610522}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1040,6 +1064,28 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &1020801134
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1020801131}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 8cdee15a51a0e1c4bb54b0187fb1d355, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1087096054
 GameObject:
   m_ObjectHideFlags: 0
@@ -1872,16 +1918,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62cd4fde818838647a2856696487aa85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterName: 
+  characterName: salmon
   nextScene: idcard
   glow: {fileID: 0}
   delay: 0.2
-  salmonAnimator: {fileID: 0}
-  platuAnimator: {fileID: 0}
-  salmonCenterState: card_salmon
-  platuCenterState: card_platu
-  salmonOutState: card_salmonout
-  platuOutState: card_platuout
+  glowFadeInDuration: 0.12
+  glowFadeOutDuration: 0.28
+  selectedCardPunchScale: 0.2
+  selectedCardPunchDuration: 0.5
+  salmonAnimator: {fileID: 1586072264}
+  platuAnimator: {fileID: 1652576119}
+  salmonCenterState: cardsalmon
+  platuCenterState: cardplatu
+  salmonOutState: cardsalmonout
+  platuOutState: cardplatuout
   animTimeout: 10
 --- !u!4 &1650378734
 Transform:
@@ -2729,7 +2779,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1650378733}
         m_TargetAssemblyTypeName: CardSelect, Assembly-CSharp
-        m_MethodName: SelectCard
+        m_MethodName: SelectSalmonCard
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3030,7 +3080,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1650378733}
         m_TargetAssemblyTypeName: CardSelect, Assembly-CSharp
-        m_MethodName: SelectCard
+        m_MethodName: SelectPlatuCard
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
