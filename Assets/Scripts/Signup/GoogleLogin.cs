@@ -14,10 +14,7 @@ public class GoogleLogin : MonoBehaviour
 {
 #if UNITY_WEBGL && !UNITY_EDITOR
     [DllImport("__Internal")]
-    private static extern int OpenGoogleAuthWindow();
-
-    [DllImport("__Internal")]
-    private static extern int NavigateGoogleAuthWindow(string url);
+    private static extern int OpenGoogleAuthWindow(string url);
 
     [DllImport("__Internal")]
     private static extern void CloseGoogleAuthWindow();
@@ -47,15 +44,16 @@ public class GoogleLogin : MonoBehaviour
         if (loginRequestPending)
             return;
 
-        // Open synchronously inside the button click so the browser allows the OAuth tab.
-        if (OpenGoogleAuthWindow() == 0)
-        {
-            Debug.LogError("Google Login: Browser blocked the sign-in window.");
-            return;
-        }
-#endif
+        // Open and navigate the OAuth tab synchronously in the button click.
+        loginRequestPending = true;
+        if (OpenGoogleAuthWindow(backendUrl + "/auth/google/redirect?platform=web") == 0)
+            Debug.LogError("Google Login: Browser blocked or could not navigate the sign-in window.");
+        loginRequestPending = false;
+        return;
+#else
         loginRequestPending = true;
         StartCoroutine(StartGoogleLogin());
+#endif
     }
 
     private IEnumerator StartGoogleLogin()
@@ -95,29 +93,9 @@ public class GoogleLogin : MonoBehaviour
                 yield break;
             }
 
-#if UNITY_WEBGL && !UNITY_EDITOR
-            if (!IsSafeGoogleLoginUrl(response.login_url))
-            {
-                Debug.LogError("Google Login: Backend returned an invalid authorization URL.");
-                loginRequestPending = false;
-                CloseLoginWindow();
-                yield break;
-            }
-
-            if (NavigateGoogleAuthWindow(response.login_url) == 0)
-                Debug.LogError("Google Login: Failed to navigate the sign-in tab. Rebuild and upload the latest WebGL build.");
-#else
             Application.OpenURL(response.login_url);
-#endif
             loginRequestPending = false;
         }
-    }
-
-    private bool IsSafeGoogleLoginUrl(string url)
-    {
-        return Uri.TryCreate(url, UriKind.Absolute, out Uri uri) &&
-               uri.Scheme == Uri.UriSchemeHttps &&
-               uri.AbsolutePath.IndexOf("/auth/v1/authorize", StringComparison.OrdinalIgnoreCase) >= 0;
     }
 
     private void CloseLoginWindow()

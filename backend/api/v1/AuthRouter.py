@@ -1,6 +1,6 @@
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Query
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from pydantic import BaseModel, EmailStr
 
 from schemas.auth import AuthRequest, RefreshRequest
@@ -62,6 +62,13 @@ def login_with_google(
     service: AuthService = Depends(get_auth_service)
 ):
     return service.google_login(platform)
+
+
+@router.get("/google/redirect")
+def login_with_google_redirect(
+    service: AuthService = Depends(get_auth_service),
+):
+    return RedirectResponse(service.google_login("web")["login_url"], status_code=302)
 
 
 @router.get("/web-callback", response_class=HTMLResponse)

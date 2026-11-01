@@ -1,7 +1,24 @@
 mergeInto(LibraryManager.library, {
-  OpenGoogleAuthWindow: function () {
+  OpenGoogleAuthWindow: function (urlPtr) {
+    var url = UTF8ToString(urlPtr);
+    var parsed;
+    try {
+      parsed = new URL(url);
+    } catch (e) {
+      console.error("Invalid Google sign-in endpoint", e);
+      return 0;
+    }
+    if (parsed.origin !== "https://patu-salmon.onrender.com" ||
+        parsed.pathname !== "/auth/google/redirect") {
+      console.error("Unexpected Google sign-in endpoint", parsed.origin, parsed.pathname);
+      return 0;
+    }
+
     var popup = window.open("about:blank", "_blank");
-    if (!popup) return 0;
+    if (!popup) {
+      window.alert("Google sign-in was blocked by this browser. Open the game in Safari or Chrome and allow pop-ups, then try again.");
+      return 0;
+    }
 
     window.__platuGoogleAuthWindow = popup;
     if (!window.__platuGoogleAuthMessageHandler) {
@@ -16,50 +33,18 @@ mergeInto(LibraryManager.library, {
     }
     try {
       popup.document.open();
-      popup.document.write(
-        "<!doctype html><title>Google sign-in</title>" +
-        "<body style='font:16px sans-serif;text-align:center;padding:3em'>" +
-        "Connecting to Google sign-in…</body>"
-      );
+      popup.document.write("<!doctype html><title>Google sign-in</title><p>Connecting to Google…</p>");
       popup.document.close();
+      // Navigate during the original click. This avoids waiting for UnityWebRequest
+      // before redirecting, which can leave mobile browser popups on about:blank.
+      popup.location.href = parsed.href;
     } catch (e) {
-      // The blank tab is still available even if its loading message cannot be written.
-    }
-
-    return 1;
-  },
-
-  NavigateGoogleAuthWindow: function (urlPtr) {
-    var url = UTF8ToString(urlPtr);
-    var parsed;
-    var popup = window.__platuGoogleAuthWindow;
-    function fail(message, error) {
-      console.error(message, error || "");
-      if (popup && !popup.closed) {
-        try { popup.document.body.textContent = message; } catch (ignored) {}
-      }
+      console.error("Could not start Google sign-in", e);
+      try { popup.close(); } catch (ignored) {}
       return 0;
     }
 
-    try {
-      parsed = new URL(url);
-    } catch (e) {
-      return fail("Could not read the Google sign-in URL.", e);
-    }
-
-    if (parsed.protocol !== "https:" || !parsed.pathname.includes("/auth/v1/authorize")) {
-      return fail("The sign-in URL from the server is not a valid Google authorization URL: " + parsed.origin + parsed.pathname);
-    }
-
-    if (!popup || popup.closed)
-      return fail("The sign-in tab was closed before it could be opened.");
-
-    try {
-      popup.location.href = parsed.href;
-      return 1;
-    } catch (e) {
-      return fail("Could not navigate the sign-in tab. Please reload the game and try again.", e);
-    }
+    return 1;
   },
 
   CloseGoogleAuthWindow: function () {
