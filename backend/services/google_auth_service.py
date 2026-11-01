@@ -2,11 +2,18 @@ from infrastructure.supabase_client import supabase
 from core.config import DEEPLINK_URL
 
 
-def create_google_login_url():
+def create_google_login_url(platform: str = "web"):
+    if platform == "web":
+        redirect_to = "https://patu-salmon.onrender.com/auth/web-callback"
+    elif platform in ("ios", "android"):
+        redirect_to = DEEPLINK_URL
+    else:
+        raise ValueError("Unsupported Google login platform")
+
     response = supabase.auth.sign_in_with_oauth({
         "provider": "google",
         "options": {
-            "redirect_to": "https://thiprada17.itch.io/platu-salmon",
+            "redirect_to": redirect_to,
         },
     })
     return response.url

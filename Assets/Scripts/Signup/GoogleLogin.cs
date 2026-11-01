@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -11,10 +12,21 @@ public class GoogleLoginResponse
 
 public class GoogleLogin : MonoBehaviour
 {
+#if UNITY_WEBGL && !UNITY_EDITOR
+    [DllImport("__Internal")]
+    private static extern int OpenGoogleAuthWindow();
+
+    [DllImport("__Internal")]
+    private static extern void NavigateGoogleAuthWindow(string url);
+
+    [DllImport("__Internal")]
+    private static extern void CloseGoogleAuthWindow();
+#endif
     [SerializeField] private LanguagePopup languagePopup;
 
     private string backendUrl = "https://patu-salmon.onrender.com";
     private string lastHandledUrl = null;
+    private bool loginRequestPending;
 
     private void Awake()
     {
@@ -31,12 +43,33 @@ public class GoogleLogin : MonoBehaviour
 
     public void LoginWithGoogle()
     {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        if (loginRequestPending)
+            return;
+
+        // Open synchronously inside the button click so the browser allows the OAuth tab.
+        if (OpenGoogleAuthWindow() == 0)
+        {
+            Debug.LogError("Google Login: Browser blocked the sign-in window.");
+            return;
+        }
+#endif
+        loginRequestPending = true;
         StartCoroutine(StartGoogleLogin());
     }
 
     private IEnumerator StartGoogleLogin()
     {
-        string url = backendUrl + "/auth/google";
+#if UNITY_WEBGL && !UNITY_EDITOR
+        const string platform = "web";
+#elif UNITY_IOS
+        const string platform = "ios";
+#elif UNITY_ANDROID
+        const string platform = "android";
+#else
+        const string platform = "web";
+#endif
+        string url = backendUrl + "/auth/google?platform=" + platform;
         Debug.Log("Request Google Login: " + url);
 
         using (UnityWebRequest request = UnityWebRequest.Get(url))
@@ -46,6 +79,8 @@ public class GoogleLogin : MonoBehaviour
             if (request.result != UnityWebRequest.Result.Success)
             {
                 Debug.LogError("Google Login Error: " + request.error);
+                loginRequestPending = false;
+                CloseLoginWindow();
                 yield break;
             }
 
@@ -55,11 +90,62 @@ public class GoogleLogin : MonoBehaviour
             if (response == null || string.IsNullOrEmpty(response.login_url))
             {
                 Debug.LogError("Login URL is empty");
+                loginRequestPending = false;
+                CloseLoginWindow();
                 yield break;
             }
 
+#if UNITY_WEBGL && !UNITY_EDITOR
+            if (!IsSafeGoogleLoginUrl(response.login_url))
+            {
+                Debug.LogError("Google Login: Backend returned an invalid authorization URL.");
+                loginRequestPending = false;
+                CloseLoginWindow();
+                yield break;
+            }
+
+            NavigateGoogleAuthWindow(response.login_url);
+#else
             Application.OpenURL(response.login_url);
+#endif
+            loginRequestPending = false;
         }
+    }
+
+    private bool IsSafeGoogleLoginUrl(string url)
+    {
+        return Uri.TryCreate(url, UriKind.Absolute, out Uri uri) &&
+               uri.Scheme == Uri.UriSchemeHttps &&
+               uri.AbsolutePath.IndexOf("/auth/v1/authorize", StringComparison.OrdinalIgnoreCase) >= 0;
+    }
+
+    private void CloseLoginWindow()
+    {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        CloseGoogleAuthWindow();
+#endif
+    }
+
+    [Serializable]
+    private class AuthCallbackResponse
+    {
+        public string type;
+        public string access_token;
+        public string refresh_token;
+        public string user_id;
+        public string email;
+    }
+
+    public void HandleOAuthMessage(string message)
+    {
+        AuthCallbackResponse response = JsonUtility.FromJson<AuthCallbackResponse>(message);
+        if (response == null || response.type != "platu-google-login" || string.IsNullOrEmpty(response.access_token))
+        {
+            Debug.LogError("Google Login: Invalid browser callback message.");
+            return;
+        }
+
+        SaveLoginTokens(response.access_token, response.refresh_token);
     }
 
     private void HandleDeepLink(string url)
@@ -67,33 +153,62 @@ public class GoogleLogin : MonoBehaviour
         if (string.IsNullOrEmpty(url) || url == lastHandledUrl) return;
 
         Debug.Log("Received Deep Link: " + url);
-
-        if (!url.StartsWith("platusalmon://login-callback"))
+        if (!url.StartsWith("platusalmon://login-callback", StringComparison.OrdinalIgnoreCase))
         {
             Debug.LogWarning("Unknown deep link");
             return;
         }
 
+        string code = GetQueryParameter(url, "code");
+        if (!string.IsNullOrEmpty(code))
+        {
+            lastHandledUrl = url;
+            StartCoroutine(ExchangeOAuthCode(code));
+            return;
+        }
+
         string accessToken = GetQueryParameter(url, "access_token");
         string refreshToken = GetQueryParameter(url, "refresh_token");
-
         if (string.IsNullOrEmpty(accessToken))
         {
-            Debug.LogError("Access token not found");
+            Debug.LogError("Access token or authorization code not found");
             return;
         }
 
         lastHandledUrl = url;
+        SaveLoginTokens(accessToken, refreshToken);
+    }
 
+    private IEnumerator ExchangeOAuthCode(string code)
+    {
+        string url = backendUrl + "/auth/callback?code=" + UnityWebRequest.EscapeURL(code);
+        using (UnityWebRequest request = UnityWebRequest.Get(url))
+        {
+            yield return request.SendWebRequest();
+            if (request.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError("Google OAuth callback exchange failed: " + request.error + " " + request.downloadHandler.text);
+                yield break;
+            }
+
+            AuthCallbackResponse response = JsonUtility.FromJson<AuthCallbackResponse>(request.downloadHandler.text);
+            if (response == null || string.IsNullOrEmpty(response.access_token))
+            {
+                Debug.LogError("Google OAuth callback did not return an access token.");
+                yield break;
+            }
+
+            SaveLoginTokens(response.access_token, response.refresh_token);
+        }
+    }
+
+    private void SaveLoginTokens(string accessToken, string refreshToken)
+    {
         PlayerPrefs.SetString("AccessToken", accessToken);
-
         if (!string.IsNullOrEmpty(refreshToken))
             PlayerPrefs.SetString("RefreshToken", refreshToken);
-
         PlayerPrefs.Save();
-
-        Debug.Log("Google Login Success! Token saved.");
-
+        Debug.Log("Google Login Success! Tokens saved.");
         StartCoroutine(GetUserIdAndOpenPopup(accessToken));
     }
 
@@ -173,6 +288,7 @@ public class GoogleLogin : MonoBehaviour
     public class AuthMeResponse
     {
         public string id;
+        public string user_id;
         public string email;
     }
 
@@ -201,20 +317,21 @@ public class GoogleLogin : MonoBehaviour
                     request.downloadHandler.text
                 );
 
-            if (response == null || string.IsNullOrEmpty(response.id))
+            if (response == null || (string.IsNullOrEmpty(response.id) && string.IsNullOrEmpty(response.user_id)))
             {
                 Debug.LogError("Backend response ไม่มี user ID");
                 yield break;
             }
 
-            PlayerPrefs.SetString("UserID", response.id);
+            string userId = string.IsNullOrEmpty(response.user_id) ? response.id : response.user_id;
+            PlayerPrefs.SetString("UserID", userId);
 
             if (!string.IsNullOrEmpty(response.email))
                 PlayerPrefs.SetString("Email", response.email);
 
             PlayerPrefs.Save();
 
-            Debug.Log("Google UserID saved: " + response.id);
+            Debug.Log("Google UserID saved: " + userId);
         }
     }
 

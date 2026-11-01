@@ -1,5 +1,6 @@
 
-from fastapi import APIRouter, Depends, Header, HTTPException
+from fastapi import APIRouter, Depends, Header, HTTPException, Query
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, EmailStr
 
 from schemas.auth import AuthRequest, RefreshRequest
@@ -57,9 +58,39 @@ def signup(
 
 @router.get("/google")
 def login_with_google(
+    platform: str = Query(default="web", pattern="^(web|ios|android)$"),
     service: AuthService = Depends(get_auth_service)
 ):
-    return service.google_login()
+    return service.google_login(platform)
+
+
+@router.get("/web-callback", response_class=HTMLResponse)
+def google_web_callback():
+    # The OAuth popup exchanges the one-time code through this backend, then
+    # posts the resulting session to the game iframe that opened the popup.
+    return HTMLResponse("""<!doctype html>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Returning to Platu Salmon</title>
+<p id="status">Finishing Google sign-in…</p>
+<script>
+(async function () {
+  const status = document.getElementById('status');
+  const params = new URLSearchParams(location.search);
+  const code = params.get('code');
+  try {
+    if (!code) throw new Error(params.get('error_description') || params.get('error') || 'Authorization code missing');
+    const response = await fetch('/auth/callback?code=' + encodeURIComponent(code));
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.detail || 'Unable to finish sign-in');
+    if (!window.opener || window.opener.closed) throw new Error('Game window is no longer available');
+    window.opener.postMessage({ type: 'platu-google-login', access_token: result.access_token, refresh_token: result.refresh_token }, '*');
+    status.textContent = 'Signed in. You can close this tab.';
+    window.close();
+  } catch (error) {
+    status.textContent = 'Sign-in failed: ' + error.message + '. Return to the game and try again.';
+  }
+})();
+</script>""")
 
 
 @router.get("/callback")
