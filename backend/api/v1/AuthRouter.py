@@ -90,7 +90,7 @@ def google_web_callback():
     const result = await response.json();
     if (!response.ok) throw new Error(result.detail || 'Unable to finish sign-in');
     if (!window.opener || window.opener.closed) throw new Error('Game window is no longer available');
-    window.opener.postMessage({ type: 'platu-google-login', access_token: result.access_token, refresh_token: result.refresh_token }, '*');
+    window.opener.postMessage({ type: 'platu-google-login', access_token: result.access_token, refresh_token: result.refresh_token, user_id: result.user_id, email: result.email }, '*');
     status.textContent = 'Signed in. You can close this tab.';
     window.close();
   } catch (error) {

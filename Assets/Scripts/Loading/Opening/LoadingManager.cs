@@ -76,8 +76,16 @@ public class LoadingManager : MonoBehaviour
 
             if (resourceLoading.IsSessionValid)
             {
-                Debug.Log("[LoadingManager] Fake Loading เสร็จ → loading");
-                SceneManager.LoadScene("loading");
+                if (resourceLoading.NeedsPlayerSetup)
+                {
+                    Debug.Log("[LoadingManager] Player setup incomplete → signup");
+                    SceneManager.LoadScene("signup");
+                }
+                else
+                {
+                    Debug.Log("[LoadingManager] Fake Loading เสร็จ → loading");
+                    SceneManager.LoadScene("loading");
+                }
             }
             else
             {

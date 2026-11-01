@@ -124,7 +124,7 @@ public class GoogleLogin : MonoBehaviour
             return;
         }
 
-        SaveLoginTokens(response.access_token, response.refresh_token);
+        SaveLoginTokens(response.access_token, response.refresh_token, response.user_id, response.email);
     }
 
     private void HandleDeepLink(string url)
@@ -182,18 +182,31 @@ public class GoogleLogin : MonoBehaviour
                 yield break;
             }
 
-            SaveLoginTokens(response.access_token, response.refresh_token);
+            SaveLoginTokens(response.access_token, response.refresh_token, response.user_id, response.email);
         }
     }
 
-    private void SaveLoginTokens(string accessToken, string refreshToken)
+    private void SaveLoginTokens(string accessToken, string refreshToken, string userId = null, string email = null)
     {
         PlayerPrefs.SetString("AccessToken", accessToken);
         if (!string.IsNullOrEmpty(refreshToken))
             PlayerPrefs.SetString("RefreshToken", refreshToken);
+
+        if (!string.IsNullOrEmpty(userId))
+            PlayerPrefs.SetString("UserID", userId);
+        else
+            PlayerPrefs.DeleteKey("UserID");
+
+        if (!string.IsNullOrEmpty(email))
+            PlayerPrefs.SetString("Email", email);
+
         PlayerPrefs.Save();
-        Debug.Log("Google Login Success! Tokens saved.");
-        StartCoroutine(GetUserIdAndOpenPopup(accessToken));
+        Debug.Log("Google Login Success! Tokens and user identity saved.");
+
+        if (!string.IsNullOrEmpty(userId))
+            OnLoginSuccess();
+        else
+            StartCoroutine(GetUserIdAndOpenPopup(accessToken));
     }
 
 
@@ -238,6 +251,11 @@ public class GoogleLogin : MonoBehaviour
     }
     private void OnLoginSuccess()
     {
+        // Google login enters the first-time player setup flow from the language popup.
+        PlayerPrefs.SetInt("IsNewUser", 1);
+        PlayerPrefs.SetInt("HasProfile", 0);
+        PlayerPrefs.Save();
+
         Debug.Log("User logged in!");
 
         if (languagePopup == null)

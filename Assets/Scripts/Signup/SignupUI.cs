@@ -87,6 +87,22 @@ public class SignupUI : MonoBehaviour
 
         ClearError(emailInput, emailError, emailErrorGroup);
         ClearError(passwordInput, passwordError, passwordErrorGroup);
+
+        if (PlayerPrefs.GetInt("ResumePlayerSetup", 0) == 1)
+        {
+            PlayerPrefs.DeleteKey("ResumePlayerSetup");
+            PlayerPrefs.Save();
+
+            if (languagePopup != null)
+            {
+                languagePopup.gameObject.SetActive(true);
+                languagePopup.Open();
+            }
+            else
+            {
+                Debug.LogError("SignupUI: LanguagePopup is not assigned for profile setup.");
+            }
+        }
     }
 
     public void Unlock()

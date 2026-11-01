@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using TMPro;
+using UnityEngine.Networking;
 
 public class LoadingScreen : MonoBehaviour
 {
@@ -24,11 +25,19 @@ public class LoadingScreen : MonoBehaviour
     [SerializeField] private string nextScene = "main_game";
 
     private bool isSending;
+    private bool isRecoveringUserId;
     private bool isReadyToEnterGame;
     private bool hasAuthResponse;
     private float loadingStartTime;
 
     private LoginManager.AuthResponse authResponse;
+
+    [System.Serializable]
+    private class AuthMeResponse
+    {
+        public string user_id;
+        public string email;
+    }
 
     public static LoginManager.AuthResponse PendingAuthResponse { get; set; }
 
@@ -90,8 +99,28 @@ public class LoadingScreen : MonoBehaviour
 
         if (string.IsNullOrWhiteSpace(userId))
         {
-            GameLogger.Error("Loading", "UserID is empty. Please log in again.");
-            SetLoadingText("User ID not found. Please log in again.");
+            string accessToken = PlayerPrefs.GetString("AccessToken", "");
+            if (!string.IsNullOrEmpty(accessToken) && !isRecoveringUserId)
+            {
+                StartCoroutine(RecoverUserIdAndRetry(accessToken));
+                return;
+            }
+
+            GameLogger.Error("Loading", "UserID is empty and could not be recovered from the saved session.");
+            SetLoadingText("Unable to restore your login. Please log in again.");
+            return;
+        }
+
+        string username = PlayerPrefs.GetString("Username", "");
+        string character = PlayerPrefs.GetString("SelectedCharacter", "");
+        string language = PlayerPrefs.GetString("Language", "");
+
+        if (string.IsNullOrWhiteSpace(username) ||
+            string.IsNullOrWhiteSpace(character) ||
+            string.IsNullOrWhiteSpace(language))
+        {
+            GameLogger.Error("Loading", "Player setup is incomplete. Returning to language selection.");
+            ReturnToPlayerSetup();
             return;
         }
 
@@ -100,10 +129,10 @@ public class LoadingScreen : MonoBehaviour
         {
             GameLogger.Error(
                 "Loading",
-                "Login status is missing. Cannot determine whether starter data should be sent."
+                "Login status is missing. Returning to player setup."
             );
 
-            SetLoadingText("Login information missing. Please log in again.");
+            ReturnToPlayerSetup();
             return;
         }
 
@@ -121,31 +150,6 @@ public class LoadingScreen : MonoBehaviour
             return;
         }
 
-        // ต้องมีผล Login เพื่อแยกผู้ใช้เก่ากับผู้ใช้ใหม่
-        if (!hasAuthResponse || authResponse == null)
-        {
-            GameLogger.Error(
-                "Loading",
-                "Login response is missing. Cannot determine whether starter data should be sent."
-            );
-            SetLoadingText("Unable to verify player profile.");
-            return;
-        }
-
-        // ผู้ใช้เก่าหรือมี Profile อยู่แล้ว ไม่ต้องส่ง Starter Player Data
-        if (!authResponse.is_new_user || authResponse.has_profile)
-        {
-            GameLogger.Info(
-                "Loading",
-                "Existing player detected (new=" + authResponse.is_new_user +
-                ", profile=" + authResponse.has_profile +
-                "). Skipping starter player data."
-            );
-
-            PrepareToEnterGame();
-            return;
-        }
-
         string savedUserId =
             PlayerPrefs.GetString("StarterPlayerSavedUserID", "");
 
@@ -157,18 +161,6 @@ public class LoadingScreen : MonoBehaviour
             );
 
             PrepareToEnterGame();
-            return;
-        }
-
-        string username = PlayerPrefs.GetString("Username", "");
-        string character = PlayerPrefs.GetString("SelectedCharacter", "");
-        string language = PlayerPrefs.GetString("Language", "english");
-
-        if (string.IsNullOrWhiteSpace(username) ||
-            string.IsNullOrWhiteSpace(character))
-        {
-            GameLogger.Error("Loading", "Username or character is empty.");
-            SetLoadingText("Incomplete player information.");
             return;
         }
 
@@ -209,6 +201,49 @@ public class LoadingScreen : MonoBehaviour
     {
         isReadyToEnterGame = true;
         SetLoadingText("Entering game...");
+    }
+
+    private void ReturnToPlayerSetup()
+    {
+        PlayerPrefs.SetInt("IsNewUser", 1);
+        PlayerPrefs.SetInt("HasProfile", 0);
+        PlayerPrefs.SetInt("ResumePlayerSetup", 1);
+        PlayerPrefs.Save();
+        SceneManager.LoadScene("signup");
+    }
+
+    private IEnumerator RecoverUserIdAndRetry(string accessToken)
+    {
+        isRecoveringUserId = true;
+        SetLoadingText("Restoring your login...");
+
+        using (UnityWebRequest request = UnityWebRequest.Get("https://patu-salmon.onrender.com/auth/me"))
+        {
+            request.SetRequestHeader("Authorization", "Bearer " + accessToken);
+            yield return request.SendWebRequest();
+
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                AuthMeResponse response = JsonUtility.FromJson<AuthMeResponse>(request.downloadHandler.text);
+                if (response != null && !string.IsNullOrWhiteSpace(response.user_id))
+                {
+                    PlayerPrefs.SetString("UserID", response.user_id);
+                    if (!string.IsNullOrEmpty(response.email))
+                        PlayerPrefs.SetString("Email", response.email);
+                    PlayerPrefs.Save();
+
+                    GameLogger.Info("Loading", "Recovered UserID from the saved access token.");
+                    isRecoveringUserId = false;
+                    SendPlayerData();
+                    yield break;
+                }
+            }
+
+            GameLogger.Error("Loading", "Could not recover UserID: " + request.error + " " + request.downloadHandler.text);
+        }
+
+        isRecoveringUserId = false;
+        SetLoadingText("Unable to restore your login. Please log in again.");
     }
 
     private void SetLoadingText(string message)

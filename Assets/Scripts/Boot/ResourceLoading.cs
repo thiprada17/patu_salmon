@@ -15,6 +15,7 @@ public class ResourceLoading : MonoBehaviour
 
     public bool IsCheckDone { get; private set; }
     public bool IsSessionValid { get; private set; }
+    public bool NeedsPlayerSetup { get; private set; }
 
     private bool isChecking;
 
@@ -116,6 +117,8 @@ public class ResourceLoading : MonoBehaviour
                         PlayerPrefs.SetString("Email", response.email);
 
                     PlayerPrefs.Save();
+
+                    CheckPlayerSetup();
 
                     Debug.Log(
                         $"[ResourceLoading] Token ใช้ได้ UserID={response.user_id}"
@@ -260,6 +263,8 @@ public class ResourceLoading : MonoBehaviour
 
             PlayerPrefs.Save();
 
+            CheckPlayerSetup();
+
             Debug.Log("[ResourceLoading] Refresh สำเร็จ");
 
             IsSessionValid = true;
@@ -268,6 +273,34 @@ public class ResourceLoading : MonoBehaviour
 
             GoToLoading();
         }
+    }
+
+    private void CheckPlayerSetup()
+    {
+        string username = PlayerPrefs.GetString("Username", "").Trim();
+        string character = PlayerPrefs.GetString("SelectedCharacter", "").Trim();
+        string language = PlayerPrefs.GetString("Language", "").Trim().ToLowerInvariant();
+
+        NeedsPlayerSetup = string.IsNullOrEmpty(username) ||
+                           (character != "salmon" && character != "platu") ||
+                           (language != "english" && language != "thai" && language != "japanese");
+
+        if (NeedsPlayerSetup)
+        {
+            PlayerPrefs.SetInt("ResumePlayerSetup", 1);
+            PlayerPrefs.SetInt("IsNewUser", 1);
+            PlayerPrefs.SetInt("HasProfile", 0);
+            Debug.LogWarning("[ResourceLoading] Player setup is incomplete. Returning to language and character setup.");
+        }
+        else if (!PlayerPrefs.HasKey("IsNewUser") || !PlayerPrefs.HasKey("HasProfile"))
+        {
+            string userId = PlayerPrefs.GetString("UserID", "");
+            bool starterWasSaved = PlayerPrefs.GetString("StarterPlayerSavedUserID", "") == userId;
+            PlayerPrefs.SetInt("IsNewUser", starterWasSaved ? 0 : 1);
+            PlayerPrefs.SetInt("HasProfile", starterWasSaved ? 1 : 0);
+        }
+
+        PlayerPrefs.Save();
     }
 
     // มี Token ที่ผ่านการตรวจสอบ → Loading
@@ -291,6 +324,7 @@ public class ResourceLoading : MonoBehaviour
         PlayerPrefs.DeleteKey("access_token");
         PlayerPrefs.DeleteKey("refresh_token");
         PlayerPrefs.DeleteKey("UserID");
+        PlayerPrefs.DeleteKey("ResumePlayerSetup");
 
         PlayerPrefs.Save();
 
