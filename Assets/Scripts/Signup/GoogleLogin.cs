@@ -17,7 +17,7 @@ public class GoogleLogin : MonoBehaviour
     private static extern int OpenGoogleAuthWindow();
 
     [DllImport("__Internal")]
-    private static extern void NavigateGoogleAuthWindow(string url);
+    private static extern int NavigateGoogleAuthWindow(string url);
 
     [DllImport("__Internal")]
     private static extern void CloseGoogleAuthWindow();
@@ -104,7 +104,8 @@ public class GoogleLogin : MonoBehaviour
                 yield break;
             }
 
-            NavigateGoogleAuthWindow(response.login_url);
+            if (NavigateGoogleAuthWindow(response.login_url) == 0)
+                Debug.LogError("Google Login: Failed to navigate the sign-in tab. Rebuild and upload the latest WebGL build.");
 #else
             Application.OpenURL(response.login_url);
 #endif
@@ -150,6 +151,11 @@ public class GoogleLogin : MonoBehaviour
 
     private void HandleDeepLink(string url)
     {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        // WebGL absoluteURL is the hosted game page (for example localhost or itch.io),
+        // not a native deep link. WebGL OAuth returns through HandleOAuthMessage instead.
+        return;
+#endif
         if (string.IsNullOrEmpty(url) || url == lastHandledUrl) return;
 
         Debug.Log("Received Deep Link: " + url);

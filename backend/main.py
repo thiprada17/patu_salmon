@@ -14,6 +14,7 @@ app.add_middleware(
         "https://thiprada17.itch.io",
         "https://html-classic.itch.zone",
     ],
+    allow_origin_regex=r"https?://(localhost|127\.0\.0\.1)(:\d+)?",
     allow_methods=["*"],
     allow_headers=["*"],
 )
