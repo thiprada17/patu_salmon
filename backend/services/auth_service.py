@@ -75,6 +75,7 @@ class AuthService:
             return {
                 "user_id": mock_user_id(claims["sub"]),
                 "email": claims.get("email", "apple-mock@example.invalid"),
+                "mock_mode": True,
             }
 
         try:
