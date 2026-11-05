@@ -1514,6 +1514,9 @@ MonoBehaviour:
   policyContentText: {fileID: 1740542555}
   userContentText: {fileID: 1283456497}
   termsContentText: {fileID: 970553493}
+  privacyPolicyHead: {fileID: 1419611078}
+  userAgreementHead: {fileID: 1947336075}
+  termsOfUseHead: {fileID: 1639171898}
   policyTabImage: {fileID: 614627420}
   userAgreementTabImage: {fileID: 1163570217}
   termsTabImage: {fileID: 88885003}

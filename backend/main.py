@@ -1,9 +1,15 @@
+from pathlib import Path
+
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 
 from api.v1.AuthRouter import login_with_apple, router as auth_router
 from api.v1.PlayerRouter import router as player_router
 from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI(title="Platu Salmon หลังบ้าน")
+
+LEGAL_PAGES_DIR = Path(__file__).resolve().parent / "static" / "legal"
+app.mount("/legal", StaticFiles(directory=LEGAL_PAGES_DIR, html=True), name="legal")
 
 app.include_router(auth_router)
 app.include_router(player_router)

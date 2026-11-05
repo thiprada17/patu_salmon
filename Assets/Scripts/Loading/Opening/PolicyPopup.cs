@@ -14,6 +14,9 @@ public sealed class PolicyPopup : MonoBehaviour
     [SerializeField] private TMP_Text policyContentText;
     [SerializeField] private TMP_Text userContentText;
     [SerializeField] private TMP_Text termsContentText;
+    [SerializeField] private TMP_Text privacyPolicyHead;
+    [SerializeField] private TMP_Text userAgreementHead;
+    [SerializeField] private TMP_Text termsOfUseHead;
     [SerializeField] private Image policyTabImage;
     [SerializeField] private Image userAgreementTabImage;
     [SerializeField] private Image termsTabImage;
@@ -23,7 +26,6 @@ public sealed class PolicyPopup : MonoBehaviour
     [SerializeField, TextArea(8, 30)] private string privacyPolicyContent;
     [SerializeField, TextArea(8, 30)] private string userAgreementContent;
     [SerializeField, TextArea(8, 30)] private string termsConditionsContent;
-
     private static readonly Color SelectedTabColor = new Color(1f, 0.910512f, 0.7528302f, 1f);
     private static readonly Color UnselectedTabColor = Color.white;
 
@@ -39,6 +41,9 @@ public sealed class PolicyPopup : MonoBehaviour
         PrepareScrollableText(userTextPanel, userContentText);
         if (termsContentText == null && termsTextPanel != null)
             termsContentText = termsTextPanel.GetComponentInChildren<TMP_Text>(true);
+        MakeHeaderLink(privacyPolicyHead, BackendConfig.BaseUrl + "/legal/privacy-policy/");
+        MakeHeaderLink(userAgreementHead, BackendConfig.BaseUrl + "/legal/user-agreement/");
+        MakeHeaderLink(termsOfUseHead, BackendConfig.BaseUrl + "/legal/terms-of-use/");
         PrepareScrollableText(termsTextPanel, termsContentText);
         BindTabButton(policyTabButton, ShowPolicy);
         BindTabButton(userAgreementTabButton, ShowUserAgreement);
@@ -122,6 +127,19 @@ public sealed class PolicyPopup : MonoBehaviour
     {
         if (tab != null)
             tab.color = tab == selected ? SelectedTabColor : UnselectedTabColor;
+    }
+
+    private static void MakeHeaderLink(TMP_Text text, string url)
+    {
+        if (text == null)
+            return;
+
+        text.richText = true;
+        text.raycastTarget = true;
+        string label = text.text;
+        text.text = "<link=\"" + url + "\"><u>" + label + "</u></link>";
+        if (text.GetComponent<TMPLinkOpener>() == null)
+            text.gameObject.AddComponent<TMPLinkOpener>();
     }
 
     private static void PrepareScrollableText(GameObject panelObject, TMP_Text text)
