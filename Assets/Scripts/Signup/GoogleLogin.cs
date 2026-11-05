@@ -3,6 +3,7 @@ using System.Collections;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 [Serializable]
 public class GoogleLoginResponse
@@ -113,6 +114,8 @@ public class GoogleLogin : MonoBehaviour
         public string refresh_token;
         public string user_id;
         public string email;
+        public bool has_profile;
+        public bool is_new_user;
     }
 
     public void HandleOAuthMessage(string message)
@@ -124,7 +127,7 @@ public class GoogleLogin : MonoBehaviour
             return;
         }
 
-        SaveLoginTokens(response.access_token, response.refresh_token, response.user_id, response.email);
+        SaveLoginTokens(response.access_token, response.refresh_token, response.user_id, response.email, response.has_profile, response.is_new_user);
     }
 
     private void HandleDeepLink(string url)
@@ -182,11 +185,17 @@ public class GoogleLogin : MonoBehaviour
                 yield break;
             }
 
-            SaveLoginTokens(response.access_token, response.refresh_token, response.user_id, response.email);
+            SaveLoginTokens(response.access_token, response.refresh_token, response.user_id, response.email, response.has_profile, response.is_new_user);
         }
     }
 
-    private void SaveLoginTokens(string accessToken, string refreshToken, string userId = null, string email = null)
+    private void SaveLoginTokens(
+        string accessToken,
+        string refreshToken,
+        string userId = null,
+        string email = null,
+        bool hasProfile = false,
+        bool isNewUser = true)
     {
         PlayerPrefs.SetString("AccessToken", accessToken);
         if (!string.IsNullOrEmpty(refreshToken))
@@ -204,11 +213,10 @@ public class GoogleLogin : MonoBehaviour
         Debug.Log("Google Login Success! Tokens and user identity saved.");
 
         if (!string.IsNullOrEmpty(userId))
-            OnLoginSuccess();
+            OnLoginSuccess(hasProfile, isNewUser);
         else
             StartCoroutine(GetUserIdAndOpenPopup(accessToken));
     }
-
 
     private IEnumerator GetUserIdAndOpenPopup(string accessToken)
     {
@@ -221,7 +229,7 @@ public class GoogleLogin : MonoBehaviour
             yield break;
         }
 
-        OnLoginSuccess();
+        OnLoginSuccess(false, true);
     }
 
 
@@ -249,22 +257,40 @@ public class GoogleLogin : MonoBehaviour
 
         return null;
     }
-    private void OnLoginSuccess()
+    private void OnLoginSuccess(bool hasProfile, bool isNewUser)
     {
-        // Google login enters the first-time player setup flow from the language popup.
-        PlayerPrefs.SetInt("IsNewUser", 1);
-        PlayerPrefs.SetInt("HasProfile", 0);
+        PlayerPrefs.SetInt("IsNewUser", isNewUser ? 1 : 0);
+        PlayerPrefs.SetInt("HasProfile", hasProfile ? 1 : 0);
         PlayerPrefs.Save();
 
-        Debug.Log("User logged in!");
+        Debug.Log("Google Login Success. has_profile=" + hasProfile + ", is_new_user=" + isNewUser);
 
-        if (languagePopup == null)
+        if (isNewUser || !hasProfile)
         {
-            Debug.LogError("languagePopup = NULL");
+            if (languagePopup == null)
+            {
+                Debug.LogError("languagePopup = NULL");
+                return;
+            }
+
+            StartCoroutine(OpenPopupNextFrame());
             return;
         }
 
-        StartCoroutine(OpenPopupNextFrame());
+        LoginManager.Instance.GetPlayerStats(
+            stats =>
+            {
+                if (stats == null)
+                {
+                    Debug.LogError("Google Login: Player stats response is empty.");
+                    return;
+                }
+
+                TutorialSession.Initialize(stats.work_days);
+                SceneManager.LoadScene(stats.work_days == 0 ? "map" : "loading");
+            },
+            error => Debug.LogError("Google Login: Could not load player stats: " + error)
+        );
     }
 
     private IEnumerator OpenPopupNextFrame()

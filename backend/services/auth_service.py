@@ -36,6 +36,7 @@ class AuthService:
             user = result.user
             session = result.session
             has_profile = self._ensure_profile(user.id)
+            is_new_user = not has_profile
 
             return {
                 "user_id": user.id,
@@ -43,6 +44,7 @@ class AuthService:
                 "access_token": session.access_token,
                 "refresh_token": session.refresh_token,
                 "has_profile": has_profile,
+                "is_new_user": is_new_user,
                 "deep_link": create_login_deep_link(
                     session.access_token,
                     session.refresh_token,
@@ -60,6 +62,21 @@ class AuthService:
 
     # verify token เพื่อดึงข้อมูลผู้ใช้ปจบ.
     def get_current_user(self, access_token: str):
+        from core.settings import get_settings
+        from services.apple_auth_service import (
+            is_mock_issuer_token,
+            mock_user_id,
+            verify_apple_token,
+        )
+
+        settings = get_settings()
+        if settings.environment == "dev" and is_mock_issuer_token(access_token):
+            claims = verify_apple_token(access_token, settings=settings)
+            return {
+                "user_id": mock_user_id(claims["sub"]),
+                "email": claims.get("email", "apple-mock@example.invalid"),
+            }
+
         try:
             user = get_user(access_token)
 
@@ -248,7 +265,7 @@ class AuthService:
             admin_client
             .schema("user_management")
             .table("users")
-            .select("user_id, character")
+            .select("user_id, username, character, language")
             .eq("user_id", user_id)
             .limit(1)
             .execute()
@@ -313,8 +330,17 @@ class AuthService:
                 user_id,
             )
 
-        # ตรวจสอบว่าตัวละครที่เลือกถูกต้องหรือไม่
-        return player.get("character") in ("salmon", "platu")
+        # Treat placeholder rows as incomplete so Google login can send
+        # first-time players through language, character, and username setup.
+        username = (player.get("username") or "").strip()
+        character = (player.get("character") or "").strip().lower()
+        language = (player.get("language") or "").strip().lower()
+        return (
+            bool(username)
+            and not username.startswith("Player_")
+            and character in ("salmon", "platu")
+            and language in ("english", "thai", "japanese")
+        )
 
     def refresh_session(self, refresh_token: str):
         if not refresh_token:

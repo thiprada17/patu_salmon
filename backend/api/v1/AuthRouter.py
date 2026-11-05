@@ -5,6 +5,7 @@ from pydantic import BaseModel, EmailStr
 
 from schemas.auth import AuthRequest, RefreshRequest
 from services.auth_service import AuthService
+from services.apple_auth_service import apple_login
 
 router = APIRouter(
     prefix="/auth",
@@ -45,6 +46,11 @@ class EmailLoginRequest(BaseModel):
     password: str
 
 
+class AppleLoginRequest(BaseModel):
+    identity_token: str
+    nonce: str | None = None
+
+
 @router.post("/signup")
 def signup(
     data: EmailLoginRequest,
@@ -54,6 +60,11 @@ def signup(
         email=str(data.email),
         password=data.password
     )
+
+
+@router.post("/apple")
+def login_with_apple(data: AppleLoginRequest):
+    return apple_login(data.identity_token, nonce=data.nonce)
 
 
 @router.get("/google")
@@ -90,7 +101,7 @@ def google_web_callback():
     const result = await response.json();
     if (!response.ok) throw new Error(result.detail || 'Unable to finish sign-in');
     if (!window.opener || window.opener.closed) throw new Error('Game window is no longer available');
-    window.opener.postMessage({ type: 'platu-google-login', access_token: result.access_token, refresh_token: result.refresh_token, user_id: result.user_id, email: result.email }, '*');
+    window.opener.postMessage({ type: 'platu-google-login', access_token: result.access_token, refresh_token: result.refresh_token, user_id: result.user_id, email: result.email, has_profile: result.has_profile, is_new_user: result.is_new_user }, '*');
     status.textContent = 'Signed in. You can close this tab.';
     window.close();
   } catch (error) {
