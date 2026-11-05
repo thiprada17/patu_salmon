@@ -32,11 +32,6 @@ public class EmailAuth : MonoBehaviour
     [Header("Button")]
     [SerializeField] private Button signupButton;
 
-    [Header("Server")]
-    [SerializeField]
-    private string apiUrl = "https://patu-salmon.onrender.com";
-
-
     private void Start()
     {
         signupButton.onClick.AddListener(
@@ -129,7 +124,7 @@ public class EmailAuth : MonoBehaviour
 
         using UnityWebRequest request =
             new UnityWebRequest(
-                apiUrl + "/auth/email",
+                BackendConfig.BaseUrl + "/auth/email",
                 "POST"
             );
 

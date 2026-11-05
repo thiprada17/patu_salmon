@@ -1,4 +1,7 @@
+var platuGoogleAuthOrigin = null;
+
 mergeInto(LibraryManager.library, {
+
   OpenGoogleAuthWindow: function (urlPtr) {
     var url = UTF8ToString(urlPtr);
     var parsed;
@@ -8,11 +11,12 @@ mergeInto(LibraryManager.library, {
       console.error("Invalid Google sign-in endpoint", e);
       return 0;
     }
-    if (parsed.origin !== "https://patu-salmon.onrender.com" ||
+    if ((parsed.protocol !== "https:" && parsed.hostname !== "127.0.0.1" && parsed.hostname !== "localhost") ||
         parsed.pathname !== "/auth/google/redirect") {
       console.error("Unexpected Google sign-in endpoint", parsed.origin, parsed.pathname);
       return 0;
     }
+    platuGoogleAuthOrigin = parsed.origin;
 
     var popup = window.open("about:blank", "_blank");
     if (!popup) {
@@ -23,7 +27,7 @@ mergeInto(LibraryManager.library, {
     window.__platuGoogleAuthWindow = popup;
     if (!window.__platuGoogleAuthMessageHandler) {
       window.__platuGoogleAuthMessageHandler = function (event) {
-        if (event.origin !== "https://patu-salmon.onrender.com" ||
+        if (event.origin !== platuGoogleAuthOrigin ||
             event.source !== window.__platuGoogleAuthWindow ||
             !event.data || event.data.type !== "platu-google-login") return;
         SendMessage("GoogleController", "HandleOAuthMessage", JSON.stringify(event.data));

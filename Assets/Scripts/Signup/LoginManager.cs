@@ -9,8 +9,6 @@ using UnityEngine.SceneManagement;
 
 public class LoginManager : MonoBehaviour
 {
-    private const string backendUrl = "https://patu-salmon.onrender.com";
-
     private static LoginManager instance;
 
     public static LoginManager Instance
@@ -191,7 +189,7 @@ public class LoginManager : MonoBehaviour
         );
 
         using (UnityWebRequest request =
-               new UnityWebRequest(backendUrl + "/auth/refresh", "POST"))
+               new UnityWebRequest(BackendConfig.BaseUrl + "/auth/refresh", "POST"))
         {
             request.uploadHandler = new UploadHandlerRaw(
                 Encoding.UTF8.GetBytes(json)
@@ -236,7 +234,7 @@ public class LoginManager : MonoBehaviour
         Action<PlayerStatsResponse> onSuccess,
         Action<string> onError)
     {
-        string url = backendUrl + "/player/stats/" +
+        string url = BackendConfig.BaseUrl + "/player/stats/" +
                      UnityWebRequest.EscapeURL(userId);
 
         using (UnityWebRequest request = UnityWebRequest.Get(url))
@@ -292,7 +290,7 @@ public class LoginManager : MonoBehaviour
         bool requiresAuth = false)
     {
         using (UnityWebRequest request =
-               new UnityWebRequest(backendUrl + path, "POST"))
+               new UnityWebRequest(BackendConfig.BaseUrl + path, "POST"))
         {
             request.uploadHandler = new UploadHandlerRaw(
                 Encoding.UTF8.GetBytes(json)

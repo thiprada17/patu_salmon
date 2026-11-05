@@ -1,10 +1,11 @@
 from infrastructure.supabase_client import supabase
 from core.config import DEEPLINK_URL
+from core.settings import get_settings
 
 
 def create_google_login_url(platform: str = "web"):
     if platform == "web":
-        redirect_to = "https://patu-salmon.onrender.com/auth/web-callback"
+        redirect_to = f"{get_settings().backend_public_url.rstrip('/')}/auth/web-callback"
     elif platform in ("ios", "android"):
         redirect_to = DEEPLINK_URL
     else:

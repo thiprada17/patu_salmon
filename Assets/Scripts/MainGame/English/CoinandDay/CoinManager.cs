@@ -11,9 +11,6 @@ public class CoinManager : MonoBehaviour
 {
     public static CoinManager Instance { get; private set; }
 
-    [Header("Backend")]
-    [SerializeField] private string backendUrl = "https://patu-salmon.onrender.com";
-
     [Header("Recipes")]
     [SerializeField] private List<RecipeData> recipes;
 
@@ -192,7 +189,7 @@ public class CoinManager : MonoBehaviour
         GameLogger.Info(
             "Economy",
             $"เริ่ม LoadStats | UserID={userId} | " +
-            $"URL={backendUrl}/player/stats/{userId}"
+            $"URL={BackendConfig.BaseUrl}/player/stats/{userId}"
         );
 
         if (string.IsNullOrEmpty(userId))
@@ -210,7 +207,7 @@ public class CoinManager : MonoBehaviour
         isLoading = true;
 
         using (UnityWebRequest request = UnityWebRequest.Get(
-            $"{backendUrl}/player/stats/{userId}"))
+            $"{BackendConfig.BaseUrl}/player/stats/{userId}"))
         {
             request.downloadHandler = new DownloadHandlerBuffer();
             request.SetRequestHeader("Authorization", "Bearer " + accessToken);
@@ -492,7 +489,7 @@ public class CoinManager : MonoBehaviour
         byte[] body = Encoding.UTF8.GetBytes(JsonUtility.ToJson(data));
 
         using (UnityWebRequest request = new UnityWebRequest(
-            $"{backendUrl}/player/stats/day", "POST"))
+            $"{BackendConfig.BaseUrl}/player/stats/day", "POST"))
         {
             request.uploadHandler = new UploadHandlerRaw(body);
             request.downloadHandler = new DownloadHandlerBuffer();

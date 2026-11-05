@@ -22,7 +22,6 @@ public class GoogleLogin : MonoBehaviour
 #endif
     [SerializeField] private LanguagePopup languagePopup;
 
-    private string backendUrl = "https://patu-salmon.onrender.com";
     private string lastHandledUrl = null;
     private bool loginRequestPending;
 
@@ -47,7 +46,7 @@ public class GoogleLogin : MonoBehaviour
 
         // Open and navigate the OAuth tab synchronously in the button click.
         loginRequestPending = true;
-        if (OpenGoogleAuthWindow(backendUrl + "/auth/google/redirect?platform=web") == 0)
+        if (OpenGoogleAuthWindow(BackendConfig.BaseUrl + "/auth/google/redirect?platform=web") == 0)
             Debug.LogError("Google Login: Browser blocked or could not navigate the sign-in window.");
         loginRequestPending = false;
         return;
@@ -68,7 +67,7 @@ public class GoogleLogin : MonoBehaviour
 #else
         const string platform = "web";
 #endif
-        string url = backendUrl + "/auth/google?platform=" + platform;
+        string url = BackendConfig.BaseUrl + "/auth/google?platform=" + platform;
         Debug.Log("Request Google Login: " + url);
 
         using (UnityWebRequest request = UnityWebRequest.Get(url))
@@ -168,7 +167,7 @@ public class GoogleLogin : MonoBehaviour
 
     private IEnumerator ExchangeOAuthCode(string code)
     {
-        string url = backendUrl + "/auth/callback?code=" + UnityWebRequest.EscapeURL(code);
+        string url = BackendConfig.BaseUrl + "/auth/callback?code=" + UnityWebRequest.EscapeURL(code);
         using (UnityWebRequest request = UnityWebRequest.Get(url))
         {
             yield return request.SendWebRequest();
@@ -322,7 +321,7 @@ public class GoogleLogin : MonoBehaviour
 
     private IEnumerator GetUserId(string accessToken)
     {
-        string url = backendUrl + "/auth/me";
+        string url = BackendConfig.BaseUrl + "/auth/me";
 
         using (UnityWebRequest request = UnityWebRequest.Get(url))
         {

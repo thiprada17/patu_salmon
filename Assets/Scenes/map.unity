@@ -7852,7 +7852,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60395ce6e74bc6040bb9bd57c4621ee2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  backendUrl: https://patu-salmon.onrender.com
   recipes:
   - {fileID: 11400000, guid: 21f1981d28c9d8d4a8fca17bdc56f92d, type: 2}
   - {fileID: 11400000, guid: 58a226515cd2e2d45958e1ed8d3c3671, type: 2}

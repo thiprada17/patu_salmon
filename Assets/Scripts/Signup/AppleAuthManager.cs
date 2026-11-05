@@ -95,7 +95,7 @@ public sealed class AppleAuthManager : MonoBehaviour
             nonce = nonce,
         };
 
-        using (UnityWebRequest request = new UnityWebRequest(config.BackendUrl + "/auth/apple", "POST"))
+        using (UnityWebRequest request = new UnityWebRequest(BackendConfig.BaseUrl + "/auth/apple", "POST"))
         {
             request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(JsonUtility.ToJson(body)));
             request.downloadHandler = new DownloadHandlerBuffer();

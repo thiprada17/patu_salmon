@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5d5e0ca7a434be6a3e6d3c2538d0e2c, type: 3}
-  m_Name: AppleAuthConfig
+  m_Script: {fileID: 11500000, guid: 4632af0de2224b22a2a3e61ca26fd891, type: 3}
+  m_Name: BackendConfig
   m_EditorClassIdentifier:
-  appleClientId: com.platusalmon.game
-  backendUrl: https://patu-salmon.onrender.com
-  useMockInEditor: 1
+  productionBaseUrl: https://patu-salmon.onrender.com
+  developmentBaseUrl: http://127.0.0.1:8000
+  useDevelopmentBackendInEditor: 1

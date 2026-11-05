@@ -217,7 +217,7 @@ public class LoadingScreen : MonoBehaviour
         isRecoveringUserId = true;
         SetLoadingText("Restoring your login...");
 
-        using (UnityWebRequest request = UnityWebRequest.Get("https://patu-salmon.onrender.com/auth/me"))
+        using (UnityWebRequest request = UnityWebRequest.Get(BackendConfig.BaseUrl + "/auth/me"))
         {
             request.SetRequestHeader("Authorization", "Bearer " + accessToken);
             yield return request.SendWebRequest();

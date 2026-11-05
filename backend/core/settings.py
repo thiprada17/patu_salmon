@@ -42,6 +42,10 @@ class Settings(BaseSettings):
     )
 
     supabase_url: str = ""
+    backend_public_url: str = Field(
+        default="https://patu-salmon.onrender.com",
+        validation_alias=AliasChoices("BACKEND_PUBLIC_URL", "BACKEND_URL"),
+    )
     supabase_anon_key: SecretStr = Field(
         default=SecretStr(""),
         validation_alias=AliasChoices("SUPABASE_ANON_KEY", "SUPABASE_KEY"),

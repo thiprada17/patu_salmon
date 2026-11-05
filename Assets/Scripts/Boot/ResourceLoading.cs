@@ -8,11 +8,6 @@ using UnityEngine.SceneManagement;
 
 public class ResourceLoading : MonoBehaviour
 {
-    [Header("Backend")]
-    [SerializeField]
-    private string backendUrl = "https://patu-salmon.onrender.com";
-
-
     public bool IsCheckDone { get; private set; }
     public bool IsSessionValid { get; private set; }
     public bool NeedsPlayerSetup { get; private set; }
@@ -84,7 +79,7 @@ public class ResourceLoading : MonoBehaviour
         Debug.Log("[ResourceLoading] GET /auth/me");
 
         using (UnityWebRequest request =
-               UnityWebRequest.Get(backendUrl + "/auth/me"))
+               UnityWebRequest.Get(BackendConfig.BaseUrl + "/auth/me"))
         {
             request.SetRequestHeader(
                 "Authorization",
@@ -180,7 +175,7 @@ public class ResourceLoading : MonoBehaviour
         );
 
         using (UnityWebRequest request =
-               new UnityWebRequest(backendUrl + "/auth/refresh", "POST"))
+               new UnityWebRequest(BackendConfig.BaseUrl + "/auth/refresh", "POST"))
         {
             request.uploadHandler = new UploadHandlerRaw(
                 Encoding.UTF8.GetBytes(json)
