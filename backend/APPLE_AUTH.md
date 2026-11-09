@@ -46,3 +46,15 @@ Install test dependencies with `pip install -r requirements-dev.txt` from the
 `backend` directory, then run `pytest tests/test_apple_auth.py` there. Tests
 use a generated RSA key and a fake JWKS client; they do not call Apple or
 Supabase.
+
+`pytest tests/test_auth_system.py` covers the versioned HTTP endpoints and
+works without Apple credentials. Its Supabase account deletion test is skipped
+unless `RUN_SUPABASE_DESTRUCTIVE_TESTS=1` is set. Enable that flag only with a
+dedicated Supabase test project: the test creates a fresh account, calls the
+real deletion endpoint, and verifies the user, profile, and stats rows are gone.
+
+In Unity Test Runner, run `AppleAuthEditorIntegrationTests` with the local
+backend using `ENVIRONMENT=dev`. The test invokes the Editor mock submit path
+and checks that the API response is stored as the Unity login session. The
+project does not install a Supabase Unity SDK; Supabase token exchange happens
+on the backend, while Unity stores the resulting access token in `PlayerPrefs`.

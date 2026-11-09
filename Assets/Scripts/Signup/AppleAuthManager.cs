@@ -18,6 +18,7 @@ public sealed class AppleAuthManager : MonoBehaviour
     [SerializeField] private LanguagePopup languagePopup;
 
     private string pendingNonce;
+    public bool IsLoggedIn { get; private set; }
 
     [Serializable]
     private sealed class AppleLoginRequest
@@ -74,6 +75,14 @@ public sealed class AppleAuthManager : MonoBehaviour
 #endif
     }
 
+#if UNITY_EDITOR
+    // Exposes the real submit/session path to Unity Editor integration tests.
+    public IEnumerator SubmitIdentityTokenForEditorTest(string identityToken, string nonce)
+    {
+        yield return SubmitIdentityToken(identityToken, nonce, navigateAfterLogin: false);
+    }
+#endif
+
     // Called from the AuthenticationServices native iOS plugin.
     public void OnNativeAppleSignIn(string json)
     {
@@ -87,7 +96,10 @@ public sealed class AppleAuthManager : MonoBehaviour
         StartCoroutine(SubmitIdentityToken(result.identity_token, pendingNonce));
     }
 
-    private IEnumerator SubmitIdentityToken(string identityToken, string nonce)
+    private IEnumerator SubmitIdentityToken(
+        string identityToken,
+        string nonce,
+        bool navigateAfterLogin = true)
     {
         AppleLoginRequest body = new AppleLoginRequest
         {
@@ -97,11 +109,14 @@ public sealed class AppleAuthManager : MonoBehaviour
 
         using (UnityWebRequest request = new UnityWebRequest(BackendConfig.BaseUrl + "/auth/apple", "POST"))
         {
+            request.timeout = 15;
             request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(JsonUtility.ToJson(body)));
             request.downloadHandler = new DownloadHandlerBuffer();
             request.SetRequestHeader("Content-Type", "application/json");
 
-            yield return request.SendWebRequest();
+            UnityWebRequestAsyncOperation operation = request.SendWebRequest();
+            while (!operation.isDone)
+                yield return null;
 
             AppleLoginResponse response = null;
             if (!string.IsNullOrEmpty(request.downloadHandler.text))
@@ -109,7 +124,12 @@ public sealed class AppleAuthManager : MonoBehaviour
 
             if (request.result != UnityWebRequest.Result.Success || response == null || string.IsNullOrEmpty(response.access_token))
             {
-                Debug.LogError("Apple Auth request failed: " + request.error + " " + request.downloadHandler.text);
+                Debug.LogError(
+                    "Apple Auth request failed. Result=" + request.result +
+                    ", HTTP=" + request.responseCode +
+                    ", URL=" + request.url +
+                    ", Error=" + request.error +
+                    ", Body=" + request.downloadHandler.text);
                 yield break;
             }
 
@@ -122,6 +142,10 @@ public sealed class AppleAuthManager : MonoBehaviour
             PlayerPrefs.SetInt("IsNewUser", response.is_new_user ? 1 : 0);
             PlayerPrefs.SetInt("HasProfile", response.has_profile ? 1 : 0);
             PlayerPrefs.Save();
+            IsLoggedIn = true;
+
+            if (!navigateAfterLogin)
+                yield break;
 
             if (response.is_new_user || !response.has_profile)
             {
