@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: AppleAuthConfig
   m_EditorClassIdentifier: 
   appleClientId: com.platusalmon.game
-  useMockInEditor: 1
+  useMockInEditor: 0

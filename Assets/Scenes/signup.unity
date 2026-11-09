@@ -2824,20 +2824,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   languagePopup: {fileID: 1117477446}
---- !u!114 &2058403134
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 823892921}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6e97659f70a34b6c9172744e5fdcdb65, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  config: {fileID: 11400000, guid: 723c660d26ca4c97a20af2a1b03b91e4, type: 2}
-  languagePopup: {fileID: 1117477446}
 --- !u!4 &823892923
 Transform:
   m_ObjectHideFlags: 0
@@ -5925,7 +5911,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!210 &1818879269
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -6254,6 +6240,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &2058403134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 823892921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e97659f70a34b6c9172744e5fdcdb65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  config: {fileID: 11400000, guid: 723c660d26ca4c97a20af2a1b03b91e4, type: 2}
+  languagePopup: {fileID: 1117477446}
 --- !u!1 &2114071392
 GameObject:
   m_ObjectHideFlags: 0

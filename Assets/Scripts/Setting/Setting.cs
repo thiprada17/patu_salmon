@@ -26,7 +26,9 @@ public class Setting : MonoBehaviour
     [SerializeField] TMP_Text languageValue;  
     [SerializeField] GameObject dropdownPanel;   
     [SerializeField] Button[] langButtons;       
-    [SerializeField] GameObject[] langChecks;   
+    [SerializeField] GameObject[] langChecks;
+
+    [SerializeField] LanguagePopup languagePopup;
 
     readonly string[] langNames = { "Thai", "English", "Japanese" };
     readonly string[] langCodes = { "th", "en", "ja" };
@@ -34,6 +36,10 @@ public class Setting : MonoBehaviour
  
     [Header("Logout")]
     [SerializeField] Button logoutButton;
+
+    [Header("Delete Account")]
+    [SerializeField] Button deleteButton;
+    [SerializeField] LogoutPopup accountConfirmationPopup;
 
     [Header("Back")]
     [SerializeField] Button backButton;
@@ -73,12 +79,16 @@ public class Setting : MonoBehaviour
 
         if (dropdownPanel != null) dropdownPanel.SetActive(false);
 
-        
+
         if (langButtons != null)
         {
             for (int i = 0; i < langButtons.Length; i++)
             {
                 if (langButtons[i] == null) continue;
+
+                bool isEnglish = i == 1;
+                langButtons[i].interactable = isEnglish;
+
                 int captured = i;
                 langButtons[i].onClick.AddListener(() => ChooseLanguage(captured));
             }
@@ -89,6 +99,7 @@ public class Setting : MonoBehaviour
         if (backgroundButton != null) backgroundButton.onClick.AddListener(() => ToggleSound("BgmOn", backgroundValue, backgroundButton));
         if (languageButton != null) languageButton.onClick.AddListener(ToggleDropdown);
         if (logoutButton != null) logoutButton.onClick.AddListener(OnLogout);
+        if (deleteButton != null) deleteButton.onClick.AddListener(OnDeleteAccount);
         //if (backButton != null) backButton.onClick.AddListener(OnBack);
     }
 
@@ -170,10 +181,11 @@ public class Setting : MonoBehaviour
 
     void ChooseLanguage(int index)
     {
-        langIndex = Mathf.Clamp(index, 0, langNames.Length - 1);
+        if (index != 1) return; // English only
 
+        langIndex = 1;
         PlayerPrefs.SetInt("LanguageIndex", langIndex);
-        PlayerPrefs.SetString("Language", langCodes[langIndex]);
+        PlayerPrefs.SetString("Language", "english");
         PlayerPrefs.Save();
 
         SetLanguageLabel(langIndex);
@@ -181,7 +193,7 @@ public class Setting : MonoBehaviour
         CloseDropdown();
     }
 
- 
+
     void RefreshChecks()
     {
         if (langChecks == null) return;
@@ -198,7 +210,32 @@ public class Setting : MonoBehaviour
         languageValue.text = langNames[Mathf.Clamp(index, 0, langNames.Length - 1)];
     }
 
-    
+    int GetLanguageIndex()
+    {
+        if (PlayerPrefs.HasKey("Language"))
+        {
+            string savedLanguage = PlayerPrefs.GetString("Language").ToLowerInvariant();
+
+            switch (savedLanguage)
+            {
+                case "english":
+                case "en":
+                    return 1;
+
+                case "japanese":
+                case "ja":
+                    return 2;
+
+                case "thai":
+                case "th":
+                    return 0;
+            }
+        }
+
+        return Mathf.Clamp(PlayerPrefs.GetInt("LanguageIndex", 0), 0, langNames.Length - 1);
+    }
+
+
     void OnLogout()
     {
         if (isBusy) return;
@@ -208,6 +245,20 @@ public class Setting : MonoBehaviour
             settingPopup.SetActive(true);
             isBusy = false;
 
+        }));
+    }
+
+    void OnDeleteAccount()
+    {
+        if (isBusy) return;
+        isBusy = true;
+        StartCoroutine(PunchThen(deleteButton.transform, () =>
+        {
+            isBusy = false;
+            if (accountConfirmationPopup != null)
+                accountConfirmationPopup.OpenDeleteConfirmation();
+            else
+                Debug.LogError("Setting: Delete account confirmation popup is not assigned.");
         }));
     }
 

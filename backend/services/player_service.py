@@ -1,6 +1,10 @@
+import logging
+
 from fastapi import HTTPException
 from repositories.user_repository import UserRepository
 from repositories.stats_repository import StatsRepository
+
+logger = logging.getLogger(__name__)
 
 
 class PlayerService:
@@ -75,10 +79,7 @@ class PlayerService:
         except HTTPException:
             raise
         except Exception as exc:
-            print(
-                f"[PlayerService] Save player failed: "
-                f"{type(exc).__name__}: {exc}"
-            )
+            logger.exception("Save player failed for user_id=%s", user_id)
             raise HTTPException(
                 status_code=500,
                 detail="Failed to save player data"
@@ -95,13 +96,10 @@ class PlayerService:
             }
 
         except Exception as exc:
-            print(
-                f"[PlayerService] Create stats failed: "
-                f"{type(exc).__name__}: {exc}"
-            )
+            logger.exception("Create player stats failed for user_id=%s", user_id)
             raise HTTPException(
                 status_code=500,
-                detail=f"Failed to create player stats: {exc}"
+                detail="Failed to create player stats"
             ) from exc
 
     
@@ -123,7 +121,7 @@ class PlayerService:
         except HTTPException:
             raise
         except Exception as exc:
-            print(f"[PlayerService] Load stats failed: {exc}")
+            logger.exception("Load player stats failed for user_id=%s", user_id)
             raise HTTPException(
                 status_code=500,
                 detail="Failed to load player stats"
@@ -171,7 +169,7 @@ class PlayerService:
         except HTTPException:
             raise
         except Exception as exc:
-            print(f"[PlayerService] Finish work day failed: {exc}")
+            logger.exception("Finish work day failed for user_id=%s", user_id)
             raise HTTPException(
                 status_code=500,
                 detail="Failed to save work day"
