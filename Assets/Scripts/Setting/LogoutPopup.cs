@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Networking;
 
 public class LogoutPopup : MonoBehaviour
 {
@@ -22,6 +23,7 @@ public class LogoutPopup : MonoBehaviour
     [SerializeField] float punchTime = 0.16f;
 
     bool isBusy;
+    bool deletingAccount;
     public GameObject popupRoot;
     Vector3 panelScale;
     bool scaleSaved;
@@ -60,6 +62,12 @@ public class LogoutPopup : MonoBehaviour
         isBusy = true;
         StartCoroutine(PunchThen(confirmButton, () =>
         {
+            if (deletingAccount)
+            {
+                StartCoroutine(DeleteAccountRequest());
+                return;
+            }
+
             PlayerPrefs.DeleteKey("Username");
             PlayerPrefs.Save();
 
@@ -67,8 +75,53 @@ public class LogoutPopup : MonoBehaviour
         }));
     }
 
+    public void OpenDeleteConfirmation()
+    {
+        deletingAccount = true;
+        if (popupRoot != null) popupRoot.SetActive(true);
+        else gameObject.SetActive(true);
+    }
+
+    IEnumerator DeleteAccountRequest()
+    {
+        string accessToken = PlayerPrefs.GetString("AccessToken", "");
+        if (string.IsNullOrEmpty(accessToken))
+            accessToken = PlayerPrefs.GetString("access_token", "");
+        if (string.IsNullOrEmpty(accessToken))
+        {
+            Debug.LogError("Account deletion failed: no active access token.");
+            isBusy = false;
+            yield break;
+        }
+
+        using (UnityWebRequest request = UnityWebRequest.Delete(BackendConfig.BaseUrl + "/user/account"))
+        {
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.SetRequestHeader("Authorization", "Bearer " + accessToken);
+            yield return request.SendWebRequest();
+
+            if (request.result != UnityWebRequest.Result.Success)
+            {
+                Debug.LogError("Account deletion failed: " + request.error + " " + request.downloadHandler.text);
+                isBusy = false;
+                yield break;
+            }
+        }
+
+        PlayerPrefs.DeleteKey("AccessToken");
+        PlayerPrefs.DeleteKey("RefreshToken");
+        PlayerPrefs.DeleteKey("access_token");
+        PlayerPrefs.DeleteKey("refresh_token");
+        PlayerPrefs.DeleteKey("UserID");
+        PlayerPrefs.DeleteKey("ResumePlayerSetup");
+        PlayerPrefs.DeleteKey("Username");
+        PlayerPrefs.Save();
+        SceneManager.LoadScene("signup");
+    }
+
     void Close()
     {
+        deletingAccount = false;
         if (popupRoot != null) popupRoot.SetActive(false);
         else gameObject.SetActive(false);
     }
