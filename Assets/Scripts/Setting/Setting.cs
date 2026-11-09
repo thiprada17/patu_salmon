@@ -37,6 +37,10 @@ public class Setting : MonoBehaviour
     [Header("Logout")]
     [SerializeField] Button logoutButton;
 
+    [Header("Delete Account")]
+    [SerializeField] Button deleteButton;
+    [SerializeField] LogoutPopup accountConfirmationPopup;
+
     [Header("Back")]
     [SerializeField] Button backButton;
     //[SerializeField] string backScene = "MainMenu";
@@ -95,6 +99,7 @@ public class Setting : MonoBehaviour
         if (backgroundButton != null) backgroundButton.onClick.AddListener(() => ToggleSound("BgmOn", backgroundValue, backgroundButton));
         if (languageButton != null) languageButton.onClick.AddListener(ToggleDropdown);
         if (logoutButton != null) logoutButton.onClick.AddListener(OnLogout);
+        if (deleteButton != null) deleteButton.onClick.AddListener(OnDeleteAccount);
         //if (backButton != null) backButton.onClick.AddListener(OnBack);
     }
 
@@ -240,6 +245,20 @@ public class Setting : MonoBehaviour
             settingPopup.SetActive(true);
             isBusy = false;
 
+        }));
+    }
+
+    void OnDeleteAccount()
+    {
+        if (isBusy) return;
+        isBusy = true;
+        StartCoroutine(PunchThen(deleteButton.transform, () =>
+        {
+            isBusy = false;
+            if (accountConfirmationPopup != null)
+                accountConfirmationPopup.OpenDeleteConfirmation();
+            else
+                Debug.LogError("Setting: Delete account confirmation popup is not assigned.");
         }));
     }
 
