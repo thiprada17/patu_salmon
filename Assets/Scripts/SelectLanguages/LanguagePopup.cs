@@ -184,7 +184,7 @@ public class LanguagePopup : MonoBehaviour
 
     private string selectedLanguage;
 
-    private void SelectLanguage(string language)
+    public void SelectLanguage(string language)
     {
         selectedLanguage = language;
 

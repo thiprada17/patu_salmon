@@ -26,7 +26,9 @@ public class Setting : MonoBehaviour
     [SerializeField] TMP_Text languageValue;  
     [SerializeField] GameObject dropdownPanel;   
     [SerializeField] Button[] langButtons;       
-    [SerializeField] GameObject[] langChecks;   
+    [SerializeField] GameObject[] langChecks;
+
+    [SerializeField] LanguagePopup languagePopup;
 
     readonly string[] langNames = { "Thai", "English", "Japanese" };
     readonly string[] langCodes = { "th", "en", "ja" };
@@ -73,12 +75,16 @@ public class Setting : MonoBehaviour
 
         if (dropdownPanel != null) dropdownPanel.SetActive(false);
 
-        
+
         if (langButtons != null)
         {
             for (int i = 0; i < langButtons.Length; i++)
             {
                 if (langButtons[i] == null) continue;
+
+                bool isEnglish = i == 1;
+                langButtons[i].interactable = isEnglish;
+
                 int captured = i;
                 langButtons[i].onClick.AddListener(() => ChooseLanguage(captured));
             }
@@ -170,10 +176,11 @@ public class Setting : MonoBehaviour
 
     void ChooseLanguage(int index)
     {
-        langIndex = Mathf.Clamp(index, 0, langNames.Length - 1);
+        if (index != 1) return; // English only
 
+        langIndex = 1;
         PlayerPrefs.SetInt("LanguageIndex", langIndex);
-        PlayerPrefs.SetString("Language", langCodes[langIndex]);
+        PlayerPrefs.SetString("Language", "english");
         PlayerPrefs.Save();
 
         SetLanguageLabel(langIndex);
@@ -181,7 +188,7 @@ public class Setting : MonoBehaviour
         CloseDropdown();
     }
 
- 
+
     void RefreshChecks()
     {
         if (langChecks == null) return;
@@ -198,7 +205,32 @@ public class Setting : MonoBehaviour
         languageValue.text = langNames[Mathf.Clamp(index, 0, langNames.Length - 1)];
     }
 
-    
+    int GetLanguageIndex()
+    {
+        if (PlayerPrefs.HasKey("Language"))
+        {
+            string savedLanguage = PlayerPrefs.GetString("Language").ToLowerInvariant();
+
+            switch (savedLanguage)
+            {
+                case "english":
+                case "en":
+                    return 1;
+
+                case "japanese":
+                case "ja":
+                    return 2;
+
+                case "thai":
+                case "th":
+                    return 0;
+            }
+        }
+
+        return Mathf.Clamp(PlayerPrefs.GetInt("LanguageIndex", 0), 0, langNames.Length - 1);
+    }
+
+
     void OnLogout()
     {
         if (isBusy) return;
