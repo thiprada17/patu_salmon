@@ -10,3 +10,6 @@ create table if not exists user_management.apple_auth_tokens (
 alter table user_management.apple_auth_tokens enable row level security;
 revoke all on table user_management.apple_auth_tokens from anon, authenticated;
 grant all on table user_management.apple_auth_tokens to service_role;
+
+-- Make the new table visible to PostgREST immediately after applying the migration.
+notify pgrst, 'reload schema';
