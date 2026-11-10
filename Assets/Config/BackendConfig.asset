@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   productionBaseUrl: https://patu-salmon.onrender.com
   developmentBaseUrl: http://127.0.0.1:8000
-  useDevelopmentBackendInEditor: 1
+  useDevelopmentBackendInEditor: 0
