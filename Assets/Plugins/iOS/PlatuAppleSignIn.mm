@@ -89,3 +89,47 @@ extern "C" void PlatuAppleSignIn(const char *gameObjectName, const char *rawNonc
         [controller performRequests];
     });
 }
+
+extern "C" void PlatuShowEmailConfirmationPrompt(void) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIWindow *keyWindow = nil;
+        for (UIScene *scene in UIApplication.sharedApplication.connectedScenes) {
+            if (![scene isKindOfClass:[UIWindowScene class]]) continue;
+            UIWindowScene *windowScene = (UIWindowScene *)scene;
+            for (UIWindow *window in windowScene.windows) {
+                if (window.isKeyWindow) {
+                    keyWindow = window;
+                    break;
+                }
+            }
+            if (keyWindow) break;
+        }
+
+        UIViewController *presenter = keyWindow.rootViewController;
+        while (presenter.presentedViewController)
+            presenter = presenter.presentedViewController;
+        if (!presenter) return;
+
+        UIAlertController *alert = [UIAlertController
+            alertControllerWithTitle:@"ยืนยันอีเมล"
+            message:@"กรุณาเปิด Gmail แล้วกดลิงก์ยืนยัน จากนั้นกลับมาที่เกม"
+            preferredStyle:UIAlertControllerStyleAlert];
+
+        [alert addAction:[UIAlertAction actionWithTitle:@"ไว้ทีหลัง"
+            style:UIAlertActionStyleCancel handler:nil]];
+        [alert addAction:[UIAlertAction actionWithTitle:@"เปิด Gmail"
+            style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction *action) {
+                NSURL *gmailURL = [NSURL URLWithString:@"googlegmail://"];
+                [[UIApplication sharedApplication] openURL:gmailURL options:@{}
+                    completionHandler:^(BOOL success) {
+                        if (!success) {
+                            NSURL *mailURL = [NSURL URLWithString:@"mailto:"];
+                            [[UIApplication sharedApplication] openURL:mailURL options:@{}
+                                completionHandler:nil];
+                        }
+                    }];
+            }]];
+
+        [presenter presentViewController:alert animated:YES completion:nil];
+    });
+}

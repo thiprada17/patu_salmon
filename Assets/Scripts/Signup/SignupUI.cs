@@ -4,9 +4,15 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 using System.Collections;
+using System.Runtime.InteropServices;
 
 public class SignupUI : MonoBehaviour
 {
+#if UNITY_IOS && !UNITY_EDITOR
+    [DllImport("__Internal")]
+    private static extern void PlatuShowEmailConfirmationPrompt();
+#endif
+
     [Header("input")]
     [SerializeField] TMP_InputField emailInput;
     [SerializeField] TMP_InputField passwordInput;
@@ -206,6 +212,9 @@ public class SignupUI : MonoBehaviour
                 if (emailErrorGroup != null)
                     emailErrorGroup.SetActive(true);
             }
+#if UNITY_IOS && !UNITY_EDITOR
+            PlatuShowEmailConfirmationPrompt();
+#endif
             ReleaseButton();
             return;
         }
