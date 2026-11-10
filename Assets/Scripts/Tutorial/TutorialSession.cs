@@ -1,21 +1,14 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public static class TutorialSession
 {
-    private const string TutorialCompletedKey =
-        "TutorialCompleted";
+    private const string PlayerIdKey = "UserID";
+    private const string TutorialCompletedKeyPrefix = "TutorialCompleted_";
 
     public static bool IsInitialized { get; private set; }
     public static bool IsFirstTimePlayer { get; private set; }
     public static bool IsTutorialActive { get; private set; }
-
     public static bool ShowCongratulationsOnMap { get; private set; }
-
-    // True if the tutorial was completed in a previous session
-    // or during the current session.
-    public static bool HasCompletedTutorial =>
-        PlayerPrefs.GetInt(TutorialCompletedKey, 0) == 1;
 
     private static int tutorialCustomersServed;
     private const int TutorialCustomerLimit = 3;
@@ -27,21 +20,40 @@ public static class TutorialSession
         IsTutorialActive &&
         tutorialCustomersServed >= TutorialCustomerLimit;
 
+    public static bool HasCompletedTutorial
+    {
+        get
+        {
+            string playerId = GetPlayerId();
+
+            if (string.IsNullOrEmpty(playerId))
+                return false;
+
+            return PlayerPrefs.GetInt(
+                GetTutorialCompletedKey(playerId),
+                0
+            ) == 1;
+        }
+    }
+
     public static void Initialize(int workDays)
     {
         IsInitialized = true;
 
-        // Show the tutorial only if it has not been completed
-        // and the player has not completed a workday.
+        string playerId = GetPlayerId();
+
         IsFirstTimePlayer =
-            !HasCompletedTutorial && workDays == 0;
+            !string.IsNullOrEmpty(playerId) &&
+            !HasCompletedTutorial &&
+            workDays == 0;
 
         IsTutorialActive = false;
         ShowCongratulationsOnMap = false;
         tutorialCustomersServed = 0;
 
         Debug.Log(
-            $"[TutorialSession] work_days={workDays}, " +
+            $"[TutorialSession] playerId={playerId}, " +
+            $"work_days={workDays}, " +
             $"HasCompletedTutorial={HasCompletedTutorial}, " +
             $"FirstTimePlayer={IsFirstTimePlayer}"
         );
@@ -49,10 +61,7 @@ public static class TutorialSession
 
     public static void StartTutorial()
     {
-        if (!IsInitialized || !IsFirstTimePlayer)
-            return;
-
-        if (IsTutorialActive)
+        if (!IsInitialized || !IsFirstTimePlayer || IsTutorialActive)
             return;
 
         tutorialCustomersServed = 0;
@@ -66,10 +75,8 @@ public static class TutorialSession
 
     public static void RegisterTutorialCustomerServed()
     {
-        if (!IsTutorialActive)
-            return;
-
-        if (tutorialCustomersServed >= TutorialCustomerLimit)
+        if (!IsTutorialActive ||
+            tutorialCustomersServed >= TutorialCustomerLimit)
             return;
 
         tutorialCustomersServed++;
@@ -102,8 +109,17 @@ public static class TutorialSession
             return;
         }
 
-        // Save completion permanently on this device.
-        PlayerPrefs.SetInt(TutorialCompletedKey, 1);
+        string playerId = GetPlayerId();
+
+        if (string.IsNullOrEmpty(playerId))
+        {
+            Debug.LogError(
+                "[TutorialSession] Cannot save completion: UserID is missing."
+            );
+            return;
+        }
+
+        PlayerPrefs.SetInt(GetTutorialCompletedKey(playerId), 1);
         PlayerPrefs.Save();
 
         IsTutorialActive = false;
@@ -111,26 +127,22 @@ public static class TutorialSession
         ShowCongratulationsOnMap = true;
 
         Debug.Log(
-            "[TutorialSession] Tutorial completed and saved. " +
-            "Returning to map."
+            $"[TutorialSession] Tutorial completed and saved for player " +
+            $"{playerId}. Returning to map."
         );
 
-        if (TutorialPanel != null && TutorialPanelancle != null)
-        {
+        if (TutorialPanel != null)
             TutorialPanel.SetActive(false);
+
+        if (TutorialPanelancle != null)
             TutorialPanelancle.SetActive(false);
-        }
 
         MapGameLoading.Load("map");
     }
 
     public static void CompleteTutorial()
     {
-        // This method only deactivates the tutorial.
-        // It does not mark it completed because the final customer
-        // may not have left yet.
         IsTutorialActive = false;
-
         Debug.Log("[TutorialSession] Tutorial deactivated.");
     }
 
@@ -141,12 +153,22 @@ public static class TutorialSession
 
     public static void ResetTutorialCompletion()
     {
-        // Use only when intentionally allowing the tutorial
-        // to be played again, such as during testing.
-        PlayerPrefs.DeleteKey(TutorialCompletedKey);
+        string playerId = GetPlayerId();
+
+        if (string.IsNullOrEmpty(playerId))
+        {
+            Debug.LogWarning(
+                "[TutorialSession] Cannot reset completion: UserID is missing."
+            );
+            return;
+        }
+
+        PlayerPrefs.DeleteKey(GetTutorialCompletedKey(playerId));
         PlayerPrefs.Save();
 
-        Debug.Log("[TutorialSession] Tutorial completion reset.");
+        Debug.Log(
+            $"[TutorialSession] Tutorial completion reset for player {playerId}."
+        );
     }
 
     public static void ResetSession()
@@ -158,5 +180,26 @@ public static class TutorialSession
         tutorialCustomersServed = 0;
 
         Debug.Log("[TutorialSession] Session reset.");
+    }
+
+    private static string GetPlayerId()
+    {
+        string playerId = PlayerPrefs.GetString(PlayerIdKey, "").Trim();
+
+        // Also support projects that store UserID as an integer.
+        if (string.IsNullOrEmpty(playerId))
+        {
+            int numericId = PlayerPrefs.GetInt(PlayerIdKey, 0);
+
+            if (numericId != 0)
+                playerId = numericId.ToString();
+        }
+
+        return playerId;
+    }
+
+    private static string GetTutorialCompletedKey(string playerId)
+    {
+        return TutorialCompletedKeyPrefix + playerId;
     }
 }
