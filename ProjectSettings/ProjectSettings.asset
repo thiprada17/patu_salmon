@@ -170,6 +170,7 @@ PlayerSettings:
   applicationIdentifier:
     Android: com.DefaultCompany.patutest
     Standalone: com.DefaultCompany.2D-URP
+    iPhone: com.platusalmon.game
   buildNumber:
     Standalone: 0
     VisionOS: 0
