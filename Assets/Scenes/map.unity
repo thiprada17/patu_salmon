@@ -752,7 +752,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 74516335}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 184563582}
+        m_TargetAssemblyTypeName: MenuButtonLoader, Assembly-CSharp
+        m_MethodName: LoadSceneOverlay
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: bulb
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &74516335
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1629,6 +1641,55 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 171425899}
   m_CullTransparentMesh: 1
+--- !u!1 &184563581
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 184563583}
+  - component: {fileID: 184563582}
+  m_Layer: 0
+  m_Name: MenuButtonLoader
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &184563582
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 184563581}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e57e042487469ef4987848f7789b57d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropdownAnimation: {fileID: 0}
+  arrowDown: {fileID: 0}
+  arrowUp: {fileID: 0}
+  mapButton: {fileID: 0}
+  settingButton: {fileID: 0}
+--- !u!4 &184563583
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 184563581}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.056401476, y: -0.5908245, z: 80.04518}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &190953860
 GameObject:
   m_ObjectHideFlags: 0
@@ -6217,7 +6278,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 887631244}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 184563582}
+        m_TargetAssemblyTypeName: MenuButtonLoader, Assembly-CSharp
+        m_MethodName: LoadSceneOverlay
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: bulb
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &887631244
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6570,7 +6643,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 917883252}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 184563582}
+        m_TargetAssemblyTypeName: MenuButtonLoader, Assembly-CSharp
+        m_MethodName: LoadSceneOverlay
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: bulb
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &917883252
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10135,7 +10220,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1408283185}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 184563582}
+        m_TargetAssemblyTypeName: MenuButtonLoader, Assembly-CSharp
+        m_MethodName: LoadSceneOverlay
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: bulb
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1408283185
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10972,7 +11069,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1565787981}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 184563582}
+        m_TargetAssemblyTypeName: MenuButtonLoader, Assembly-CSharp
+        m_MethodName: LoadSceneOverlay
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: bulb
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1565787981
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14954,3 +15063,4 @@ SceneRoots:
   - {fileID: 1145316544}
   - {fileID: 950487797}
   - {fileID: 995237369}
+  - {fileID: 184563583}
