@@ -102,13 +102,13 @@ def test_production_login_exchanges_verified_token_for_supabase_session(monkeypa
     )
     monkeypatch.setattr(
         "services.apple_auth_service._supabase_sign_in",
-        lambda identity_token: passed_tokens.append(identity_token) or supabase_result,
+        lambda identity_token, nonce: passed_tokens.append((identity_token, nonce)) or supabase_result,
     )
     monkeypatch.setattr("services.apple_auth_service._has_completed_profile", lambda user_id: True)
 
     response = apple_login(token, nonce="raw-nonce")
 
-    assert passed_tokens == [token]
+    assert passed_tokens == [(token, "raw-nonce")]
     assert response["user_id"] == "supabase-user-id"
     assert response["access_token"] == "supabase-access"
     assert response["refresh_token"] == "supabase-refresh"

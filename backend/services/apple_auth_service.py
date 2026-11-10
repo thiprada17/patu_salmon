@@ -206,7 +206,7 @@ def create_apple_client_secret(settings: Settings | None = None) -> str:
     )
 
 
-def _supabase_sign_in(identity_token: str):
+def _supabase_sign_in(identity_token: str, nonce: str | None = None):
     from supabase import ClientOptions, create_client
 
     from core.config import SUPABASE_ANON_KEY, SUPABASE_URL
@@ -219,9 +219,12 @@ def _supabase_sign_in(identity_token: str):
         SUPABASE_ANON_KEY,
         options=ClientOptions(auto_refresh_token=False, persist_session=False),
     )
-    # Nonce is verified above. Omitting it here avoids re-hashing a nonce that
-    # Supabase Auth may interpret differently across provider/client versions.
-    return client.auth.sign_in_with_id_token({"provider": "apple", "token": identity_token})
+    credentials = {"provider": "apple", "token": identity_token}
+    if nonce is not None:
+        # Supabase expects the raw nonce and hashes it when checking the
+        # SHA-256 nonce claim returned by Apple's native sign-in flow.
+        credentials["nonce"] = nonce
+    return client.auth.sign_in_with_id_token(credentials)
 
 
 def _has_completed_profile(user_id: str) -> bool:
@@ -248,7 +251,7 @@ def apple_login(identity_token: str, nonce: str | None = None) -> dict[str, Any]
         }
 
     try:
-        result = _supabase_sign_in(identity_token)
+        result = _supabase_sign_in(identity_token, nonce)
         if not result.user or not result.session:
             raise HTTPException(status_code=401, detail="Supabase Apple sign-in failed")
 
@@ -265,4 +268,8 @@ def apple_login(identity_token: str, nonce: str | None = None) -> dict[str, Any]
     except HTTPException:
         raise
     except Exception as exc:
+        logger.exception(
+            "Supabase Apple sign-in failed: error_type=%s",
+            type(exc).__name__,
+        )
         raise HTTPException(status_code=401, detail="Apple sign-in with Supabase failed") from exc
