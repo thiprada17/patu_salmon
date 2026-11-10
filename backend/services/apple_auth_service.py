@@ -200,18 +200,27 @@ def create_apple_client_secret(settings: Settings | None = None, client_id: str 
     if client_id not in client_ids:
         raise RuntimeError("Apple client ID is not configured")
     now = int(time.time())
-    return jwt.encode(
-        {
-            "iss": settings.apple_team_id,
-            "iat": now,
-            "exp": now + (60 * 60 * 24 * 150),
-            "aud": "https://appleid.apple.com",
-            "sub": client_id,
-        },
-        settings.normalized_apple_private_key,
-        algorithm="ES256",
-        headers={"kid": settings.apple_key_id},
-    )
+    try:
+        return jwt.encode(
+            {
+                "iss": settings.apple_team_id,
+                "iat": now,
+                "exp": now + (60 * 60 * 24 * 150),
+                "aud": "https://appleid.apple.com",
+                "sub": client_id,
+            },
+            settings.normalized_apple_private_key,
+            algorithm="ES256",
+            headers={"kid": settings.apple_key_id},
+        )
+    except (TypeError, ValueError) as exc:
+        logger.exception(
+            "Could not create Apple client secret; verify APPLE_PRIVATE_KEY is the full valid .p8 PEM"
+        )
+        raise HTTPException(
+            status_code=503,
+            detail="APPLE_PRIVATE_KEY is invalid; set the full PEM contents of the Apple .p8 key",
+        ) from exc
 
 
 def _apple_client_id_for_claims(claims: dict[str, Any], settings: Settings) -> str:
