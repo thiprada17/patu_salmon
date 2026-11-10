@@ -203,8 +203,7 @@ public class SignupUI : MonoBehaviour
 
         if (res.needs_email_confirmation)
         {
-            const string confirmationMessage =
-                "Confirmation email sent. Open the link on this device to continue.";
+            const string confirmationMessage = "Please Confirm Email";
             Debug.Log(confirmationMessage);
             if (emailError != null)
             {

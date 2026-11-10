@@ -121,13 +121,7 @@ extern "C" void PlatuShowEmailConfirmationPrompt(void) {
             style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction *action) {
                 NSURL *gmailURL = [NSURL URLWithString:@"googlegmail://"];
                 [[UIApplication sharedApplication] openURL:gmailURL options:@{}
-                    completionHandler:^(BOOL success) {
-                        if (!success) {
-                            NSURL *mailURL = [NSURL URLWithString:@"mailto:"];
-                            [[UIApplication sharedApplication] openURL:mailURL options:@{}
-                                completionHandler:nil];
-                        }
-                    }];
+                    completionHandler:nil];
             }]];
 
         [presenter presentViewController:alert animated:YES completion:nil];
