@@ -266,6 +266,14 @@ public class LoginManager : MonoBehaviour
             PlayerStatsResponse stats =
                 JsonUtility.FromJson<PlayerStatsResponse>(body);
 
+            // JsonUtility turns absent/null integer fields into zero. Mark the
+            // profile incomplete instead of mistaking that default for saved data.
+            if (stats != null &&
+                (!HasIntegerField(body, "coin") || !HasIntegerField(body, "work_days")))
+            {
+                stats.username = "";
+            }
+
             if (stats == null ||
                 string.IsNullOrEmpty(stats.user_id))
             {
@@ -278,6 +286,12 @@ public class LoginManager : MonoBehaviour
 
             onSuccess?.Invoke(stats);
         }
+    }
+
+    private static bool HasIntegerField(string json, string fieldName)
+    {
+        string pattern = "\"" + fieldName + "\"\\s*:\\s*-?\\d+";
+        return System.Text.RegularExpressions.Regex.IsMatch(json, pattern);
     }
 
     // ---------- HTTP ----------
@@ -483,6 +497,8 @@ public class LoginManager : MonoBehaviour
     {
         public string message;
         public string user_id;
+        public string username;
+        public string language;
         public int coin;
         public int work_days;
         public int work_streak;

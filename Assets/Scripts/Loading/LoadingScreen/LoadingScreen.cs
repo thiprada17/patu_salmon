@@ -113,19 +113,6 @@ public class LoadingScreen : MonoBehaviour
             return;
         }
 
-        string username = PlayerPrefs.GetString("Username", "");
-        string character = PlayerPrefs.GetString("SelectedCharacter", "");
-        string language = PlayerPrefs.GetString("Language", "");
-
-        if (string.IsNullOrWhiteSpace(username) ||
-            string.IsNullOrWhiteSpace(character) ||
-            string.IsNullOrWhiteSpace(language))
-        {
-            GameLogger.Error("Loading", "Player setup is incomplete. Returning to language selection.");
-            ReturnToPlayerSetup();
-            return;
-        }
-
         if (!PlayerPrefs.HasKey("IsNewUser") ||
             !PlayerPrefs.HasKey("HasProfile"))
         {
@@ -149,6 +136,21 @@ public class LoadingScreen : MonoBehaviour
             );
 
             PrepareToEnterGame();
+            return;
+        }
+
+        // Existing players already have their profile on the server. The local
+        // setup fields are only required when creating a new starter profile.
+        string username = PlayerPrefs.GetString("Username", "");
+        string character = PlayerPrefs.GetString("SelectedCharacter", "");
+        string language = PlayerPrefs.GetString("Language", "");
+
+        if (string.IsNullOrWhiteSpace(username) ||
+            string.IsNullOrWhiteSpace(character) ||
+            string.IsNullOrWhiteSpace(language))
+        {
+            GameLogger.Error("Loading", "Player setup is incomplete. Returning to language selection.");
+            ReturnToPlayerSetup();
             return;
         }
 

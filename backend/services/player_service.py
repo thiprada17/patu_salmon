@@ -105,17 +105,20 @@ class PlayerService:
     
     def get_player_stats(self, user_id: str):
         try:
-            stats = self.stats.create_if_not_exists(user_id)
-
-            if not stats:
-                raise HTTPException(
-                    status_code=500,
-                    detail="Could not load player stats"
-                )
+            # A GET must report missing saved data instead of silently creating
+            # default stats, so the client can detect an incomplete profile.
+            stats = self.stats.get_by_user_id(user_id)
+            profile = self.users.get_by_user_id(user_id)
 
             return {
                 "message": "Player stats loaded successfully",
-                **stats,
+                "user_id": user_id,
+                "username": profile.get("username") if profile else None,
+                "language": profile.get("language") if profile else None,
+                "coin": stats.get("coin") if stats else None,
+                "work_days": stats.get("work_days") if stats else None,
+                "work_streak": stats.get("work_streak") if stats else None,
+                "total_customers_served": stats.get("total_customers_served") if stats else None,
             }
 
         except HTTPException:

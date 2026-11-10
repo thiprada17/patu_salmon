@@ -290,6 +290,33 @@ public class GoogleLogin : MonoBehaviour
                     return;
                 }
 
+                string language = stats.language == null
+                    ? ""
+                    : stats.language.Trim().ToLowerInvariant();
+                bool hasRequiredPlayerData =
+                    !string.IsNullOrWhiteSpace(stats.username) &&
+                    (language == "english" || language == "thai" || language == "japanese") &&
+                    stats.coin >= 0 &&
+                    stats.work_days >= 0;
+
+                if (!hasRequiredPlayerData)
+                {
+                    Debug.LogWarning("Google Login: Existing player profile is incomplete; opening player setup.");
+                    PlayerPrefs.SetInt("IsNewUser", 1);
+                    PlayerPrefs.SetInt("HasProfile", 0);
+                    PlayerPrefs.SetInt("ResumePlayerSetup", 1);
+                    PlayerPrefs.Save();
+
+                    if (languagePopup == null)
+                    {
+                        Debug.LogError("Google Login: Cannot open setup because languagePopup is NULL.");
+                        return;
+                    }
+
+                    StartCoroutine(OpenPopupNextFrame());
+                    return;
+                }
+
                 TutorialSession.Initialize(stats.work_days);
                 Debug.Log("[GoogleLogin] Existing user: opening loading scene.");
                 SceneManager.LoadScene("loading");

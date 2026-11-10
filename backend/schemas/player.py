@@ -1,6 +1,8 @@
 
 from uuid import UUID
 
+from typing import Optional
+
 from pydantic import BaseModel, Field
 
 
@@ -28,10 +30,12 @@ class StatsPlayerRequest(BaseModel):
 class StatsPlayerResponse(BaseModel):
     message: str
     user_id: str
-    coin: int
-    work_days: int
-    work_streak: int
-    total_customers_served: int
+    username: Optional[str] = None
+    language: Optional[str] = None
+    coin: Optional[int] = None
+    work_days: Optional[int] = None
+    work_streak: Optional[int] = None
+    total_customers_served: Optional[int] = None
 
 
 # ข้อมูลรายได้ที่ Unity ส่งมาเมื่อจบวัน
