@@ -291,6 +291,7 @@ public class GoogleLogin : MonoBehaviour
                 }
 
                 TutorialSession.Initialize(stats.work_days);
+                Debug.Log("[GoogleLogin] Existing user: opening loading scene.");
                 SceneManager.LoadScene("loading");
             },
             error => Debug.LogError("Google Login: Could not load player stats: " + error)

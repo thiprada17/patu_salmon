@@ -66,6 +66,7 @@ public class LoadingScreen : MonoBehaviour
     private void Start()
     {
         loadingStartTime = Time.time;
+        Debug.Log("[LoadingScreen] Entered loading scene; next scene=" + nextScene);
 
         if (loadingText != null)
             StartCoroutine(Hop());
@@ -81,6 +82,7 @@ public class LoadingScreen : MonoBehaviour
         if (Time.time - loadingStartTime < minimumLoadingTime)
             return;
 
+        Debug.Log("[LoadingScreen] Loading complete; opening " + nextScene);
         SceneManager.LoadScene(nextScene);
     }
 
