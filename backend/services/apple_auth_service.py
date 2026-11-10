@@ -270,10 +270,31 @@ def _exchange_apple_authorization_code(code: str, client_id: str, settings: Sett
             headers={"Content-Type": "application/x-www-form-urlencoded"},
             timeout=15.0,
         )
-        response.raise_for_status()
-        result = response.json()
+        if response.is_error:
+            # Apple returns a small JSON error (for example invalid_client or
+            # invalid_grant). Log only that response, never submitted tokens or
+            # the generated client secret.
+            try:
+                apple_error = response.json().get("error", "unknown_error")
+            except (ValueError, AttributeError):
+                apple_error = "non_json_error_response"
+            logger.warning(
+                "Apple authorization code exchange rejected: status=%s error=%s",
+                response.status_code,
+                apple_error,
+            )
+            raise HTTPException(status_code=401, detail="Apple authorization code exchange failed")
+        try:
+            result = response.json()
+        except ValueError as exc:
+            logger.warning("Apple token endpoint returned invalid JSON: status=%s", response.status_code)
+            raise HTTPException(status_code=502, detail="Apple token endpoint returned an invalid response") from exc
         if not result.get("refresh_token"):
-            raise ValueError("Apple token endpoint returned no refresh token")
+            logger.warning(
+                "Apple token endpoint response omitted refresh_token: fields=%s",
+                sorted(result.keys()),
+            )
+            raise HTTPException(status_code=401, detail="Apple did not return a refresh token")
         return result
     except HTTPException:
         raise
@@ -405,17 +426,41 @@ def apple_login(
         }
 
     client_id = _apple_client_id_for_claims(claims, settings)
-    if not authorization_code:
-        raise HTTPException(status_code=400, detail="Apple authorization code is required")
-    token_response = _exchange_apple_authorization_code(authorization_code, client_id, settings)
-
     try:
         result = _supabase_sign_in(identity_token, nonce)
         if not result.user or not result.session:
             raise HTTPException(status_code=401, detail="Supabase Apple sign-in failed")
 
         has_profile = _has_completed_profile(result.user.id)
-        _store_apple_refresh_token(result.user.id, token_response["refresh_token"], client_id, settings)
+
+        # The ID token is sufficient to complete sign-in with Supabase. Apple
+        # authorization codes are short-lived and single-use, so a failed
+        # code exchange must not lock the user out of the app. Keep attempting
+        # to capture a refresh token for later Apple grant revocation, but let
+        # account deletion report the missing token if capture never succeeds.
+        if authorization_code:
+            try:
+                token_response = _exchange_apple_authorization_code(
+                    authorization_code, client_id, settings
+                )
+                _store_apple_refresh_token(
+                    result.user.id,
+                    token_response["refresh_token"],
+                    client_id,
+                    settings,
+                )
+            except Exception as exc:
+                logger.warning(
+                    "Apple sign-in succeeded but revocation token capture failed: user_id=%s error_type=%s",
+                    result.user.id,
+                    type(exc).__name__,
+                )
+        else:
+            logger.warning(
+                "Apple sign-in succeeded without an authorization code; revocation token not captured: user_id=%s",
+                result.user.id,
+            )
+
         return {
             "user_id": result.user.id,
             "email": result.user.email or claims.get("email"),
