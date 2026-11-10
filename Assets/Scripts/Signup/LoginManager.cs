@@ -284,8 +284,24 @@ public class LoginManager : MonoBehaviour
                 yield break;
             }
 
+            SavePlayerProfileLocally(stats);
+
             onSuccess?.Invoke(stats);
         }
+    }
+
+    public static void SavePlayerProfileLocally(PlayerStatsResponse stats)
+    {
+        if (stats == null) return;
+
+        if (!string.IsNullOrWhiteSpace(stats.username))
+            PlayerPrefs.SetString("Username", stats.username);
+        if (!string.IsNullOrWhiteSpace(stats.character))
+            PlayerPrefs.SetString("SelectedCharacter", stats.character.ToLowerInvariant());
+        if (!string.IsNullOrWhiteSpace(stats.language))
+            PlayerPrefs.SetString("Language", stats.language.ToLowerInvariant());
+
+        PlayerPrefs.Save();
     }
 
     private static bool HasIntegerField(string json, string fieldName)
@@ -498,6 +514,7 @@ public class LoginManager : MonoBehaviour
         public string message;
         public string user_id;
         public string username;
+        public string character;
         public string language;
         public int coin;
         public int work_days;

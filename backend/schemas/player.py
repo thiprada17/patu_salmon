@@ -31,6 +31,7 @@ class StatsPlayerResponse(BaseModel):
     message: str
     user_id: str
     username: Optional[str] = None
+    character: Optional[str] = None
     language: Optional[str] = None
     coin: Optional[int] = None
     work_days: Optional[int] = None

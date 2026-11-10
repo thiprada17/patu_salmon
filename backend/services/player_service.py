@@ -114,6 +114,7 @@ class PlayerService:
                 "message": "Player stats loaded successfully",
                 "user_id": user_id,
                 "username": profile.get("username") if profile else None,
+                "character": profile.get("character") if profile else None,
                 "language": profile.get("language") if profile else None,
                 "coin": stats.get("coin") if stats else None,
                 "work_days": stats.get("work_days") if stats else None,

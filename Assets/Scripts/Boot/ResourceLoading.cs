@@ -113,11 +113,11 @@ public class ResourceLoading : MonoBehaviour
 
                     PlayerPrefs.Save();
 
-                    CheckPlayerSetup();
-
                     Debug.Log(
                         $"[ResourceLoading] Token ใช้ได้ UserID={response.user_id}"
                     );
+
+                    yield return RestorePlayerProfile(response.user_id, accessToken);
 
                     IsSessionValid = true;
                     IsCheckDone = true;
@@ -258,9 +258,12 @@ public class ResourceLoading : MonoBehaviour
 
             PlayerPrefs.Save();
 
-            CheckPlayerSetup();
-
             Debug.Log("[ResourceLoading] Refresh สำเร็จ");
+
+            string refreshedUserId = string.IsNullOrWhiteSpace(response.user_id)
+                ? PlayerPrefs.GetString("UserID", "")
+                : response.user_id;
+            yield return RestorePlayerProfile(refreshedUserId, response.access_token);
 
             IsSessionValid = true;
             IsCheckDone = true;
@@ -295,6 +298,74 @@ public class ResourceLoading : MonoBehaviour
             PlayerPrefs.SetInt("HasProfile", starterWasSaved ? 1 : 0);
         }
 
+        PlayerPrefs.Save();
+    }
+
+    private IEnumerator RestorePlayerProfile(string userId, string accessToken)
+    {
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            MarkSetupIncomplete();
+            yield break;
+        }
+
+        string url = BackendConfig.BaseUrl + "/player/stats/" +
+                     UnityWebRequest.EscapeURL(userId);
+        using (UnityWebRequest request = UnityWebRequest.Get(url))
+        {
+            request.SetRequestHeader("Authorization", "Bearer " + accessToken);
+            yield return request.SendWebRequest();
+
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                LoginManager.PlayerStatsResponse profile =
+                    JsonUtility.FromJson<LoginManager.PlayerStatsResponse>(request.downloadHandler.text);
+
+                bool complete = profile != null
+                    && !string.IsNullOrWhiteSpace(profile.username)
+                    && !profile.username.StartsWith("Player_", StringComparison.OrdinalIgnoreCase)
+                    && (profile.character == "salmon" || profile.character == "platu")
+                    && (profile.language == "english" || profile.language == "thai" || profile.language == "japanese");
+
+                if (complete)
+                {
+                    LoginManager.SavePlayerProfileLocally(profile);
+                    PlayerPrefs.SetInt("IsNewUser", 0);
+                    PlayerPrefs.SetInt("HasProfile", 1);
+                    PlayerPrefs.DeleteKey("ResumePlayerSetup");
+                    NeedsPlayerSetup = false;
+                    PlayerPrefs.Save();
+                    Debug.Log("[ResourceLoading] Restored saved player profile from server.");
+                    yield break;
+                }
+
+                MarkSetupIncomplete();
+                Debug.LogWarning("[ResourceLoading] Server profile is incomplete; player setup is required.");
+                yield break;
+            }
+
+            // A temporary server/network failure must not be treated as a
+            // missing profile; that would send returning players through setup.
+            Debug.LogError(
+                "[ResourceLoading] Could not restore player profile: " +
+                request.error + " " + request.downloadHandler.text
+            );
+            NeedsPlayerSetup = false;
+            if (!PlayerPrefs.HasKey("IsNewUser") || !PlayerPrefs.HasKey("HasProfile"))
+            {
+                PlayerPrefs.SetInt("IsNewUser", 0);
+                PlayerPrefs.SetInt("HasProfile", 1);
+            }
+            PlayerPrefs.Save();
+        }
+    }
+
+    private void MarkSetupIncomplete()
+    {
+        NeedsPlayerSetup = true;
+        PlayerPrefs.SetInt("ResumePlayerSetup", 1);
+        PlayerPrefs.SetInt("IsNewUser", 1);
+        PlayerPrefs.SetInt("HasProfile", 0);
         PlayerPrefs.Save();
     }
 
