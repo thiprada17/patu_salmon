@@ -11,7 +11,7 @@ public class LogoutPopup : MonoBehaviour
     [SerializeField] Button confirmButton;
 
     [Header("Scene")]
-    [SerializeField] string loginScene = "MainMenu";  
+    [SerializeField] string loginScene = "signup";
 
     [Header("Pop")]
     [SerializeField] Transform panel;                  
@@ -68,10 +68,15 @@ public class LogoutPopup : MonoBehaviour
                 return;
             }
 
-            PlayerPrefs.DeleteKey("Username");
-            PlayerPrefs.Save();
+            ClearAuthSession();
+            if (!AuthSessionCleared())
+            {
+                Debug.LogError("Logout failed: saved authentication data could not be cleared.");
+                isBusy = false;
+                return;
+            }
 
-            SceneManager.LoadScene(loginScene);  
+            SceneManager.LoadScene(loginScene);
         }));
     }
 
@@ -117,6 +122,31 @@ public class LogoutPopup : MonoBehaviour
         PlayerPrefs.DeleteKey("Username");
         PlayerPrefs.Save();
         SceneManager.LoadScene("signup");
+    }
+
+    static void ClearAuthSession()
+    {
+        PlayerPrefs.DeleteKey("AccessToken");
+        PlayerPrefs.DeleteKey("RefreshToken");
+        PlayerPrefs.DeleteKey("access_token");
+        PlayerPrefs.DeleteKey("refresh_token");
+        PlayerPrefs.DeleteKey("UserID");
+        PlayerPrefs.DeleteKey("Email");
+        PlayerPrefs.DeleteKey("Username");
+        PlayerPrefs.DeleteKey("ResumePlayerSetup");
+        PlayerPrefs.DeleteKey("IsNewUser");
+        PlayerPrefs.DeleteKey("HasProfile");
+        PlayerPrefs.DeleteKey("IsMockAppleAuth");
+        PlayerPrefs.Save();
+    }
+
+    static bool AuthSessionCleared()
+    {
+        return !PlayerPrefs.HasKey("AccessToken")
+            && !PlayerPrefs.HasKey("RefreshToken")
+            && !PlayerPrefs.HasKey("access_token")
+            && !PlayerPrefs.HasKey("refresh_token")
+            && !PlayerPrefs.HasKey("UserID");
     }
 
     void Close()
