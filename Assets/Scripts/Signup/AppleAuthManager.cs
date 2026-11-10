@@ -24,6 +24,7 @@ public sealed class AppleAuthManager : MonoBehaviour
     private sealed class AppleLoginRequest
     {
         public string identity_token;
+        public string authorization_code;
         public string nonce;
     }
 
@@ -44,6 +45,7 @@ public sealed class AppleAuthManager : MonoBehaviour
     private sealed class NativeAppleResult
     {
         public string identity_token;
+        public string authorization_code;
         public string email;
         public string given_name;
         public string family_name;
@@ -93,17 +95,19 @@ public sealed class AppleAuthManager : MonoBehaviour
             return;
         }
 
-        StartCoroutine(SubmitIdentityToken(result.identity_token, pendingNonce));
+        StartCoroutine(SubmitIdentityToken(result.identity_token, pendingNonce, result.authorization_code));
     }
 
     private IEnumerator SubmitIdentityToken(
         string identityToken,
         string nonce,
+        string authorizationCode = null,
         bool navigateAfterLogin = true)
     {
         AppleLoginRequest body = new AppleLoginRequest
         {
             identity_token = identityToken,
+            authorization_code = authorizationCode,
             nonce = nonce,
         };
 

@@ -40,6 +40,13 @@ class Settings(BaseSettings):
             else None
         )
     )
+    apple_token_encryption_key: SecretStr | None = Field(
+        default_factory=lambda: (
+            SecretStr(os.getenv("APPLE_TOKEN_ENCRYPTION_KEY"))
+            if os.getenv("APPLE_TOKEN_ENCRYPTION_KEY")
+            else None
+        )
+    )
 
     supabase_url: str = ""
     backend_public_url: str = Field(
@@ -61,6 +68,12 @@ class Settings(BaseSettings):
         if self.apple_private_key is None:
             return ""
         return self.apple_private_key.get_secret_value().replace("\\n", "\n")
+
+    @property
+    def normalized_apple_token_encryption_key(self) -> str:
+        if self.apple_token_encryption_key is None:
+            return ""
+        return self.apple_token_encryption_key.get_secret_value()
 
 
 @lru_cache(maxsize=1)

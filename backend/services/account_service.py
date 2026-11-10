@@ -11,16 +11,22 @@ logger = logging.getLogger(__name__)
 class AccountService:
     """Delete a player's game data and their Supabase Auth identity."""
 
-    def delete_account(self, user_id: str) -> dict[str, str]:
+    def delete_account(self, user_id: str, revoke_apple: bool = False) -> dict[str, str]:
         if admin_client is None:
             raise HTTPException(status_code=503, detail="Supabase is not configured")
 
         try:
+            if revoke_apple:
+                from services.apple_auth_service import revoke_apple_account_token
+
+                revoke_apple_account_token(user_id)
             schema = admin_client.schema("user_management")
             # Remove known dependent rows before removing the auth identity.
             schema.table("player_stats").delete().eq("user_id", user_id).execute()
             schema.table("users").delete().eq("user_id", user_id).execute()
             admin_client.auth.admin.delete_user(user_id)
+        except HTTPException:
+            raise
         except Exception as exc:
             logger.exception("Account deletion failed for user_id=%s", user_id)
             raise HTTPException(

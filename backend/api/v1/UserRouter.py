@@ -22,4 +22,5 @@ def delete_account(
     if not user_id:
         raise HTTPException(status_code=401, detail="Authenticated user ID is missing")
 
-    return service.delete_account(user_id)
+    providers = current_user.get("providers") or []
+    return service.delete_account(user_id, revoke_apple="apple" in providers)

@@ -40,6 +40,18 @@ The versioned endpoint is `POST /api/v1/auth/apple`. The existing
    build/sign for iOS with Sign in with Apple enabled for that App ID. The
    Editor mock switch is compiled only into Editor builds.
 
+## Apple token revocation during account deletion
+
+Set `APPLE_TOKEN_ENCRYPTION_KEY` on the backend to the URL-safe base64
+encoding of 32 random bytes. Apply `migrations/20261110_apple_auth_tokens.sql`
+to Supabase. The iOS sign-in flow sends Apple's authorization code to the
+backend, which exchanges it and stores the refresh token encrypted in the
+service-role-only `user_management.apple_auth_tokens` table. Account deletion
+revokes that token through Apple's `/auth/revoke` endpoint before deleting the
+Supabase account. Existing Apple users need to sign in once after this update
+to capture a revocable token; deletion returns an error if the token is missing
+or Apple cannot revoke it.
+
 ## Tests
 
 Install test dependencies with `pip install -r requirements-dev.txt` from the

@@ -48,6 +48,7 @@ class EmailLoginRequest(BaseModel):
 
 class AppleLoginRequest(BaseModel):
     identity_token: str
+    authorization_code: str | None = None
     nonce: str | None = None
 
 
@@ -64,7 +65,11 @@ def signup(
 
 @router.post("/apple")
 def login_with_apple(data: AppleLoginRequest):
-    return apple_login(data.identity_token, nonce=data.nonce)
+    return apple_login(
+        data.identity_token,
+        nonce=data.nonce,
+        authorization_code=data.authorization_code,
+    )
 
 
 @router.get("/google")

@@ -90,6 +90,7 @@ class AuthService:
             return {
                 "user_id": user.id,
                 "email": user.email,
+                "providers": (getattr(user, "app_metadata", None) or {}).get("providers", []),
             }
 
         except HTTPException:

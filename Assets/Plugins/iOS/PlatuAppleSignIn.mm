@@ -41,6 +41,9 @@ extern "C" void UnitySendMessage(const char *obj, const char *method, const char
     }
 
     NSMutableDictionary *result = [@{@"identity_token": identityToken} mutableCopy];
+    NSData *authorizationCodeData = credential.authorizationCode;
+    NSString *authorizationCode = authorizationCodeData ? [[NSString alloc] initWithData:authorizationCodeData encoding:NSUTF8StringEncoding] : nil;
+    if (authorizationCode.length > 0) result[@"authorization_code"] = authorizationCode;
     if (credential.email) result[@"email"] = credential.email;
     if (credential.fullName.givenName) result[@"given_name"] = credential.fullName.givenName;
     if (credential.fullName.familyName) result[@"family_name"] = credential.fullName.familyName;
