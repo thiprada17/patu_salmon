@@ -138,7 +138,7 @@ public class GoogleLogin : MonoBehaviour
 #endif
         if (string.IsNullOrEmpty(url) || url == lastHandledUrl) return;
 
-        Debug.Log("Received Deep Link: " + url);
+        Debug.Log("Received app auth deep link.");
         if (!url.StartsWith("platusalmon://login-callback", StringComparison.OrdinalIgnoreCase))
         {
             Debug.LogWarning("Unknown deep link");
@@ -237,16 +237,21 @@ public class GoogleLogin : MonoBehaviour
         try
         {
             Uri uri = new Uri(url);
-            string query = uri.Query;
-            if (string.IsNullOrEmpty(query)) return null;
+            string[] parameterSets = { uri.Query, uri.Fragment.TrimStart('#') };
 
-            foreach (string param in query.TrimStart('?').Split('&'))
+            foreach (string parameterSet in parameterSets)
             {
-                string[] pair = param.Split(new char[] { '=' }, 2);
-                if (pair.Length != 2) continue;
+                if (string.IsNullOrEmpty(parameterSet)) continue;
 
-                if (Uri.UnescapeDataString(pair[0]) == parameter)
-                    return Uri.UnescapeDataString(pair[1]);
+                foreach (string item in parameterSet.TrimStart('?', '#').Split('&'))
+                {
+                    string[] pair = item.Split(new char[] { '=' }, 2);
+                    if (pair.Length != 2) continue;
+
+                    string key = Uri.UnescapeDataString(pair[0].Replace("+", " "));
+                    if (key == parameter)
+                        return Uri.UnescapeDataString(pair[1].Replace("+", " "));
+                }
             }
         }
         catch (Exception e)

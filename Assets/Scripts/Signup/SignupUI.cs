@@ -197,7 +197,15 @@ public class SignupUI : MonoBehaviour
 
         if (res.needs_email_confirmation)
         {
-            Debug.Log("Please confirm email first");
+            const string confirmationMessage =
+                "Confirmation email sent. Open the link on this device to continue.";
+            Debug.Log(confirmationMessage);
+            if (emailError != null)
+            {
+                emailError.text = confirmationMessage;
+                if (emailErrorGroup != null)
+                    emailErrorGroup.SetActive(true);
+            }
             ReleaseButton();
             return;
         }

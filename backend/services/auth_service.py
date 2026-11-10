@@ -7,7 +7,7 @@ from services.google_auth_service import (
     exchange_code,
     get_user,
 )
-from utils.deeplink import create_login_deep_link
+from utils.deeplink import DEEPLINK_URL, create_login_deep_link
 from infrastructure.supabase_client import supabase, admin_client
 
 
@@ -167,6 +167,9 @@ class AuthService:
                 result = supabase.auth.sign_up({
                     "email": email,
                     "password": password,
+                    "options": {
+                        "email_redirect_to": DEEPLINK_URL,
+                    },
                 })
             except httpx.TimeoutException:
                 # A read timeout is ambiguous: Supabase may have created the
