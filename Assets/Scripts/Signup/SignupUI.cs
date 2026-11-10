@@ -4,9 +4,15 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 using System.Collections;
+using System.Runtime.InteropServices;
 
 public class SignupUI : MonoBehaviour
 {
+#if UNITY_IOS && !UNITY_EDITOR
+    [DllImport("__Internal")]
+    private static extern void PlatuShowEmailConfirmationPrompt();
+#endif
+
     [Header("input")]
     [SerializeField] TMP_InputField emailInput;
     [SerializeField] TMP_InputField passwordInput;
@@ -197,7 +203,18 @@ public class SignupUI : MonoBehaviour
 
         if (res.needs_email_confirmation)
         {
-            Debug.Log("Please confirm email first");
+            const string confirmationMessage =
+                "Confirmation email sent. Open the link on this device to continue.";
+            Debug.Log(confirmationMessage);
+            if (emailError != null)
+            {
+                emailError.text = confirmationMessage;
+                if (emailErrorGroup != null)
+                    emailErrorGroup.SetActive(true);
+            }
+#if UNITY_IOS && !UNITY_EDITOR
+            PlatuShowEmailConfirmationPrompt();
+#endif
             ReleaseButton();
             return;
         }

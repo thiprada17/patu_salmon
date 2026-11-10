@@ -9,6 +9,7 @@ and nonce before handing the token to Supabase Auth.
 from __future__ import annotations
 
 import hashlib
+import logging
 import time
 import uuid
 from typing import Any
@@ -24,6 +25,7 @@ APPLE_ISSUER = "https://appleid.apple.com"
 APPLE_MOCK_ISSUER = "https://appleid.apple.com.mock"
 APPLE_JWKS_URL = "https://appleid.apple.com/auth/keys"
 MOCK_USER_NAMESPACE = uuid.UUID("a8f1b64d-2b12-4aa1-8dd5-65b9f21d9b66")
+logger = logging.getLogger(__name__)
 
 
 def _configured_audiences(settings: Settings) -> list[str]:
@@ -145,6 +147,12 @@ def verify_apple_token(
             options={"require": ["iss", "aud", "exp", "iat", "sub"]},
         )
     except (InvalidTokenError, PyJWKClientError, ValueError) as exc:
+        logger.warning(
+            "Apple identity token verification rejected: error_type=%s issuer=%r audience=%r",
+            type(exc).__name__,
+            issuer,
+            unverified.get("aud"),
+        )
         raise HTTPException(status_code=401, detail="Apple identity token verification failed") from exc
 
     if not isinstance(claims.get("sub"), str) or not claims["sub"].strip():
