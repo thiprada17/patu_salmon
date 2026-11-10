@@ -109,7 +109,8 @@ public sealed class AppleAuthManager : MonoBehaviour
 
         using (UnityWebRequest request = new UnityWebRequest(BackendConfig.BaseUrl + "/auth/apple", "POST"))
         {
-            request.timeout = 15;
+            // Allow time for a sleeping Render instance and Apple/Supabase auth calls.
+            request.timeout = 90;
             request.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(JsonUtility.ToJson(body)));
             request.downloadHandler = new DownloadHandlerBuffer();
             request.SetRequestHeader("Content-Type", "application/json");
