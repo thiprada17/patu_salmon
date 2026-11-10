@@ -7230,7 +7230,7 @@ MonoBehaviour:
   audioSource: {fileID: 814097948}
   inputaudioSource: {fileID: 814097947}
   outputaudioSource: {fileID: 814097946}
-  grindDuration: 3
+  grindDuration: 2
   shakeMagnitude: 0.02
   portfilterToDetect: {fileID: 1408859716}
   missingShakeDuration: 0.3
@@ -11138,7 +11138,7 @@ MonoBehaviour:
   cocoaAnimator: {fileID: 576298902}
   cocoaAnimation: {fileID: 576298903}
   audioSource: {fileID: 1328226059}
-  pumpingDuration: 1.3
+  pumpingDuration: 1
 --- !u!114 &1328226058
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15201,7 +15201,7 @@ MonoBehaviour:
   milkAnimator: {fileID: 375247797}
   milkAnimation: {fileID: 375247798}
   audioSource: {fileID: 2011776641}
-  pumpingDuration: 1.3
+  pumpingDuration: 1
 --- !u!61 &2011776639
 BoxCollider2D:
   m_ObjectHideFlags: 0
