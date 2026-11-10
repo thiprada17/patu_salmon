@@ -449,12 +449,23 @@ def apple_login(
                     client_id,
                     settings,
                 )
+                logger.info("Stored Apple revocation token for user_id=%s", result.user.id)
             except Exception as exc:
-                logger.warning(
-                    "Apple sign-in succeeded but revocation token capture failed: user_id=%s error_type=%s",
-                    result.user.id,
-                    type(exc).__name__,
-                )
+                if isinstance(exc, HTTPException):
+                    logger.warning(
+                        "Apple sign-in succeeded but revocation token capture failed: "
+                        "user_id=%s status=%s detail=%s",
+                        result.user.id,
+                        exc.status_code,
+                        exc.detail,
+                    )
+                else:
+                    logger.exception(
+                        "Apple sign-in succeeded but revocation token capture failed: "
+                        "user_id=%s error_type=%s",
+                        result.user.id,
+                        type(exc).__name__,
+                    )
         else:
             logger.warning(
                 "Apple sign-in succeeded without an authorization code; revocation token not captured: user_id=%s",
