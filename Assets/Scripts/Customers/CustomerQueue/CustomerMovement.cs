@@ -19,7 +19,7 @@ public class CustomerMovement : MonoBehaviour
 
     [Header("Wait Time by Work Day")]
     [SerializeField, Min(0f)] private float waitTimeDays1To2 = 30f;
-    [SerializeField, Min(0f)] private float waitTimeDays3To4 = 40f;
+    [SerializeField, Min(0f)] private float waitTimeDays3To5 = 40f;
     [SerializeField, Min(0f)] private float waitTimeAfterDay5 = 50f;
 
     [Header("Exit")]
@@ -439,15 +439,16 @@ public class CustomerMovement : MonoBehaviour
         int completedDays = CoinManager.Instance != null
             ? CoinManager.Instance.WorkDays
             : 0;
+        int currentDay = completedDays + 1;
 
-        if (completedDays >= 5)
+        if (currentDay > 5)
         {
             return waitTimeAfterDay5;
         }
 
-        if (completedDays >= 2)
+        if (currentDay >= 3)
         {
-            return waitTimeDays3To4;
+            return waitTimeDays3To5;
         }
 
         return waitTimeDays1To2;

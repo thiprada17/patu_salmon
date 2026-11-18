@@ -16028,6 +16028,10 @@ PrefabInstance:
       propertyPath: exitPoint
       value: 
       objectReference: {fileID: 1460267483}
+    - target: {fileID: 4016643273641080242, guid: 740a20eeac4ff7a4bb5182bf329f7401, type: 3}
+      propertyPath: waitTimeDays3To5
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 4026561085190827146, guid: 740a20eeac4ff7a4bb5182bf329f7401, type: 3}
       propertyPath: m_LocalPosition.x
       value: 9.77
@@ -16196,6 +16200,18 @@ PrefabInstance:
     - target: {fileID: 6019521774802634382, guid: abc072d4e99bc474fa3f694521990322, type: 3}
       propertyPath: maxWaitTime
       value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 6019521774802634382, guid: abc072d4e99bc474fa3f694521990322, type: 3}
+      propertyPath: waitTimeDays1To2
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 6019521774802634382, guid: abc072d4e99bc474fa3f694521990322, type: 3}
+      propertyPath: waitTimeDays3To4
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 6019521774802634382, guid: abc072d4e99bc474fa3f694521990322, type: 3}
+      propertyPath: waitTimeAfterDay5
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 6357983491243915226, guid: abc072d4e99bc474fa3f694521990322, type: 3}
       propertyPath: m_Size.y
