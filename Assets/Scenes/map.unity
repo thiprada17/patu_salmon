@@ -10806,7 +10806,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Unlock
+  m_text: Coming Soon
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 27fcb95ca5b8ade419f9f502d2f59bdd, type: 2}
   m_sharedMaterial: {fileID: 5672472888190481485, guid: 27fcb95ca5b8ade419f9f502d2f59bdd, type: 2}
@@ -11177,7 +11177,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Unlock
+  m_text: Coming Soon
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 27fcb95ca5b8ade419f9f502d2f59bdd, type: 2}
   m_sharedMaterial: {fileID: 5672472888190481485, guid: 27fcb95ca5b8ade419f9f502d2f59bdd, type: 2}
