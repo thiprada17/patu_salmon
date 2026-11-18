@@ -8515,7 +8515,7 @@ MonoBehaviour:
   tipCoinsText: {fileID: 0}
   totalcustomerservedText: {fileID: 0}
   shiftEnd: {fileID: 0}
-  daysPerShift: 10
+  daysPerShift: 5
   minTicketExpense: 10
   maxTicketExpense: 20
   minRentExpense: 20

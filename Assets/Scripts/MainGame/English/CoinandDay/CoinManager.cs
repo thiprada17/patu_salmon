@@ -32,7 +32,7 @@ public class CoinManager : MonoBehaviour
 
     [Header("หน้าต่างสรุปกะ")]
     [SerializeField] private ShiftEnd shiftEnd;
-    [SerializeField, Min(1)] private int daysPerShift = 10;
+    [SerializeField, Min(1)] private int daysPerShift = 5;
 
     [Header("ค่าใช้จ่ายตอนจบกะ")]
     [SerializeField, Min(0)] private int minTicketExpense = 10;
@@ -86,6 +86,20 @@ public class CoinManager : MonoBehaviour
     // เงินคงเหลือหลังบันทึกยอดของวันนี้แล้ว
     public int TotalCoins =>
         Mathf.Max(0, SavedCoins + ShiftCoins);
+
+    public Sprite GetFinishedCupSprite(RecipeType recipeType)
+    {
+        if (recipes == null)
+        {
+            return null;
+        }
+
+        RecipeData recipe = recipes.Find(
+            item => item != null && item.recipeType == recipeType
+        );
+
+        return recipe != null ? recipe.finishedCupSprite : null;
+    }
 
     private void Awake()
     {
@@ -456,7 +470,7 @@ public class CoinManager : MonoBehaviour
             $"ลูกค้า={CustomersServed} | รอ Sync={pendingSyncDays} วัน"
         );
 
-        // Send one aggregate request every ten completed work days. If it
+        // Send one aggregate request every completed shift. If it
         // fails, keep the checkpoint and include it in the next batch.
         if (daysPerShift > 0 && WorkDays % daysPerShift == 0)
             StartCoroutine(SyncStats(hasRefreshedSession));
@@ -577,18 +591,18 @@ public class CoinManager : MonoBehaviour
     {
         if (totalCoinsText != null)
         {
-            totalCoinsText.text = TotalCoins.ToString();
+            totalCoinsText.text = FormatNavbarCoins(TotalCoins);
         }
 
         // Order และ Tips แสดงยอดสะสมตลอดกะ
         if (orderCoinsText != null)
         {
-            orderCoinsText.text = "Order " + OrderCoins;
+            orderCoinsText.text = "Order " + FormatNavbarCoins(OrderCoins);
         }
 
         if (tipCoinsText != null)
         {
-            tipCoinsText.text = "Tips " + TipCoins;
+            tipCoinsText.text = "Tips " + FormatNavbarCoins(TipCoins);
         }
 
         if (totalcustomerservedText != null)
@@ -604,6 +618,16 @@ public class CoinManager : MonoBehaviour
         {
             daysText.text = WorkDays.ToString();
         }
+    }
+
+    private static string FormatNavbarCoins(int coins)
+    {
+        if (coins < 10000)
+        {
+            return coins.ToString();
+        }
+
+        return (coins / 1000f).ToString("0.#") + "k";
     }
 
     [Serializable]
