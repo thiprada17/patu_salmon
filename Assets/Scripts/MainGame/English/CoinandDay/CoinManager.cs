@@ -67,6 +67,7 @@ public class CoinManager : MonoBehaviour
 
     // จำนวนวันที่ทำงานสะสม
     public int WorkDays { get; private set; }
+    public bool IsStatsReady => statsInitializationComplete;
 
     // ยอดรายได้สุทธิของวันปัจจุบัน
     public int ShiftCoins => OrderCoins + TipCoins - PenaltyCoins;
@@ -78,6 +79,7 @@ public class CoinManager : MonoBehaviour
 
     private bool isLoading;
     private bool isSaving;
+    private bool statsInitializationComplete;
     private int pendingExpenseWorkDay = -1;
     private int pendingSyncDays;
     private string localStateKey;
@@ -209,12 +211,14 @@ public class CoinManager : MonoBehaviour
         if (string.IsNullOrEmpty(userId))
         {
             GameLogger.Error("Economy", "ไม่พบ UserID");
+            statsInitializationComplete = true;
             yield break;
         }
 
         if (string.IsNullOrEmpty(accessToken))
         {
             GameLogger.Error("Economy", "ไม่พบ Access Token");
+            statsInitializationComplete = true;
             yield break;
         }
 
@@ -223,6 +227,7 @@ public class CoinManager : MonoBehaviour
         using (UnityWebRequest request = UnityWebRequest.Get(
             $"{BackendConfig.BaseUrl}/player/stats/{userId}"))
         {
+            request.timeout = 15;
             request.downloadHandler = new DownloadHandlerBuffer();
             request.SetRequestHeader("Authorization", "Bearer " + accessToken);
 
@@ -258,6 +263,7 @@ public class CoinManager : MonoBehaviour
                 );
 
                 isLoading = false;
+                statsInitializationComplete = true;
                 yield break;
             }
 
@@ -274,6 +280,7 @@ public class CoinManager : MonoBehaviour
                 );
 
                 isLoading = false;
+                statsInitializationComplete = true;
                 yield break;
             }
 
@@ -302,6 +309,7 @@ public class CoinManager : MonoBehaviour
         }
 
         isLoading = false;
+        statsInitializationComplete = true;
     }
 
     // คำนวณรายได้เมื่อเสิร์ฟลูกค้าสำเร็จ

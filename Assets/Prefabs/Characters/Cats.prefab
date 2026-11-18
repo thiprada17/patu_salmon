@@ -1240,9 +1240,9 @@ MonoBehaviour:
   bobSpeed: 8
   maxWaitTime: 45
   angryTime: 30
-  waitTimeDays1To2: 65
-  waitTimeDays3To4: 50
-  waitTimeAfterDay5: 42
+  waitTimeDays1To2: 60
+  waitTimeDays3To5: 45
+  waitTimeAfterDay5: 40
   exitPoint: {fileID: 0}
 --- !u!114 &1420449113316906600
 MonoBehaviour:

@@ -51,9 +51,15 @@ public class DayManager : MonoBehaviour
         if (TutorialPanelancle != null)
             TutorialPanelancle.SetActive(TutorialSession.IsTutorialActive);
 
-        // Start spawning for the initial shift.
+        // Wait for the account's saved work-day count before choosing menus
+        // and wait-time tiers for the first customers of the shift.
         if (customerSpawner != null)
-            customerSpawner.BeginShift();
+        {
+            if (CoinManager.Instance == null || CoinManager.Instance.IsStatsReady)
+                customerSpawner.BeginShift();
+            else
+                StartCoroutine(BeginShiftWhenStatsAreReady());
+        }
 
         GameLogger.Info(
             "DayManager",
@@ -61,6 +67,20 @@ public class DayManager : MonoBehaviour
         );
 
         UpdateTimerText();
+    }
+
+    private IEnumerator BeginShiftWhenStatsAreReady()
+    {
+        while (CoinManager.Instance != null &&
+               !CoinManager.Instance.IsStatsReady)
+        {
+            yield return null;
+        }
+
+        if (!isDayEnding && customerSpawner != null)
+        {
+            customerSpawner.BeginShift();
+        }
     }
 
     private void OnDisable()
@@ -105,6 +125,13 @@ public class DayManager : MonoBehaviour
             if (TutorialPanelancle != null)
                 TutorialPanelancle.SetActive(true);
 
+            return;
+        }
+
+        if (CoinManager.Instance != null &&
+            !CoinManager.Instance.IsStatsReady)
+        {
+            UpdateTimerText();
             return;
         }
 

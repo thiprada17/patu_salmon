@@ -70,10 +70,11 @@ public class CustomerOrder : MonoBehaviour
         int completedDays = CoinManager.Instance != null
             ? CoinManager.Instance.WorkDays
             : 0;
+        int currentDay = completedDays + 1;
 
-        RecipeType[] availableOrders = completedDays < 2
+        RecipeType[] availableOrders = currentDay <= 2
             ? EarlyOrders
-            : completedDays < 5
+            : currentDay <= 5
                 ? IntermediateOrders
                 : AllOrders;
 
