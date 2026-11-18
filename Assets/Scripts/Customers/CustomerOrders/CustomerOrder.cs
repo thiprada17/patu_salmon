@@ -2,11 +2,31 @@
 
 public class CustomerOrder : MonoBehaviour
 {
+    private static readonly RecipeType[] EarlyOrders =
+    {
+        RecipeType.PlainWater,
+        RecipeType.CocoaLatte
+    };
+
+    private static readonly RecipeType[] IntermediateOrders =
+    {
+        RecipeType.PlainWater,
+        RecipeType.CocoaLatte,
+        RecipeType.Latte,
+        RecipeType.Americano
+    };
+
+    private static readonly RecipeType[] AllOrders =
+    {
+        RecipeType.PlainWater,
+        RecipeType.CocoaLatte,
+        RecipeType.Latte,
+        RecipeType.Americano,
+        RecipeType.Mocha
+    };
+
     [Header("Order")]
     [SerializeField] private RecipeType order = RecipeType.None;
-
-    [Header("Dialogue")]
-    [SerializeField] private CustomerDialogueData dialogueData;
 
     [Header("Bubble")]
     [SerializeField] private CustomerOrderBubble orderBubble;
@@ -47,9 +67,17 @@ public class CustomerOrder : MonoBehaviour
 
     public void GenerateOrder()
     {
-        int randomIndex = Random.Range(1, 6);
+        int completedDays = CoinManager.Instance != null
+            ? CoinManager.Instance.WorkDays
+            : 0;
 
-        order = (RecipeType)randomIndex;
+        RecipeType[] availableOrders = completedDays < 2
+            ? EarlyOrders
+            : completedDays < 5
+                ? IntermediateOrders
+                : AllOrders;
+
+        order = availableOrders[Random.Range(0, availableOrders.Length)];
         orderAlreadyServed = false;
 
         ShowDialogue();
@@ -59,43 +87,21 @@ public class CustomerOrder : MonoBehaviour
 
     private void ShowDialogue()
     {
-        if (dialogueData == null)
-        {
-            Debug.LogWarning(
-                name + " has no CustomerDialogueData!"
-            );
-            return;
-        }
-
-        if (dialogueData.dialogues == null ||
-            dialogueData.dialogues.Length == 0)
-        {
-            Debug.LogWarning(
-                name + " has no dialogue!"
-            );
-            return;
-        }
-
-        string dialogue =
-            dialogueData.dialogues[
-                Random.Range(0, dialogueData.dialogues.Length)
-            ];
-
+        Sprite orderSprite = CoinManager.Instance != null
+            ? CoinManager.Instance.GetFinishedCupSprite(order)
+            : null;
         string itemName = GetItemName(order);
-
-        string highlightedItem =
-            "<b><color=#F87400>" +
-            itemName +
-            "</color></b>";
-
-        dialogue = dialogue.Replace(
-            "{ITEM_NAME}",
-            highlightedItem
-        );
 
         if (orderBubble != null)
         {
-            orderBubble.ShowDialogue(dialogue);
+            orderBubble.ShowOrder(orderSprite, itemName);
+        }
+
+        if (orderSprite == null)
+        {
+            Debug.LogWarning(
+                name + " cannot find the finished cup sprite for " + order
+            );
         }
     }
 
@@ -103,23 +109,12 @@ public class CustomerOrder : MonoBehaviour
     {
         switch (recipe)
         {
-            case RecipeType.Latte:
-                return "Latte";
-
-            case RecipeType.Americano:
-                return "Americano";
-
-            case RecipeType.Mocha:
-                return "Mocha";
-
-            case RecipeType.CocoaLatte:
-                return "Cocoa Latte";
-
-            case RecipeType.PlainWater:
-                return "Plain Water";
-
-            default:
-                return "";
+            case RecipeType.Latte: return "Latte";
+            case RecipeType.Americano: return "Americano";
+            case RecipeType.Mocha: return "Mocha";
+            case RecipeType.CocoaLatte: return "Cocoa Latte";
+            case RecipeType.PlainWater: return "Plain Water";
+            default: return "";
         }
     }
 

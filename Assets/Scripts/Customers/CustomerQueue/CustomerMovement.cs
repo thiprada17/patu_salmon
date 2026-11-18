@@ -17,6 +17,11 @@ public class CustomerMovement : MonoBehaviour
     [SerializeField] private float maxWaitTime = 30f;
     [SerializeField] private float angryTime = 20f;
 
+    [Header("Wait Time by Work Day")]
+    [SerializeField, Min(0f)] private float waitTimeDays1To2 = 30f;
+    [SerializeField, Min(0f)] private float waitTimeDays3To4 = 40f;
+    [SerializeField, Min(0f)] private float waitTimeAfterDay5 = 50f;
+
     [Header("Exit")]
     [SerializeField] private Transform exitPoint;
 
@@ -191,7 +196,7 @@ public class CustomerMovement : MonoBehaviour
 
             Debug.Log(
                 name + " started waiting for " +
-                maxWaitTime + " seconds."
+                GetEffectiveMaxWaitTime() + " seconds."
             );
         }
     }
@@ -203,18 +208,20 @@ public class CustomerMovement : MonoBehaviour
             return;
 
         waitTimer += Time.deltaTime;
+        float effectiveMaxWaitTime = GetEffectiveMaxWaitTime();
+        float effectiveAngryTime = GetEffectiveAngryTime();
 
         if (customerOrder != null)
         {
-            customerOrder.UpdateTimeBar(waitTimer, maxWaitTime);
+            customerOrder.UpdateTimeBar(waitTimer, effectiveMaxWaitTime);
         }
 
-        if (!isAngry && waitTimer >= angryTime)
+        if (!isAngry && waitTimer >= effectiveAngryTime)
         {
             BecomeAngry();
         }
 
-        if (waitTimer >= maxWaitTime)
+        if (waitTimer >= effectiveMaxWaitTime)
         {
             LeaveAngry();
         }
@@ -424,6 +431,36 @@ public class CustomerMovement : MonoBehaviour
 
     public float GetMaxWaitTime()
     {
-        return maxWaitTime;
+        return GetEffectiveMaxWaitTime();
+    }
+
+    private float GetEffectiveMaxWaitTime()
+    {
+        int completedDays = CoinManager.Instance != null
+            ? CoinManager.Instance.WorkDays
+            : 0;
+
+        if (completedDays >= 5)
+        {
+            return waitTimeAfterDay5;
+        }
+
+        if (completedDays >= 2)
+        {
+            return waitTimeDays3To4;
+        }
+
+        return waitTimeDays1To2;
+    }
+
+    private float GetEffectiveAngryTime()
+    {
+        if (maxWaitTime <= 0f)
+        {
+            return angryTime;
+        }
+
+        float angryRatio = Mathf.Clamp01(angryTime / maxWaitTime);
+        return GetEffectiveMaxWaitTime() * angryRatio;
     }
 }

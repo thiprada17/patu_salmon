@@ -2080,9 +2080,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d81d0df23b461a4aaa90fbffb46f5ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stationSnapRadius: 1.25
   shakeDuration: 0.25
   shakeMagnitude: 0.08
   returnDuration: 0.2
+  audioSource: {fileID: 0}
 --- !u!114 &7912285026154135277
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2186,7 +2188,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.01148203, y: 0.03922665}
+  m_Offset: {x: 0.00646317, y: 0.34471357}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -2196,7 +2198,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1.244261, y: 2.2481048}
+  m_Size: {x: 1.6821404, y: 3.0887992}
   m_EdgeRadius: 0
 --- !u!210 &-5846101260799064981
 SortingGroup:
