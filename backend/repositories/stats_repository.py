@@ -25,7 +25,7 @@ class StatsRepository:
         result = self._stats().insert({
             "user_id": user_id,
             "coin": 0,
-            "work_days": 0,
+            "work_days": 1,
             "work_streak": 0,
             "total_customers_served": 0,
         }).execute()
